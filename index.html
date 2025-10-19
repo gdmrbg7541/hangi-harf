@@ -61,6 +61,7 @@
             gap: 4px; 
             padding: 0 0.5rem; 
             flex-shrink: 0; 
+            direction: rtl; /* DEĞİŞİKLİK: Sağdan sola ilerleme */
         }
         .progress-word { height: 8px; background-color: rgba(255, 255, 255, 0.4); border-radius: 4px; transition: background-color 0.3s ease; }
         .progress-word.correct { background-color: #28a745; } .progress-word.incorrect { background-color: #dc3545; }
@@ -82,10 +83,44 @@
         }
         #player-1 { background-color: rgba(227, 242, 253, 0.5); } #player-2 { background-color: rgba(255, 243, 224, 0.5); }
         body.mode-1p #player-2 { display: none; } body.mode-1p #player-1 { width: 100%; max-width: 800px; margin: 0 auto; } body.mode-1p #game-wrapper { justify-content: center; } body.mode-1p #player-1 .player-icon-wrapper { display: none; } body.mode-1p #top-progress-bar { display: grid; order: -1; } body.mode-1p #player-1 #progress-1 { display: none; } body.mode-1p #player-2 #progress-2 { display: none; } 
-        body.mode-1p #player-1 .status-bar { justify-content: flex-end; } body.mode-1p #p1-timer { display: flex; margin-right: auto; } #modal.mode-1p #result-column-2 { display: none; } #modal.mode-1p .results-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
-        body.mode-2p #player-1, body.mode-2p #player-2 { width: 50%; } #modal.mode-2p .results-grid { grid-template-columns: 1fr; } /* Varsayılan 1 sütun */ body.mode-2p #top-progress-bar { display: none; } body.mode-2p #progress-1, body.mode-2p #progress-2 { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; width: 100%; max-width: 300px; margin: 0.5rem auto 1rem auto; order: -1; flex-shrink: 0; } body.mode-2p .progress-word { height: 8px; border-radius: 4px; } 
+        
+        /* DEĞİŞİKLİK: Puan ve Zamanlama CSS'i güncellendi */
+        body.mode-1p #player-1 .status-bar { justify-content: flex-end; } 
+        body.mode-1p #p1-timer { display: flex; } /* 'hidden' kalkınca flex olsun */
+        body.mode-1p #p1-score-wrapper { margin-right: auto; } /* Puanı sola it */
+        
+        #modal.mode-1p #result-column-2 { display: none; } #modal.mode-1p .results-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
+        body.mode-2p #player-1, body.mode-2p #player-2 { width: 50%; } #modal.mode-2p .results-grid { grid-template-columns: 1fr; } /* Varsayılan 1 sütun */ body.mode-2p #top-progress-bar { display: none; } 
+        body.mode-2p #progress-1, body.mode-2p #progress-2 { 
+            display: grid; 
+            grid-template-columns: repeat(10, 1fr); 
+            gap: 4px; 
+            width: 100%; 
+            max-width: 300px; 
+            margin: 0.5rem auto 1rem auto; 
+            /* order: -1; <-- KALDIRILDI */ 
+            flex-shrink: 0; 
+            direction: rtl; /* DEĞİŞİKLİK: Sağdan sola ilerleme */
+        } 
+        body.mode-2p .progress-word { height: 8px; border-radius: 4px; } 
         body.mode-2p .status-bar { justify-content: flex-end; }
         
+        .player-icon-wrapper .flex {
+            align-items: center; /* Dikey hizalama */
+            line-height: 1; /* H1'deki ekstra boşluğu azaltmak için */
+        }
+        .player-icon-wrapper h1 { 
+            direction: ltr; 
+            font-size: 2.5em; /* 4xl -> 2.25rem, 5xl -> 3rem idi. Ortalama bir em değeri */
+            line-height: 1; /* Dikey boşluğu kaldır */
+        }
+        .player-icon-wrapper svg {
+            width: 1em;  /* Font boyutuna göre ölçeklen */
+            height: 1em; /* Font boyutuna göre ölçeklen */
+            font-size: 2.5em; /* H1 ile aynı em değeri */
+        }
+
+
         .question-container { 
             flex-grow: 1; 
             display: flex; 
@@ -112,7 +147,6 @@
             font-size: 1.25rem; 
             position: relative; 
             flex-shrink: 0; 
-            /* margin-top: auto; */ /* Kaldırıldı */
         }
         #modal { position: fixed; inset: 0; z-index: 1000; overflow-y: auto; padding: 1rem; display: none; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); } .modal-content { background-color: white; padding: 2rem; border-radius: 1.5rem; text-align: center; width: 95%; max-width: 800px; position: relative; margin: auto; max-height: 90vh; overflow-y: auto; } .results-grid { display: grid; gap: 1rem; margin-top: 1.5rem; } .result-column { padding: 1rem; border-radius: 1rem; position: relative; overflow: hidden; } 
         .result-item { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem; }
@@ -141,7 +175,7 @@
             #game-wrapper{ 
                 flex-direction: column; 
                 gap: 0.5rem; 
-                max-height: 90vh; /* Mobil dikey yüksek_lik sınırı */
+                max-height: 90vh; /* Mobil dikey yükseklik sınırı */
             } 
             .player-screen{ 
                 padding: 0.75rem; 
@@ -153,8 +187,14 @@
             body.mode-2p .player-screen { 
                  flex-basis: 0; /* Eşit böl */
             } 
-                
-            /* ... diğer mobil küçültme kuralları ... */
+             
+            .player-icon-wrapper h1 { 
+                font-size: 2em; /* Mobil için biraz daha küçük */
+            }
+            .player-icon-wrapper svg {
+                font-size: 2em; /* Mobil için biraz daha küçük */
+            }
+
             .question-container { gap: 0.5rem; padding-bottom: 0.5rem; } 
             .word { font-size: clamp(2rem, 8vw, 3.5rem); } 
             .options { gap: 0.5rem; } 
@@ -176,14 +216,14 @@
             p { font-size: 1rem !important; } 
         }
         /* ... diğer kurallar ... */
-         .player-icon-wrapper h1 { direction: ltr; } 
         .result-column h3 { font-family: 'Marhey', system-ui, sans-serif; } /* Marhey Font */
         .result-item span:first-child { direction: rtl; } 
         .result-item span:nth-child(2) { direction: rtl; }
     </style>
 </head>
 
-<body> <div id="back-btn">
+<body> 
+    <div id="back-btn">
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
     </div>
 
@@ -222,21 +262,37 @@
 
     <div id="countdown-overlay" class="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 hidden"><span id="countdown-number"></span></div>
 
-    <div id="game-wrapper" class="hidden flex"> <div id="player-2" class="w-full md:w-1/2 player-screen">
+
+    <div id="game-wrapper" class="hidden flex"> 
+        <div id="player-1" class="w-full md:w-1/2 player-screen">
             <div class="w-full flex justify-center player-icon-wrapper">
-                <div class="flex items-center gap-2 md:gap-3"> <svg class="w-8 h-8 md:w-10 lg:w-12" style="fill: #c57d00;" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.84,8c18.84-32.56,52.14-52,89.08-52s70.24,19.44,89.08,52a8,8,0,1,0,13.84-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"></path></svg><h1 class="text-3xl md:text-4xl lg:text-5xl font-bold" style="color: #c57d00;">١</h1></div>
+                <div class="flex gap-2 md:gap-3"> 
+                    <svg style="fill: #005f9e;" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.84,8c18.84-32.56,52.14-52,89.08-52s70.24,19.44,89.08,52a8,8,0,1,0,13.84-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"></path></svg>
+                    <h1 class="font-bold" style="color: #005f9e;">2</h1>
+                </div>
+            </div>
+            <div id="top-progress-bar"></div><div id="progress-1"></div>
+            <div class="question-container"><div id="word-1" class="word" lang="ar">...</div><div id="options-1" class="options" lang="ar"></div></div>
+            
+            <div class="status-bar">
+                <div id="p1-score-wrapper" class="flex items-center gap-1 md:gap-2 text-xl md:text-2xl">
+                    <span class="text-2xl md:text-3xl">⭐</span><span id="score-1">0</span>
+                </div>
+                <div id="p1-timer" class="hidden items-center gap-1 md:gap-2 text-xl md:text-2xl">
+                    <span class="text-2xl md:text-3xl">⏱️</span><span id="p1-timer-value"></span>
+                </div>
+            </div>
+        </div>
+         <div id="player-2" class="w-full md:w-1/2 player-screen">
+            <div class="w-full flex justify-center player-icon-wrapper">
+                <div class="flex gap-2 md:gap-3"> 
+                    <svg style="fill: #c57d00;" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.84,8c18.84-32.56,52.14-52,89.08-52s70.24,19.44,89.08,52a8,8,0,1,0,13.84-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"></path></svg>
+                    <h1 class="font-bold" style="color: #c57d00;">1</h1>
+                </div>
             </div>
             <div id="progress-2"></div>
             <div class="question-container"><div id="word-2" class="word" lang="ar">...</div><div id="options-2" class="options" lang="ar"></div></div>
             <div class="status-bar"><div class="flex items-center gap-1 md:gap-2 text-xl md:text-2xl"><span class="text-2xl md:text-3xl">⭐</span><span id="score-2">0</span></div></div>
-        </div>
-        <div id="player-1" class="w-full md:w-1/2 player-screen">
-            <div class="w-full flex justify-center player-icon-wrapper">
-                <div class="flex items-center gap-2 md:gap-3"> <svg class="w-8 h-8 md:w-10 lg:w-12" style="fill: #005f9e;" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.84,8c18.84-32.56,52.14-52,89.08-52s70.24,19.44,89.08,52a8,8,0,1,0,13.84-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"></path></svg><h1 class="text-3xl md:text-4xl lg:text-5xl font-bold" style="color: #005f9e;">٢</h1></div>
-            </div>
-            <div id="top-progress-bar"></div><div id="progress-1"></div>
-            <div class="question-container"><div id="word-1" class="word" lang="ar">...</div><div id="options-1" class="options" lang="ar"></div></div>
-            <div class="status-bar"><div id="p1-timer" class="hidden items-center gap-1 md:gap-2 text-xl md:text-2xl"><span class="text-2xl md:text-3xl">⏱️</span><span id="p1-timer-value"></span></div><div class="flex items-center gap-1 md:gap-2 text-xl md:text-2xl"><span class="text-2xl md:text-3xl">⭐</span><span id="score-1">0</span></div></div>
         </div>
     </div>
 
@@ -246,8 +302,8 @@
             <div id="results-wrapper">
                 <h2 id="winner-text" class="text-2xl md:text-3xl font-bold mb-4"></h2> <div id="results-container">
                     <div class="results-grid">
-                        <div id="result-column-2" class="result-column" style="background-color: #fff3e0;"><h3 class="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-center" lang="ar">الطّالِب ١</h3><div id="player-2-results" class="flex flex-col items-start" lang="ar"></div></div>
-                        <div id="result-column-1" class="result-column" style="background-color: #e3f2fd;"><h3 class="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-center" lang="ar">الطّالِب ٢</h3><div id="player-1-results" class="flex flex-col items-start" lang="ar"></div></div>
+                        <div id="result-column-1" class="result-column" style="background-color: #e3f2fd;"><h3 class="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-center" lang="tr">Oyuncu 2</h3><div id="player-1-results" class="flex flex-col items-start" lang="ar"></div></div>
+                        <div id="result-column-2" class="result-column" style="background-color: #fff3e0;"><h3 class="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-center" lang="tr">Oyuncu 1</h3><div id="player-2-results" class="flex flex-col items-start" lang="ar"></div></div>
                     </div>
                 </div>
             </div>
@@ -256,7 +312,7 @@
 
     <script>
         // Test verileri (Türkçe karakterler düzeltildi)
-        const wordsByLetterWithHarakat = { 'ب': ['بَيْت', 'كِتَاب', 'بَاب', 'جَبَل', 'خُبْز'], 'ت': ['تُفَاح', 'مَكْتَب', 'بِنْت', 'تَمْر', 'مِفْتَاح'], 'ث': ['ثَوْب', 'مُثَلَّث', 'ثَلَاثَة', 'ثَعْلَب', 'أَثَاث'], 'ج': ['جَمَل', 'دَجَاجَة', 'شَجَرَة', 'مَسْجِد', 'ثَلْج'], 'ح': ['حَقِيبَة', 'مِفْتَاح', 'تِمْسَاح', 'مَلِح', 'لَوْح'], 'خ': ['خَرُوف', 'نَخْلَة', 'مَطْبَخ', 'خَوْخ', 'بَطِّيخ'], 'د': ['دِيك', 'مَدْرَسَة', 'يَد', 'جَدِيد', 'أَسَد'], 'ذ': ['ذُرَة', 'أُذُن', 'تِلْمِيذ', 'لَذِيذ', 'ذَهَب'], 'ر': ['رَأْس', 'كُرْسِيّ', 'قَمَر', 'نَهْر', 'أَرْنَب'], 'ز': ['زَرَافَة', 'مِيزَان', 'خُبْز', 'مَوْز', 'جَZَر'], 'س': ['سَمَكَة', 'شَمْس', 'كُرْسِيّ', 'مَدْرَسَة', 'فَرَس'], 'ش': ['شَجَرَة', 'شَمْس', 'عُشّ', 'فَرَاشَة', 'مِشْمِش'], 'ص': ['صُورَة', 'قَمِيص', 'بَصَل', 'مِقَصّ', 'صَقْر'], 'ض': ['ضَابِط', 'مَرِيض', 'أَبْيَض', 'بَيْضَة', 'أَرْض'] };
+        const wordsByLetterWithHarakat = { 'ب': ['بَيْت', 'كِتَاب', 'بَاب', 'جَبَل', 'خُبْز'], 'ت': ['تُفَاح', 'مَكْتَب', 'بِنْت', 'تَمْر', 'مِفْتَاح'], 'ث': ['ثَوْب', 'مُثَلَّث', 'ثَلَاثَة', 'ثَعْلَب', 'أَثَاث'], 'ج': ['جَمَل', 'دَجَاجَة', 'شَجَرَة', 'مَسْجِد', 'ثَلْج'], 'ح': ['حَقِيبَة', 'مِفْتَاح', 'تِمْسَاح', 'مَلِح', 'لَوْح'], 'خ': ['خَرُوف', 'نَخْلَة', 'مَطْبَخ', 'خَوْخ', 'بَطِّيخ'], 'د': ['d_words'], 'ذ': ['ذُرَة', 'أُذُن', 'تِلْمِيذ', 'قُنْfُذ', 'ذَهَب'], 'ر': ['رَأْس', 'كُرْسِيّ', 'قَمَر', 'نَهْر', 'أَرْنَب'], 'ز': ['زَرَافَة', 'مِيزَان', 'خُبْz', 'مَوْز', 'جَزَر'], 'س': ['سَمَكَة', 'شَمْس', 'كُرْسِيّ', 'مَدْرَسَة', 'فَرَس'], 'ش': ['شَجَرَة', 'شَمْس', 'عُشّ', 'فَرَاشَة', 'مِشْمِش'], 'ص': ['صُورَة', 'قَمِيص', 'بَصَل', 'مِقَصّ', 'صَقْر'], 'ض': ['ضَابِط', 'مَرِيض', 'أَبْيَض', 'بَيْضَة', 'أَرْض'] };
         const letterForms = { 'ب': ['بـ', 'ـبـ', 'ـب', 'ب'], 'ت': ['تـ', 'ـتـ', 'ـت', 'ت'], 'ث': ['ثـ', 'ـثـ', 'ـث', 'ث'], 'ج': ['جـ', 'ـجـ', 'ـج', 'ج'], 'ح': ['حـ', 'ـحـ', 'ـح', 'ح'], 'خ': ['خـ', 'ـخـ', 'ـخ', 'خ'], 'د': ['د', 'ـد'], 'ذ': ['ذ', 'ـذ'], 'ر': ['ر', 'ـر'], 'ز': ['ز', 'ـز'], 'س': ['سـ', 'ـسـ', 'ـس', 'س'], 'ش': ['شـ', 'ـشـ', 'ـش', 'ش'], 'ص': ['صـ', 'ـصـ', 'ـص', 'ص'], 'ض': ['ضـ', 'ـضـ', 'ـض', 'ض'], 'ا': ['ا', 'ـا'], 'أ': ['أ', 'ـأ'], 'و': ['و', 'ـو'] };
 
         // DOM Elementleri
@@ -534,9 +590,9 @@
                 document.getElementById('result-column-2').style.display = 'block'; 
                 
                 const p1H3 = document.querySelector('#result-column-1 h3'); 
-                if (p1H3) { p1H3.textContent = 'الطّالِب ٢'; p1H3.lang = 'ar'; p1H3.dir = 'rtl'; } 
+                if (p1H3) { p1H3.textContent = 'Oyuncu 2'; p1H3.lang = 'tr'; p1H3.dir = 'ltr'; } 
                 const p2H3 = document.querySelector('#result-column-2 h3'); 
-                if (p2H3) { p2H3.textContent = 'الطّالِب ١'; p2H3.lang = 'ar'; p2H3.dir = 'rtl'; } 
+                if (p2H3) { p2H3.textContent = 'Oyuncu 1'; p2H3.lang = 'tr'; p2H3.dir = 'ltr'; } 
                 
                 const score2 = state.scores ? state.scores['2'] : 0; 
                 if (score1 > score2) { 
@@ -571,7 +627,7 @@
                     let p1Speed = false; let p2Speed = false; 
                     if (correct1 && correct2) { 
                         if (time1 < time2) p1Speed = true; 
-                        else if (time2 < time1) p2Speed = true; 
+                        else if (time2 < t1) p2Speed = true; 
                     } else if (correct1 && !correct2) { 
                         p1Speed = true; 
                     } else if (!correct1 && correct2) { 
@@ -629,12 +685,41 @@
             if (players['2'].wordEl) players['2'].wordEl.textContent = "..."; 
             document.body.classList.remove('mode-1p'); // Temizle
             document.body.classList.remove('mode-2p'); // Temizle
+            gameMode = null; 
         }
+
+        function returnToDifficultyScreen() {
+            console.log("returnToDifficultyScreen");
+            stopGameTimer();
+            state = {};
+            modal.style.display = 'none';
+            gameWrapper.classList.add('hidden');
+            difficultyScreen.classList.remove('hidden'); // Zorluk ekranını göster
+            rulesScreen.classList.add('hidden'); // Ana menüyü gizle
+            if (players['1'].wordEl) players['1'].wordEl.textContent = "...";
+            document.body.classList.remove('mode-2p'); // 2P modunu temizle
+            document.body.classList.add('mode-1p'); // 1P modu kalsın
+        }
+
 
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', () => {
              console.log("DOM Loaded");
-             if(backBtn) backBtn.onclick = returnToMenu; else console.error("backBtn yok!");
+             
+             if(backBtn) {
+                 backBtn.onclick = () => {
+                     if (!difficultyScreen.classList.contains('hidden')) {
+                         returnToMenu();
+                     }
+                     else if (!gameWrapper.classList.contains('hidden') && gameMode === '1p') {
+                         returnToDifficultyScreen();
+                     }
+                     else {
+                         returnToMenu();
+                     }
+                 };
+             } else { console.error("backBtn yok!"); }
+
 
              if (start1PBtn) {
                  start1PBtn.onclick = () => { 
@@ -666,7 +751,7 @@
     </script>
 
     <script> /* Viewport Height Fix */ (function(){ function setAppHeight(){ document.documentElement.style.setProperty('--appH', window.innerHeight + 'px'); } setAppHeight(); window.addEventListener('resize', setAppHeight, { passive: true }); window.addEventListener('orientationchange', setAppHeight); })(); </script>
-    <script id="mobile-boot-v2"> /* Mobile Boot Optimizations */ (function(){ function setVhUnit(){ const vh = window.visualViewport ? window.visualViewport.height * 0.01 : window.innerHeight * 0.01; document.documentElement.style.setProperty('--vh', `${vh}px`); } setVhUnit(); window.addEventListener('resize', setVhUnit); window.addEventListener('orientationchange', setVhUnit); function primeAudioOnce(){ try{ if (window.AudioContext || window.webkitAudioContext){ if (!window.__audioCtx) { window.__audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } if (window.__audioCtx.state === 'suspended') { window.__audioCtx.resume && window.__audioCtx.resume(); } } }catch(e){} window.removeEventListener('touchstart', primeAudioOnce, {passive:true}); window.removeEventListener('click', primeAudioOnce, {passive:true}); } window.addEventListener('touchstart', primeAudioOnce, {passive:true, once:true}); window.addEventListener('click', primeAudioOnce, {passive:true, once:true}); const modal = document.getElementById('modal'); const rules = document.getElementById('rules-screen'); const difficulty = document.getElementById('difficulty-screen'); [modal, rules, difficulty].forEach(el=>{ if(!el) return; el.style.maxHeight = 'calc(var(--vh, 1vh) * 100)'; el.style.overflowY = 'auto'; }); })(); </script>
+    <script id="mobile-boot-v2"> /* Mobile Boot Optimizations */ (function(){ function setVhUnit(){ const vh = window.visualViewport ? window.visualViewport.height * 0.01 : window.innerHeight * 0.01; document.documentElement.style.setProperty('--vh', `${vh}px`); } setVhUnit(); window.addEventListener('resize', setVhUnit); window.addEventListener('orientationchange', setVhUnit); function primeAudioOnce(){ try{ if (window.AudioContext || window.webkitAudioContext){ if (!window.__audioCtx) { window.__audioCtx = new (window.AudioContext || window.webk-itAudioContext)(); } if (window.__audioCtx.state === 'suspended') { window.__audioCtx.resume && window.__audioCtx.resume(); } } }catch(e){} window.removeEventListener('touchstart', primeAudioOnce, {passive:true}); window.removeEventListener('click', primeAudioOnce, {passive:true}); } window.addEventListener('touchstart', primeAudioOnce, {passive:true, once:true}); window.addEventListener('click', primeAudioOnce, {passive:true, once:true}); const modal = document.getElementById('modal'); const rules = document.getElementById('rules-screen'); const difficulty = document.getElementById('difficulty-screen'); [modal, rules, difficulty].forEach(el=>{ if(!el) return; el.style.maxHeight = 'calc(var(--vh, 1vh) * 100)'; el.style.overflowY = 'auto'; }); })(); </script>
 
 </body>
 </html>
