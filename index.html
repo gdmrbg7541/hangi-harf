@@ -9,48 +9,87 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&display=swap" rel="stylesheet">
-
     <style>
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-family: 'Marhey', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; /* Marhey Font */
             overflow: hidden; padding: 1rem; padding-top: 1rem;
             background-image: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
             background-attachment: fixed; background-size: 200% 200%;
             animation: background-pan 15s ease infinite; overscroll-behavior-y: contain;
         }
         @keyframes background-pan { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        [lang="ar"], .word, .option span { font-family: 'Arakom', 'Harmattan', system-ui, sans-serif; direction: rtl; }
+        
+        /* Arapça Font Önceliği */
+        [lang="ar"], .word, .option span { font-family: 'Arakom', 'Harmattan', system-ui, sans-serif; direction: rtl; } 
+        
         body, button, h1, h2, h3, p, div:not([lang="ar"]) { direction: ltr; }
         #back-btn { 
             position: fixed; top: 1rem; left: 1rem; z-index: 3000; width: 48px; height: 48px; 
             background-color: rgba(255, 255, 255, 0.4); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); 
-            border-radius: 50%; display: flex; /* HER ZAMAN GÖRÜNÜR */
+            border-radius: 50%; display: flex; 
             align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease-in-out; 
             border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
         }
         #back-btn svg { width: 24px; height: 24px; }
-        #top-progress-bar { display: none; width: 100%; max-width: 800px; margin: 0 auto 1rem auto; grid-template-columns: repeat(10, 1fr); gap: 4px; padding: 0 0.5rem; }
+        #top-progress-bar { 
+            display: none; 
+            width: 100%; 
+            max-width: 800px; 
+            margin: 0 auto 1rem auto; 
+            grid-template-columns: repeat(10, 1fr); 
+            gap: 4px; 
+            padding: 0 0.5rem; 
+            flex-shrink: 0; 
+        }
         .progress-word { height: 8px; background-color: rgba(255, 255, 255, 0.4); border-radius: 4px; transition: background-color 0.3s ease; }
         .progress-word.correct { background-color: #28a745; } .progress-word.incorrect { background-color: #dc3545; }
-        .player-screen { display: flex; flex-direction: column; justify-content: space-between; padding: 1.5rem; border-radius: 1.5rem; position: relative; overflow: hidden; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2); }
+        .player-screen { 
+            display: flex; 
+            flex-direction: column; 
+            padding: 1.5rem; 
+            border-radius: 1.5rem; 
+            position: relative; 
+            overflow: hidden; 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2); 
+        }
         #player-1 { background-color: rgba(227, 242, 253, 0.5); } #player-2 { background-color: rgba(255, 243, 224, 0.5); }
-        body.mode-1p #player-2 { display: none; } body.mode-1p #player-1 { width: 100%; max-width: 800px; margin: 0 auto; } body.mode-1p #game-wrapper { justify-content: center; } body.mode-1p #player-1 .player-icon-wrapper { display: none; } body.mode-1p #top-progress-bar { display: grid; order: -1; } body.mode-1p #player-1 #progress-1 { display: none; } body.mode-1p #player-2 #progress-2 { display: none; } body.mode-1p .player-screen { 
-            /* height: calc(100vh - 1rem); */ /* Bu satırı silin veya yorum yapın */
-            min-height: calc(100vh - 1rem); /* Minimum yüksekliği koruyalım */
-            overflow-y: auto; /* Gerekirse player-screen'in kendisi kaysın */
-            justify-content: space-between; /* İçeriği ittirmek yerine aralıklı dağıt */
-        } body.mode-1p #player-1 .status-bar { justify-content: flex-end; } body.mode-1p #p1-timer { display: flex; margin-right: auto; } #modal.mode-1p #result-column-2 { display: none; } #modal.mode-1p .results-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
-        body.mode-2p #player-1, body.mode-2p #player-2 { width: 50%; } #modal.mode-2p .results-grid { grid-template-columns: 1fr; } /* Varsayılan 1 sütun */ body.mode-2p #top-progress-bar { display: none; } body.mode-2p #progress-1, body.mode-2p #progress-2 { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; width: 100%; max-width: 300px; margin: 0.5rem auto 1rem auto; order: -1; } body.mode-2p .progress-word { height: 8px; border-radius: 4px; } body.mode-2p .player-screen { height: calc(100vh - 2rem); } body.mode-2p .status-bar { justify-content: flex-end; }
+        body.mode-1p #player-2 { display: none; } body.mode-1p #player-1 { width: 100%; max-width: 800px; margin: 0 auto; } body.mode-1p #game-wrapper { justify-content: center; } body.mode-1p #player-1 .player-icon-wrapper { display: none; } body.mode-1p #top-progress-bar { display: grid; order: -1; } body.mode-1p #player-1 #progress-1 { display: none; } body.mode-1p #player-2 #progress-2 { display: none; } 
+        body.mode-1p #player-1 .status-bar { justify-content: flex-end; } body.mode-1p #p1-timer { display: flex; margin-right: auto; } #modal.mode-1p #result-column-2 { display: none; } #modal.mode-1p .results-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
+        body.mode-2p #player-1, body.mode-2p #player-2 { width: 50%; } #modal.mode-2p .results-grid { grid-template-columns: 1fr; } /* Varsayılan 1 sütun */ body.mode-2p #top-progress-bar { display: none; } body.mode-2p #progress-1, body.mode-2p #progress-2 { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; width: 100%; max-width: 300px; margin: 0.5rem auto 1rem auto; order: -1; flex-shrink: 0; } body.mode-2p .progress-word { height: 8px; border-radius: 4px; } 
+        body.mode-2p .status-bar { justify-content: flex-end; }
         
-        /* DÜZELTME BURADA */
-        .question-container { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 1rem; order: 0; overflow-y: auto; }
-
+        .question-container { 
+            flex-grow: 1; /* Kalan alanı doldur */
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; /* Dikey ortalama */
+            align-items: center; /* Yatay ortalama */
+            gap: 1rem; 
+            order: 0; 
+            overflow-y: auto; /* Taşarsa kaydır */
+            /* Padding kaldırıldı */
+        }
         .word { font-size: clamp(3rem, 10vw, 5rem); color: #1f2937; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); font-weight: 700; }
         .options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; width: 100%; max-width: 400px; }
         .option { background-color: #ffffff; border: 1px solid rgba(0, 0, 0, 0.05); color: #1f2937; border-radius: 1rem; padding: 1rem; text-align: center; font-size: clamp(2rem, 8vw, 3rem); cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); } .option:hover { background-color: #f8f9fa; transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.12); } .option:active { transform: scale(0.98); transition-duration: 0.1s; } .option.correct { background-color: #d4edda; border-color: #28a745; } .option.incorrect { background-color: #f8d7da; border-color: #dc3545; } .option.disabled { pointer-events: none; opacity: 0.7; } .option span { color: #111827; font-weight: 700; }
-        .status-bar { display: flex; align-items: center; width: 100%; padding: 0.75rem 1rem; background: rgba(255, 255, 255, 0.25); border-top: 1px solid rgba(255, 255, 255, 0.2); border-radius: 1rem; font-size: 1.25rem; position: relative; }
+        .status-bar { 
+            display: flex; 
+            align-items: center; 
+            width: 100%; 
+            padding: 0.75rem 1rem; 
+            background: rgba(255, 255, 255, 0.25); 
+            border-top: 1px solid rgba(255, 255, 255, 0.2); 
+            border-radius: 1rem; 
+            font-size: 1.25rem; 
+            position: relative; 
+            flex-shrink: 0; 
+            margin-top: auto; 
+        }
         #modal { position: fixed; inset: 0; z-index: 1000; overflow-y: auto; padding: 1rem; display: none; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); } .modal-content { background-color: white; padding: 2rem; border-radius: 1.5rem; text-align: center; width: 95%; max-width: 800px; position: relative; margin: auto; max-height: 90vh; overflow-y: auto; } .results-grid { display: grid; gap: 1rem; margin-top: 1.5rem; } .result-column { padding: 1rem; border-radius: 1rem; position: relative; overflow: hidden; } 
-        .result-item { font-size: 1.75rem; /* Büyütüldü */ font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem; }
+        .result-item { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem; }
         .intro-screen { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; padding: 1rem; overflow-y: auto; } .info-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 1.5rem; padding: 2rem; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2); }
         .difficulty-btn { padding: 0.8rem 2rem; font-size: 1.5rem; color: white; border-radius: 0.75rem; transition: all 0.2s; width: 100%; max-width: 384px; } .difficulty-btn.easy { background-color: #22c55e; } .difficulty-btn.easy:hover { background-color: #16a34a; } .difficulty-btn.medium { background-color: #f97316; } .difficulty-btn.medium:hover { background-color: #ea580c; } .difficulty-btn.hard { background-color: #ef4444; } .difficulty-btn.hard:hover { background-color: #dc2626; }
         .modal-secondary-btn { font-size: 1.25rem; font-weight: 600; padding: 0.75rem 1.5rem; background-color: #f3f4f6; color: #1f2937; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); transition: all 0.2s ease; } .modal-secondary-btn:hover { background-color: #e5e7eb; }
@@ -74,17 +113,11 @@
             #game-wrapper{ flex-direction: column; gap: 0.5rem; } 
             .player-screen{ padding: 1rem; width: 100% !important; max-width: 100% !important; } 
             body.mode-2p .player-screen { height: calc(50vh - 1.5rem); } 
-            
-            /* MOBİL 1P YÜKSEKLİK KURALI DÜZELTİLDİ */
-            body.mode-1p .player-screen { 
-                height: calc(100vh - 1rem); 
-                /* Bu kural hala 100vh'ye zorluyor, ancak içerdeki 
-                   .question-container { overflow-y: auto; } 
-                   kuralı sayesinde artık içerik taşarsa puan çubuğu kaybolmayacak. 
-                */
+            body.mode-1p .player-screen { height: calc(100vh - 1rem); } 
+            .question-container { 
+                gap: 0.75rem; 
+                /* Padding kaldırıldı */
             } 
-            
-            .question-container { gap: 0.75rem; } 
             .word { font-size: clamp(2.5rem, 8vw, 4rem); } 
             .options { gap: 0.75rem; } 
             .option { padding: 0.75rem; font-size: clamp(1.8rem, 7vw, 2.5rem); min-height: 52px;} 
@@ -99,12 +132,16 @@
             .modal-secondary-btn { font-size: 1.1rem; width: 100%; max-width: 250px; } 
             h1 { font-size: 2.5rem !important; } 
             h2 { font-size: 1.8rem !important; } 
-            h3 { font-size: 1.5rem !important; } 
+            h3:not([lang="ar"]) { font-size: 1.5rem !important; } /* Arapça olmayan H3'ler */
             p { font-size: 1.1rem !important; } 
         }
-        .player-icon-wrapper h1 { direction: ltr; } .result-column h3 { font-family: system-ui, sans-serif; } .result-item span:first-child { direction: rtl; } .result-item span:nth-child(2) { direction: rtl; }
+        .player-icon-wrapper h1 { direction: ltr; } 
+        .result-column h3 { font-family: 'Marhey', system-ui, sans-serif; } /* Marhey Font */
+        .result-item span:first-child { direction: rtl; } 
+        .result-item span:nth-child(2) { direction: rtl; }
     </style>
 </head>
+
 <body class="mode-2p">
 
     <div id="back-btn">
@@ -114,16 +151,16 @@
     <div id="rules-screen" class="intro-screen">
         <div class="w-full max-w-xl mx-auto px-4 text-center">
             <div class="info-card">
-                <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-gray-800 mb-4" style="text-shadow: 0 2px 10px rgba(0,0,0,0.1);">Doğru Harfi Seç</h1>
-                <p class="text-xl md:text-2xl lg:text-3xl text-gray-600 mt-4 mb-8 md:mb-12">Oyun Modunu Seçin</p>
+                <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-gray-800 mb-4" style="text-shadow: 0 2px 10px rgba(0,0,0,0.1);">Doğru Harfi Seç</h1> 
+                <p class="text-xl md:text-2xl lg:text-3xl text-gray-600 mt-4 mb-8 md:mb-12">Oyun Modunu Seçin</p> 
                 <div class="flex flex-col gap-4 md:gap-6 items-center">
                     <button id="start-1p-btn" class="group flex items-center justify-center gap-3 w-full max-w-sm px-6 py-4 bg-white/80 backdrop-blur-sm border border-white/50 rounded-xl shadow-lg transition-all duration-300 hover:bg-white hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500/70">
                         <svg class="w-8 h-8 text-blue-800 transition-transform duration-300 group-hover:scale-110" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4a5 5 0 0 0-5 5a5 5 0 0 0 5 5a5 5 0 0 0 5-5a5 5 0 0 0-5-5M8 16c-1.6 0-3.08.38-4.32.97A7.32 7.32 0 0 0 12 21.5a7.32 7.32 0 0 0 8.32-4.53A13.06 13.06 0 0 0 16 16Z"></path></svg>
-                        <span class="text-left"><span class="text-2xl md:text-3xl block font-semibold text-blue-900">1 Kişilik</span><span class="text-base md:text-lg block font-normal text-blue-800/80">Zamana Karşı Yarış</span></span>
+                        <span class="text-left"><span class="text-2xl md:text-3xl block font-semibold text-blue-900">1 Kişilik</span><span class="text-base md:text-lg block font-normal text-blue-800/80">Zamana Karşı Yarış</span></span> 
                     </button>
                     <button id="start-2p-btn" class="group flex items-center justify-center gap-3 w-full max-w-sm px-6 py-4 bg-blue-700 rounded-xl shadow-lg transition-all duration-300 hover:bg-blue-800 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-400">
                         <svg class="w-8 h-8 text-white transition-transform duration-300 group-hover:scale-110" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M16 13a3 3 0 0 0-3-3a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3m5.61.16A13.06 13.06 0 0 0 20 16c-1.6 0-3.08.38-4.32.97A7.32 7.32 0 0 0 12 21.5a7.32 7.32 0 0 0 8.32-4.53A13.06 13.06 0 0 0 16 16c.64 0 1.25.07 1.84.16M12 4a5 5 0 0 0-5 5a5 5 0 0 0 5 5a5 5 0 0 0 5-5a5 5 0 0 0-5-5M8 16c-1.6 0-3.08.38-4.32.97A7.32 7.32 0 0 0 12 21.5a7.32 7.32 0 0 0 8.32-4.53A13.06 13.06 0 0 0 16 16c-1.6 0-3.08.38-4.32.97A7.32 7.32 0 0 0 4 16.97A13.06 13.06 0 0 0 2.39 13.16C2.14 13.41 2 13.7 2 14v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4c0-.3-.14-.59-.39-.84Z"></path></svg>
-                        <span class="text-left"><span class="text-2xl md:text-3xl block font-semibold text-white">2 Kişilik</span><span class="text-base md:text-lg block font-normal text-blue-100/90">Arkadaşınla Yarış</span></span>
+                        <span class="text-left"><span class="text-2xl md:text-3xl block font-semibold text-white">2 Kişilik</span><span class="text-base md:text-lg block font-normal text-blue-100/90">Arkadaşınla Yarış</span></span> 
                     </button>
                 </div>
             </div>
@@ -133,12 +170,12 @@
     <div id="difficulty-screen" class="intro-screen hidden">
         <div class="w-full max-w-xl mx-auto px-4 text-center">
             <div class="info-card">
-                <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-gray-800 mb-4">Zorluk Seçin</h1>
-                <p class="text-xl md:text-2xl lg:text-3xl text-gray-600 mt-4 mb-8 md:mb-12">20 Kelimeyi Tamamla</p>
+                <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-gray-800 mb-4">Zorluk Seçin</h1> 
+                <p class="text-xl md:text-2xl lg:text-3xl text-gray-600 mt-4 mb-8 md:mb-12">20 Kelimeyi Tamamla</p> 
                 <div class="flex flex-col gap-4 md:gap-6 items-center">
-                    <button id="easy-btn" class="difficulty-btn easy"><span class="text-2xl md:text-3xl block">Kolay</span></button>
-                    <button id="medium-btn" class="difficulty-btn medium"><span class="text-2xl md:text-3xl block">Orta</span></button>
-                    <button id="hard-btn" class="difficulty-btn hard"><span class="text-2xl md:text-3xl block">Zor</span></button>
+                    <button id="easy-btn" class="difficulty-btn easy"><span class="text-2xl md:text-3xl block">Kolay</span></button> 
+                    <button id="medium-btn" class="difficulty-btn medium"><span class="text-2xl md:text-3xl block">Orta</span></button> 
+                    <button id="hard-btn" class="difficulty-btn hard"><span class="text-2xl md:text-3xl block">Zor</span></button> 
                 </div>
             </div>
         </div>
@@ -180,6 +217,7 @@
     </div>
 
     <script>
+        // ... (JavaScript kodu öncekiyle aynı, metinler Türkçe) ...
         // Test verileri (Türkçe karakterler düzeltildi)
         const wordsByLetterWithHarakat = { 'ب': ['بَيْت', 'كِتَاب', 'بَاب', 'جَبَل', 'خُبْز'], 'ت': ['تُفَاح', 'مَكْتَب', 'بِنْت', 'تَمْر', 'مِفْتَاح'], 'ث': ['ثَوْب', 'مُثَلَّث', 'ثَلَاثَة', 'ثَعْلَب', 'أَثَاث'], 'ج': ['جَمَل', 'دَجَاجَة', 'شَجَرَة', 'مَسْjِد', 'ثَلْج'], 'ح': ['حَقِيبَة', 'مِفْتَاح', 'تِمْسَاح', 'مَلِح', 'لَوْح'], 'خ': ['خَرُوف', 'نَخْلَة', 'مَطْبَخ', 'خَوْخ', 'بَطِّيخ'], 'د': ['d_words'], 'ذ': ['ذُرَة', 'أُذُن', 'تِلْمِيذ', 'قُنْfُذ', 'ذَهَب'], 'ر': ['رَأْس', 'كُرْسِيّ', 'قَمَر', 'نَهْر', 'أَرْنَب'], 'ز': ['زَرَافَة', 'مِيزَان', 'خُبْز', 'مَوْز', 'جَزَر'], 'س': ['سَمَكَة', 'شَمْس', 'كُرْسِيّ', 'مَدْرَسَة', 'فَرَس'], 'ش': ['شَجَرَة', 'شَمْس', 'عُشّ', 'فَرَاشَة', 'مِشْمِش'], 'ص': ['صُورَة', 'قَمِيص', 'بَصَل', 'مِقَصّ', 'صَقْر'], 'ض': ['ضَابِط', 'مَرِيض', 'أَبْيَض', 'بَيْضَة', 'أَرْض'] };
         const letterForms = { 'ب': ['بـ', 'ـبـ', 'ـب', 'ب'], 'ت': ['تـ', 'ـتـ', 'ـت', 'ت'], 'ث': ['ثـ', 'ـثـ', 'ـث', 'ث'], 'ج': ['جـ', 'ـجـ', 'ـج', 'ج'], 'ح': ['حـ', 'ـحـ', 'ـح', 'ح'], 'خ': ['خـ', 'ـخـ', 'ـخ', 'خ'], 'د': ['د', 'ـد'], 'ذ': ['ذ', 'ـذ'], 'ر': ['ر', 'ـر'], 'ز': ['ز', 'ـز'], 'س': ['سـ', 'ـسـ', 'ـس', 'س'], 'ش': ['شـ', 'ـشـ', 'ـش', 'ش'], 'ص': ['صـ', 'ـصـ', 'ـص', 'ص'], 'ض': ['ضـ', 'ـضـ', 'ـض', 'ض'], 'ا': ['ا', 'ـا'], 'أ': ['أ', 'ـأ'], 'و': ['و', 'ـو'] };
@@ -193,8 +231,8 @@
 
         // --- Yardımcı Fonksiyonlar ---
         function initAudio() { /* ... */ }
-        function playCorrectSound() { console.log("Ses: Doğru"); }
-        function playIncorrectSound() { console.log("Ses: Yanlış"); }
+        function playCorrectSound() { console.log("Ses: Doğru"); } 
+        function playIncorrectSound() { console.log("Ses: Yanlış"); } 
 
         function showScorePopup(player, points) { if (points <= 0) return; const playerScreen = players[player].el; if (!playerScreen) return; const popup = document.createElement('div'); popup.className = 'score-popup'; popup.textContent = `+${points}`; playerScreen.appendChild(popup); setTimeout(() => { if (popup.parentNode === playerScreen) { playerScreen.removeChild(popup); } }, 1150); }
         function triggerConfetti(winnerPlayer) { /* ... */ }
@@ -243,7 +281,7 @@
 
                 // Süre biterse oyunu bitir
                 if (totalTimeLeft <= 0) {
-                    console.log("Oyun Süresi Doldu!");
+                    console.log("Oyun Süresi Doldu!"); 
                     stopGameTimer();
                     playIncorrectSound();
                     endRound('timeup'); // Oyunu "süre bitti" sebebiyle bitir
@@ -322,7 +360,7 @@
             if (isCorrect) { 
                 playCorrectSound(); 
                 playerScreen.classList.add('flash-correct'); 
-                animateLetterFly(player, clickedEl); // <-- 1P ve 2P için animasyon
+                animateLetterFly(player, clickedEl); 
                 if(players[player].wordEl) { 
                     setTimeout(() => { if(players[player].wordEl) players[player].wordEl.textContent = currentQuestion.word; }, 500); 
                 } 
@@ -340,7 +378,7 @@
                 let p1Points = 0; 
                 if (isCorrect) { 
                     p1Points = 5; 
-                    showScorePopup('1', p1Points); // <-- 1P için puan animasyonu
+                    showScorePopup('1', p1Points); 
                 } 
                 state.scores['1'] += p1Points; 
                 players['1'].scoreEl.textContent = state.scores['1']; 
@@ -391,7 +429,6 @@
                 }); 
             } 
             if (gameMode === '1p') {
-                // Sayaç setupNewGame'de başladı. Sadece rengi kontrol et.
                 if (p1TimerValueEl) {
                     p1TimerValueEl.style.color = (totalTimeLeft <= 10) ? '#dc3545' : '';
                 }
@@ -416,13 +453,17 @@
                 const correctCount = p1Answers.filter(a => a.correct).length;
                 
                 if (reason === 'timeup') {
-                    winnerText.textContent = `Süre Bitti! Skor: ${score1}`;
+                    winnerText.textContent = `Süre Bitti! Skor: ${score1}`; 
                 } else {
-                    winnerText.textContent = `Tebrikler! Skor: ${score1}`;
+                    winnerText.textContent = `Tebrikler! Skor: ${score1}`; 
                 }
 
                 const p1H3 = document.querySelector('#result-column-1 h3'); 
-                if (p1H3) { p1H3.textContent = 'Sonuçların'; p1H3.lang = 'tr'; p1H3.dir = 'ltr'; } 
+                if (p1H3) { 
+                    p1H3.textContent = 'Sonuçların'; 
+                    p1H3.lang = 'tr'; 
+                    p1H3.dir = 'ltr'; 
+                } 
                 const scoreDiv1 = document.createElement('div'); 
                 scoreDiv1.className = 'flex items-center justify-center gap-2 text-3xl mb-2 w-full'; 
                 scoreDiv1.innerHTML = `<span class="text-4xl">⭐</span><span>${score1}</span>`; 
@@ -470,6 +511,7 @@
                 } else { 
                     winnerText.textContent = 'Berabere!'; 
                 } 
+
                 const p2Answers = (state.answers && state.answers['2']) ? state.answers['2'] : []; 
                 const scoreDiv1 = document.createElement('div'); 
                 scoreDiv1.className = 'flex items-center justify-center gap-2 text-3xl mb-4 w-full'; 
@@ -521,16 +563,16 @@
         function start1PGame(difficulty) { 
             console.log("start1PGame:", difficulty); 
             let timerDuration = 0; 
-            if (difficulty === 'easy') { timerDuration = 6; }       // 20 * 6 = 120 saniye (02:00)
-            else if (difficulty === 'medium') { timerDuration = 4.5; } // 20 * 4.5 = 90 saniye (01:30)
-            else if (difficulty === 'hard') { timerDuration = 3; }    // 20 * 3 = 60 saniye (01:00)
+            if (difficulty === 'easy') { timerDuration = 6; }       
+            else if (difficulty === 'medium') { timerDuration = 4.5; } 
+            else if (difficulty === 'hard') { timerDuration = 3; }    
             
             gameSettings = { words: 20, difficulty: difficulty, timerDuration: timerDuration }; 
             document.body.classList.add('mode-1p'); 
             document.body.classList.remove('mode-2p'); 
             difficultyScreen.classList.add('hidden'); 
             gameWrapper.classList.remove('hidden'); 
-            setupNewGame(); // 1P Geri sayım kaldırıldı, oyun doğrudan başlıyor
+            setupNewGame(); 
         }
 
         function returnToMenu() { 
@@ -555,10 +597,8 @@
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', () => {
              console.log("DOM Loaded");
-             // Geri dönme butonu
              if(backBtn) backBtn.onclick = returnToMenu; else console.error("backBtn yok!");
 
-             // Mod seçme butonları
              if (start1PBtn) {
                  start1PBtn.onclick = () => { console.log("1P clicked"); gameMode = '1p'; rulesScreen.classList.add('hidden'); difficultyScreen.classList.remove('hidden'); };
              } else { console.error("start1PBtn yok!"); }
@@ -571,11 +611,10 @@
                      document.body.classList.add('mode-2p'); 
                      rulesScreen.classList.add('hidden'); 
                      gameWrapper.classList.remove('hidden'); 
-                     startIntroCountdown(setupNewGame); // 2P Geri sayım hala aktif
+                     startIntroCountdown(setupNewGame); 
                 };
              } else { console.error("start2PBtn yok!"); }
 
-             // Zorluk butonları
              if (easyBtn) easyBtn.onclick = () => start1PGame('easy'); else console.error("easyBtn yok!");
              if (mediumBtn) mediumBtn.onclick = () => start1PGame('medium'); else console.error("mediumBtn yok!");
              if (hardBtn) hardBtn.onclick = () => start1PGame('hard'); else console.error("hardBtn yok!");
