@@ -12,12 +12,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300..700&display=swap" rel="stylesheet"> 
 
     <style>
+        html, body {
+            height: 100%;
+            overflow: hidden; /* Body'nin kaymasını genel olarak engelle */
+        }
         body {
             font-family: 'Marhey', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; /* Marhey Font */
-            overflow: hidden; padding: 1rem; padding-top: 1rem;
+            padding: 1rem; padding-top: 1rem;
             background-image: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
             background-attachment: fixed; background-size: 200% 200%;
-            animation: background-pan 15s ease infinite; overscroll-behavior-y: contain;
+            animation: background-pan 15s ease infinite; 
+            overscroll-behavior-y: contain;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
         }
         @keyframes background-pan { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
@@ -33,6 +42,16 @@
             border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
         }
         #back-btn svg { width: 24px; height: 24px; }
+        
+        #game-wrapper {
+            width: 100%;
+            max-width: 1200px; /* Geniş ekranlar için maksimum genişlik */
+            max-height: 95vh; /* viewport'un %95'i gibi bir sınır */
+            /* display: flex; */
+            flex-direction: row; /* Masaüstü varsayılan */
+            gap: 1rem; /* player-screen'ler arası boşluk */
+        }
+
         #top-progress-bar { 
             display: none; 
             width: 100%; 
@@ -56,6 +75,10 @@
             -webkit-backdrop-filter: blur(12px); 
             border: 1px solid rgba(255, 255, 255, 0.2); 
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2); 
+            flex-grow: 1; 
+            flex-basis: 0; 
+            min-height: 0; 
+            justify-content: space-between; 
         }
         #player-1 { background-color: rgba(227, 242, 253, 0.5); } #player-2 { background-color: rgba(255, 243, 224, 0.5); }
         body.mode-1p #player-2 { display: none; } body.mode-1p #player-1 { width: 100%; max-width: 800px; margin: 0 auto; } body.mode-1p #game-wrapper { justify-content: center; } body.mode-1p #player-1 .player-icon-wrapper { display: none; } body.mode-1p #top-progress-bar { display: grid; order: -1; } body.mode-1p #player-1 #progress-1 { display: none; } body.mode-1p #player-2 #progress-2 { display: none; } 
@@ -67,17 +90,17 @@
             flex-grow: 1; 
             display: flex; 
             flex-direction: column; 
-            justify-content: center; 
+            justify-content: center; /* Dikey Ortalama */
             align-items: center; 
             gap: 1rem; 
             order: 0; 
-            overflow-y: auto; 
-            min-height: 0; /* <<< EKLENDİ */
-            padding-bottom: 1rem; /* <<< Alt boşluk EKLENDİ */
+            overflow-y: auto; /* İçerik Kaydırma */
+            min-height: 0; 
+            padding-bottom: 1rem; /* Alt boşluk */
         }
-        .word { font-size: clamp(2.5rem, 10vw, 5rem); /* Minimum küçültüldü */ color: #1f2937; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); font-weight: 700; }
+        .word { font-size: clamp(2.5rem, 10vw, 5rem); color: #1f2937; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); font-weight: 700; }
         .options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; width: 100%; max-width: 400px; }
-        .option { background-color: #ffffff; border: 1px solid rgba(0, 0, 0, 0.05); color: #1f2937; border-radius: 1rem; padding: 1rem; text-align: center; font-size: clamp(1.8rem, 8vw, 3rem); /* Minimum küçültüldü */ cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); } .option:hover { background-color: #f8f9fa; transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.12); } .option:active { transform: scale(0.98); transition-duration: 0.1s; } .option.correct { background-color: #d4edda; border-color: #28a745; } .option.incorrect { background-color: #f8d7da; border-color: #dc3545; } .option.disabled { pointer-events: none; opacity: 0.7; } .option span { color: #111827; font-weight: 700; }
+        .option { background-color: #ffffff; border: 1px solid rgba(0, 0, 0, 0.05); color: #1f2937; border-radius: 1rem; padding: 1rem; text-align: center; font-size: clamp(1.8rem, 8vw, 3rem); cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); } .option:hover { background-color: #f8f9fa; transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.12); } .option:active { transform: scale(0.98); transition-duration: 0.1s; } .option.correct { background-color: #d4edda; border-color: #28a745; } .option.incorrect { background-color: #f8d7da; border-color: #dc3545; } .option.disabled { pointer-events: none; opacity: 0.7; } .option span { color: #111827; font-weight: 700; }
         .status-bar { 
             display: flex; 
             align-items: center; 
@@ -89,7 +112,7 @@
             font-size: 1.25rem; 
             position: relative; 
             flex-shrink: 0; 
-            margin-top: auto; 
+            /* margin-top: auto; */ /* Kaldırıldı */
         }
         #modal { position: fixed; inset: 0; z-index: 1000; overflow-y: auto; padding: 1rem; display: none; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); } .modal-content { background-color: white; padding: 2rem; border-radius: 1.5rem; text-align: center; width: 95%; max-width: 800px; position: relative; margin: auto; max-height: 90vh; overflow-y: auto; } .results-grid { display: grid; gap: 1rem; margin-top: 1.5rem; } .result-column { padding: 1rem; border-radius: 1rem; position: relative; overflow: hidden; } 
         .result-item { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem; }
@@ -108,46 +131,59 @@
         }
 
         @media (max-width: 900px) { 
-            body { padding: 0.5rem; padding-top: 0.5rem; } 
+             body { 
+                padding: 1rem 0.5rem; /* <<< Dikey padding eklendi (Üst/Alt 1rem) */
+                justify-content: center; /* Dikeyde ortala */
+            } 
+            
             #back-btn { top: 0.5rem; left: 0.5rem; width: 40px; height: 40px; } 
             #back-btn svg { width: 20px; height: 20px; } 
-            #top-progress-bar { margin-bottom: 0.5rem; padding: 0 0.25rem; gap: 2px; } /* Azaltıldı */
-            .progress-word { height: 5px; border-radius: 2.5px; } /* Azaltıldı */
-            #game-wrapper{ flex-direction: column; gap: 0.25rem; } /* Azaltıldı */
-            .player-screen{ padding: 0.75rem; /* Azaltıldı */ width: 100% !important; max-width: 100% !important; } 
-            body.mode-2p .player-screen { height: calc(50vh - 1.25rem); } /* Ayarlandı */
-            body.mode-1p .player-screen { height: calc(100vh - 1rem); } 
-            .question-container { 
-                gap: 0.5rem; /* Azaltıldı */
-                padding-bottom: 0.5rem; /* <<< Mobil Alt boşluk EKLENDİ */
+            #game-wrapper{ 
+                flex-direction: column; 
+                gap: 0.5rem; 
+                max-height: 90vh; /* Mobil dikey yüksek_lik sınırı */
             } 
-            .word { font-size: clamp(2rem, 8vw, 3.5rem); } /* Mobil için ayarlandı */
-            .options { gap: 0.5rem; } /* Azaltıldı */
-            .option { padding: 0.5rem; /* Azaltıldı */ font-size: clamp(1.5rem, 7vw, 2.2rem); min-height: 48px;} /* Mobil için ayarlandı */
-            .status-bar { padding: 0.4rem 0.6rem; /* Azaltıldı */ font-size: 0.9rem; } /* Azaltıldı */
-            body.mode-2p #progress-1, body.mode-2p #progress-2 { gap: 2px; max-width: 150px; margin: 0.4rem auto 0.6rem auto; } /* Ayarlandı */
-            body.mode-2p .progress-word { height: 4px; border-radius: 2px; } /* Azaltıldı */
-            .modal-content{ padding: 1rem; width: 95%; max-height: 85vh; } /* Azaltıldı */
-            .results-grid { margin-top: 0.75rem; } /* Azaltıldı */
-            .result-column { padding: 0.5rem; } /* Azaltıldı */
-            .result-item { font-size: 1.2rem; /* Azaltıldı */ gap: 0.4rem; } /* Azaltıldı */
-            #modal-buttons { flex-direction: column; align-items: center; margin-top: 1rem; } /* Ayarlandı */
-            .modal-secondary-btn { font-size: 1rem; width: 100%; max-width: 200px; padding: 0.6rem 1rem; } /* Azaltıldı */
-            h1 { font-size: 2rem !important; } /* Azaltıldı */
-            h2 { font-size: 1.5rem !important; } /* Azaltıldı */
-            h3:not([lang="ar"]) { font-size: 1.2rem !important; } /* Azaltıldı */
-            p { font-size: 1rem !important; } /* Azaltıldı */
+            .player-screen{ 
+                padding: 0.75rem; 
+                width: 100% !important; 
+                max-width: 100% !important; 
+                flex-grow: 1; /* Alanı doldur */
+                min-height: 0; /* Küçülmeye izin ver */
+            } 
+            body.mode-2p .player-screen { 
+                 flex-basis: 0; /* Eşit böl */
+            } 
+                
+            /* ... diğer mobil küçültme kuralları ... */
+            .question-container { gap: 0.5rem; padding-bottom: 0.5rem; } 
+            .word { font-size: clamp(2rem, 8vw, 3.5rem); } 
+            .options { gap: 0.5rem; } 
+            .option { padding: 0.5rem; font-size: clamp(1.5rem, 7vw, 2.2rem); min-height: 48px;} 
+            .status-bar { padding: 0.4rem 0.6rem; font-size: 0.9rem; } 
+            body.mode-2p #progress-1, body.mode-2p #progress-2 { gap: 2px; max-width: 150px; margin: 0.4rem auto 0.6rem auto; } 
+            body.mode-2p .progress-word { height: 4px; border-radius: 2px; } 
+            #top-progress-bar { margin-bottom: 0.5rem; padding: 0 0.25rem; gap: 2px; } 
+            .progress-word { height: 5px; border-radius: 2.5px; } 
+            .modal-content{ padding: 1rem; width: 95%; max-height: 85vh; } 
+            .results-grid { margin-top: 0.75rem; } 
+            .result-column { padding: 0.5rem; } 
+            .result-item { font-size: 1.2rem; gap: 0.4rem; } 
+            #modal-buttons { flex-direction: column; align-items: center; margin-top: 1rem; } 
+            .modal-secondary-btn { font-size: 1rem; width: 100%; max-width: 200px; padding: 0.6rem 1rem; } 
+            h1 { font-size: 2rem !important; } 
+            h2 { font-size: 1.5rem !important; } 
+            h3:not([lang="ar"]) { font-size: 1.2rem !important; } 
+            p { font-size: 1rem !important; } 
         }
-        .player-icon-wrapper h1 { direction: ltr; } 
+        /* ... diğer kurallar ... */
+         .player-icon-wrapper h1 { direction: ltr; } 
         .result-column h3 { font-family: 'Marhey', system-ui, sans-serif; } /* Marhey Font */
         .result-item span:first-child { direction: rtl; } 
         .result-item span:nth-child(2) { direction: rtl; }
     </style>
 </head>
 
-<body class="mode-2p">
-
-    <div id="back-btn">
+<body> <div id="back-btn">
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
     </div>
 
@@ -186,8 +222,7 @@
 
     <div id="countdown-overlay" class="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 hidden"><span id="countdown-number"></span></div>
 
-    <div id="game-wrapper" class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 rtl:space-x-reverse hidden">
-        <div id="player-2" class="w-full md:w-1/2 player-screen">
+    <div id="game-wrapper" class="hidden flex"> <div id="player-2" class="w-full md:w-1/2 player-screen">
             <div class="w-full flex justify-center player-icon-wrapper">
                 <div class="flex items-center gap-2 md:gap-3"> <svg class="w-8 h-8 md:w-10 lg:w-12" style="fill: #c57d00;" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.84,8c18.84-32.56,52.14-52,89.08-52s70.24,19.44,89.08,52a8,8,0,1,0,13.84-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"></path></svg><h1 class="text-3xl md:text-4xl lg:text-5xl font-bold" style="color: #c57d00;">١</h1></div>
             </div>
@@ -220,9 +255,8 @@
     </div>
 
     <script>
-        // ... (JavaScript kodu öncekiyle aynı, metinler Türkçe) ...
-         // Test verileri (Türkçe karakterler düzeltildi)
-        const wordsByLetterWithHarakat = { 'ب': ['بَيْت', 'كِتَاب', 'بَاب', 'جَبَل', 'خُبْز'], 'ت': ['تُفَاح', 'مَكْتَب', 'بِنْت', 'تَمْر', 'مِفْتَاح'], 'ث': ['ثَوْب', 'مُثَلَّث', 'ثَلَاثَة', 'ثَعْلَب', 'أَثَاث'], 'ج': ['جَمَل', 'دَجَاجَة', 'شَجَرَة', 'مَسْjِد', 'ثَلْج'], 'ح': ['حَقِيبَة', 'مِفْتَاح', 'تِمْسَاح', 'مَلِح', 'لَوْح'], 'خ': ['خَرُوف', 'نَخْلَة', 'مَطْبَخ', 'خَوْخ', 'بَطِّيخ'], 'د': ['d_words'], 'ذ': ['ذُرَة', 'أُذُن', 'تِلْمِيذ', 'قُنْfُذ', 'ذَهَب'], 'ر': ['رَأْس', 'كُرْسِيّ', 'قَمَر', 'نَهْر', 'أَرْنَب'], 'ز': ['زَرَافَة', 'مِيزَان', 'خُبْز', 'مَوْز', 'جَزَر'], 'س': ['سَمَكَة', 'شَمْس', 'كُرْسِيّ', 'مَدْرَسَة', 'فَرَس'], 'ش': ['شَجَرَة', 'شَمْس', 'عُشّ', 'فَرَاشَة', 'مِشْمِش'], 'ص': ['صُورَة', 'قَمِيص', 'بَصَل', 'مِقَصّ', 'صَقْر'], 'ض': ['ضَابِط', 'مَرِيض', 'أَبْيَض', 'بَيْضَة', 'أَرْض'] };
+        // Test verileri (Türkçe karakterler düzeltildi)
+        const wordsByLetterWithHarakat = { 'ب': ['بَيْت', 'كِتَاب', 'بَاب', 'جَبَل', 'خُبْز'], 'ت': ['تُفَاح', 'مَكْتَب', 'بِنْت', 'تَمْر', 'مِفْتَاح'], 'ث': ['ثَوْب', 'مُثَلَّث', 'ثَلَاثَة', 'ثَعْلَب', 'أَثَاث'], 'ج': ['جَمَل', 'دَجَاجَة', 'شَجَرَة', 'مَسْجِد', 'ثَلْج'], 'ح': ['حَقِيبَة', 'مِفْتَاح', 'تِمْسَاح', 'مَلِح', 'لَوْح'], 'خ': ['خَرُوف', 'نَخْلَة', 'مَطْبَخ', 'خَوْخ', 'بَطِّيخ'], 'د': ['دِيك', 'مَدْرَسَة', 'يَد', 'جَدِيد', 'أَسَد'], 'ذ': ['ذُرَة', 'أُذُن', 'تِلْمِيذ', 'لَذِيذ', 'ذَهَب'], 'ر': ['رَأْس', 'كُرْسِيّ', 'قَمَر', 'نَهْر', 'أَرْنَب'], 'ز': ['زَرَافَة', 'مِيزَان', 'خُبْز', 'مَوْز', 'جَZَر'], 'س': ['سَمَكَة', 'شَمْس', 'كُرْسِيّ', 'مَدْرَسَة', 'فَرَس'], 'ش': ['شَجَرَة', 'شَمْس', 'عُشّ', 'فَرَاشَة', 'مِشْمِش'], 'ص': ['صُورَة', 'قَمِيص', 'بَصَل', 'مِقَصّ', 'صَقْر'], 'ض': ['ضَابِط', 'مَرِيض', 'أَبْيَض', 'بَيْضَة', 'أَرْض'] };
         const letterForms = { 'ب': ['بـ', 'ـبـ', 'ـب', 'ب'], 'ت': ['تـ', 'ـتـ', 'ـت', 'ت'], 'ث': ['ثـ', 'ـثـ', 'ـث', 'ث'], 'ج': ['جـ', 'ـجـ', 'ـج', 'ج'], 'ح': ['حـ', 'ـحـ', 'ـح', 'ح'], 'خ': ['خـ', 'ـخـ', 'ـخ', 'خ'], 'د': ['د', 'ـد'], 'ذ': ['ذ', 'ـذ'], 'ر': ['ر', 'ـر'], 'ز': ['ز', 'ـز'], 'س': ['سـ', 'ـسـ', 'ـس', 'س'], 'ش': ['شـ', 'ـشـ', 'ـش', 'ش'], 'ص': ['صـ', 'ـصـ', 'ـص', 'ص'], 'ض': ['ضـ', 'ـضـ', 'ـض', 'ض'], 'ا': ['ا', 'ـا'], 'أ': ['أ', 'ـأ'], 'و': ['و', 'ـو'] };
 
         // DOM Elementleri
@@ -230,7 +264,7 @@
         const modal = document.getElementById('modal'); const winnerText = document.getElementById('winner-text'); const gameWrapper = document.getElementById('game-wrapper'); const rulesScreen = document.getElementById('rules-screen'); const start1PBtn = document.getElementById('start-1p-btn'); const start2PBtn = document.getElementById('start-2p-btn'); const countdownOverlay = document.getElementById('countdown-overlay'); const countdownNumber = document.getElementById('countdown-number'); const resultsWrapper = document.getElementById('results-wrapper'); const backBtn = document.getElementById('back-btn'); const difficultyScreen = document.getElementById('difficulty-screen'); const easyBtn = document.getElementById('easy-btn'); const mediumBtn = document.getElementById('medium-btn'); const hardBtn = document.getElementById('hard-btn'); const topProgressBar = document.getElementById('top-progress-bar'); const p1TimerEl = document.getElementById('p1-timer'); const p1TimerValueEl = document.getElementById('p1-timer-value');
 
         // Oyun Değişkenleri
-        let audioCtx; let gameMode = '2p'; let gameSettings = { words: 10, difficulty: null, timerDuration: 0 }; let state = {}; let introCountdownInterval = null; let gameTimerInterval = null; let totalTimeLeft = 0;
+        let audioCtx; let gameMode = null; /* <<< Başlangıçta null */ let gameSettings = { words: 10, difficulty: null, timerDuration: 0 }; let state = {}; let introCountdownInterval = null; let gameTimerInterval = null; let totalTimeLeft = 0;
 
         // --- Yardımcı Fonksiyonlar ---
         function initAudio() { /* ... */ }
@@ -571,8 +605,8 @@
             else if (difficulty === 'hard') { timerDuration = 3; }    
             
             gameSettings = { words: 20, difficulty: difficulty, timerDuration: timerDuration }; 
-            document.body.classList.add('mode-1p'); 
-            document.body.classList.remove('mode-2p'); 
+            document.body.classList.remove('mode-2p'); // Önce temizle
+            document.body.classList.add('mode-1p'); // Sonra ekle
             difficultyScreen.classList.add('hidden'); 
             gameWrapper.classList.remove('hidden'); 
             setupNewGame(); 
@@ -593,8 +627,8 @@
             rulesScreen.classList.remove('hidden'); 
             if (players['1'].wordEl) players['1'].wordEl.textContent = "..."; 
             if (players['2'].wordEl) players['2'].wordEl.textContent = "..."; 
-            document.body.classList.remove('mode-1p'); 
-            document.body.classList.add('mode-2p'); 
+            document.body.classList.remove('mode-1p'); // Temizle
+            document.body.classList.remove('mode-2p'); // Temizle
         }
 
         // --- Event Listeners ---
@@ -603,15 +637,22 @@
              if(backBtn) backBtn.onclick = returnToMenu; else console.error("backBtn yok!");
 
              if (start1PBtn) {
-                 start1PBtn.onclick = () => { console.log("1P clicked"); gameMode = '1p'; rulesScreen.classList.add('hidden'); difficultyScreen.classList.remove('hidden'); };
+                 start1PBtn.onclick = () => { 
+                     console.log("1P clicked"); 
+                     gameMode = '1p'; 
+                     document.body.classList.remove('mode-2p'); // Temizle
+                     document.body.classList.add('mode-1p'); // Ekle
+                     rulesScreen.classList.add('hidden'); 
+                     difficultyScreen.classList.remove('hidden'); 
+                 };
              } else { console.error("start1PBtn yok!"); }
              if (start2PBtn) {
                  start2PBtn.onclick = () => { 
                      console.log("2P clicked"); 
                      gameMode = '2p'; 
                      gameSettings = { words: 10, difficulty: null, timerDuration: 0 }; 
-                     document.body.classList.remove('mode-1p'); 
-                     document.body.classList.add('mode-2p'); 
+                     document.body.classList.remove('mode-1p'); // Temizle
+                     document.body.classList.add('mode-2p'); // Ekle
                      rulesScreen.classList.add('hidden'); 
                      gameWrapper.classList.remove('hidden'); 
                      startIntroCountdown(setupNewGame); 
