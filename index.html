@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300..700&display=swap" rel="stylesheet"> 
+
     <style>
         body {
             font-family: 'Marhey', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; /* Marhey Font */
@@ -62,19 +64,20 @@
         body.mode-2p .status-bar { justify-content: flex-end; }
         
         .question-container { 
-            flex-grow: 1; /* Kalan alanı doldur */
+            flex-grow: 1; 
             display: flex; 
             flex-direction: column; 
-            justify-content: center; /* Dikey ortalama */
-            align-items: center; /* Yatay ortalama */
+            justify-content: center; 
+            align-items: center; 
             gap: 1rem; 
             order: 0; 
-            overflow-y: auto; /* Taşarsa kaydır */
-            /* Padding kaldırıldı */
+            overflow-y: auto; 
+            min-height: 0; /* <<< EKLENDİ */
+            padding-bottom: 1rem; /* <<< Alt boşluk EKLENDİ */
         }
-        .word { font-size: clamp(3rem, 10vw, 5rem); color: #1f2937; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); font-weight: 700; }
+        .word { font-size: clamp(2.5rem, 10vw, 5rem); /* Minimum küçültüldü */ color: #1f2937; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); font-weight: 700; }
         .options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; width: 100%; max-width: 400px; }
-        .option { background-color: #ffffff; border: 1px solid rgba(0, 0, 0, 0.05); color: #1f2937; border-radius: 1rem; padding: 1rem; text-align: center; font-size: clamp(2rem, 8vw, 3rem); cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); } .option:hover { background-color: #f8f9fa; transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.12); } .option:active { transform: scale(0.98); transition-duration: 0.1s; } .option.correct { background-color: #d4edda; border-color: #28a745; } .option.incorrect { background-color: #f8d7da; border-color: #dc3545; } .option.disabled { pointer-events: none; opacity: 0.7; } .option span { color: #111827; font-weight: 700; }
+        .option { background-color: #ffffff; border: 1px solid rgba(0, 0, 0, 0.05); color: #1f2937; border-radius: 1rem; padding: 1rem; text-align: center; font-size: clamp(1.8rem, 8vw, 3rem); /* Minimum küçültüldü */ cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); } .option:hover { background-color: #f8f9fa; transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.12); } .option:active { transform: scale(0.98); transition-duration: 0.1s; } .option.correct { background-color: #d4edda; border-color: #28a745; } .option.incorrect { background-color: #f8d7da; border-color: #dc3545; } .option.disabled { pointer-events: none; opacity: 0.7; } .option span { color: #111827; font-weight: 700; }
         .status-bar { 
             display: flex; 
             align-items: center; 
@@ -108,32 +111,32 @@
             body { padding: 0.5rem; padding-top: 0.5rem; } 
             #back-btn { top: 0.5rem; left: 0.5rem; width: 40px; height: 40px; } 
             #back-btn svg { width: 20px; height: 20px; } 
-            #top-progress-bar { margin-bottom: 0.5rem; padding: 0 0.5rem; gap: 3px; } 
-            .progress-word { height: 6px; border-radius: 3px; } 
-            #game-wrapper{ flex-direction: column; gap: 0.5rem; } 
-            .player-screen{ padding: 1rem; width: 100% !important; max-width: 100% !important; } 
-            body.mode-2p .player-screen { height: calc(50vh - 1.5rem); } 
+            #top-progress-bar { margin-bottom: 0.5rem; padding: 0 0.25rem; gap: 2px; } /* Azaltıldı */
+            .progress-word { height: 5px; border-radius: 2.5px; } /* Azaltıldı */
+            #game-wrapper{ flex-direction: column; gap: 0.25rem; } /* Azaltıldı */
+            .player-screen{ padding: 0.75rem; /* Azaltıldı */ width: 100% !important; max-width: 100% !important; } 
+            body.mode-2p .player-screen { height: calc(50vh - 1.25rem); } /* Ayarlandı */
             body.mode-1p .player-screen { height: calc(100vh - 1rem); } 
             .question-container { 
-                gap: 0.75rem; 
-                /* Padding kaldırıldı */
+                gap: 0.5rem; /* Azaltıldı */
+                padding-bottom: 0.5rem; /* <<< Mobil Alt boşluk EKLENDİ */
             } 
-            .word { font-size: clamp(2.5rem, 8vw, 4rem); } 
-            .options { gap: 0.75rem; } 
-            .option { padding: 0.75rem; font-size: clamp(1.8rem, 7vw, 2.5rem); min-height: 52px;} 
-            .status-bar { padding: 0.5rem 0.75rem; font-size: 1rem; } 
-            body.mode-2p #progress-1, body.mode-2p #progress-2 { gap: 2px; max-width: 150px; margin: 0.5rem auto 0.75rem auto; } 
-            body.mode-2p .progress-word { height: 5px; border-radius: 2.5px; } 
-            .modal-content{ padding: 1.5rem; width: 95%; max-height: 85vh; } 
-            .results-grid { margin-top: 1rem; } 
-            .result-column { padding: 0.75rem; } 
-            .result-item { font-size: 1.4rem; /* Büyütüldü (Mobil) */ gap: 0.5rem; } 
-            #modal-buttons { flex-direction: column; align-items: center; } 
-            .modal-secondary-btn { font-size: 1.1rem; width: 100%; max-width: 250px; } 
-            h1 { font-size: 2.5rem !important; } 
-            h2 { font-size: 1.8rem !important; } 
-            h3:not([lang="ar"]) { font-size: 1.5rem !important; } /* Arapça olmayan H3'ler */
-            p { font-size: 1.1rem !important; } 
+            .word { font-size: clamp(2rem, 8vw, 3.5rem); } /* Mobil için ayarlandı */
+            .options { gap: 0.5rem; } /* Azaltıldı */
+            .option { padding: 0.5rem; /* Azaltıldı */ font-size: clamp(1.5rem, 7vw, 2.2rem); min-height: 48px;} /* Mobil için ayarlandı */
+            .status-bar { padding: 0.4rem 0.6rem; /* Azaltıldı */ font-size: 0.9rem; } /* Azaltıldı */
+            body.mode-2p #progress-1, body.mode-2p #progress-2 { gap: 2px; max-width: 150px; margin: 0.4rem auto 0.6rem auto; } /* Ayarlandı */
+            body.mode-2p .progress-word { height: 4px; border-radius: 2px; } /* Azaltıldı */
+            .modal-content{ padding: 1rem; width: 95%; max-height: 85vh; } /* Azaltıldı */
+            .results-grid { margin-top: 0.75rem; } /* Azaltıldı */
+            .result-column { padding: 0.5rem; } /* Azaltıldı */
+            .result-item { font-size: 1.2rem; /* Azaltıldı */ gap: 0.4rem; } /* Azaltıldı */
+            #modal-buttons { flex-direction: column; align-items: center; margin-top: 1rem; } /* Ayarlandı */
+            .modal-secondary-btn { font-size: 1rem; width: 100%; max-width: 200px; padding: 0.6rem 1rem; } /* Azaltıldı */
+            h1 { font-size: 2rem !important; } /* Azaltıldı */
+            h2 { font-size: 1.5rem !important; } /* Azaltıldı */
+            h3:not([lang="ar"]) { font-size: 1.2rem !important; } /* Azaltıldı */
+            p { font-size: 1rem !important; } /* Azaltıldı */
         }
         .player-icon-wrapper h1 { direction: ltr; } 
         .result-column h3 { font-family: 'Marhey', system-ui, sans-serif; } /* Marhey Font */
@@ -218,7 +221,7 @@
 
     <script>
         // ... (JavaScript kodu öncekiyle aynı, metinler Türkçe) ...
-        // Test verileri (Türkçe karakterler düzeltildi)
+         // Test verileri (Türkçe karakterler düzeltildi)
         const wordsByLetterWithHarakat = { 'ب': ['بَيْت', 'كِتَاب', 'بَاب', 'جَبَل', 'خُبْز'], 'ت': ['تُفَاح', 'مَكْتَب', 'بِنْت', 'تَمْر', 'مِفْتَاح'], 'ث': ['ثَوْب', 'مُثَلَّث', 'ثَلَاثَة', 'ثَعْلَب', 'أَثَاث'], 'ج': ['جَمَل', 'دَجَاجَة', 'شَجَرَة', 'مَسْjِد', 'ثَلْج'], 'ح': ['حَقِيبَة', 'مِفْتَاح', 'تِمْسَاح', 'مَلِح', 'لَوْح'], 'خ': ['خَرُوف', 'نَخْلَة', 'مَطْبَخ', 'خَوْخ', 'بَطِّيخ'], 'د': ['d_words'], 'ذ': ['ذُرَة', 'أُذُن', 'تِلْمِيذ', 'قُنْfُذ', 'ذَهَب'], 'ر': ['رَأْس', 'كُرْسِيّ', 'قَمَر', 'نَهْر', 'أَرْنَب'], 'ز': ['زَرَافَة', 'مِيزَان', 'خُبْز', 'مَوْز', 'جَزَر'], 'س': ['سَمَكَة', 'شَمْس', 'كُرْسِيّ', 'مَدْرَسَة', 'فَرَس'], 'ش': ['شَجَرَة', 'شَمْس', 'عُشّ', 'فَرَاشَة', 'مِشْمِش'], 'ص': ['صُورَة', 'قَمِيص', 'بَصَل', 'مِقَصّ', 'صَقْر'], 'ض': ['ضَابِط', 'مَرِيض', 'أَبْيَض', 'بَيْضَة', 'أَرْض'] };
         const letterForms = { 'ب': ['بـ', 'ـبـ', 'ـب', 'ب'], 'ت': ['تـ', 'ـتـ', 'ـت', 'ت'], 'ث': ['ثـ', 'ـثـ', 'ـث', 'ث'], 'ج': ['جـ', 'ـجـ', 'ـج', 'ج'], 'ح': ['حـ', 'ـحـ', 'ـح', 'ح'], 'خ': ['خـ', 'ـخـ', 'ـخ', 'خ'], 'د': ['د', 'ـد'], 'ذ': ['ذ', 'ـذ'], 'ر': ['ر', 'ـر'], 'ز': ['ز', 'ـز'], 'س': ['سـ', 'ـسـ', 'ـس', 'س'], 'ش': ['شـ', 'ـشـ', 'ـش', 'ش'], 'ص': ['صـ', 'ـصـ', 'ـص', 'ص'], 'ض': ['ضـ', 'ـضـ', 'ـض', 'ض'], 'ا': ['ا', 'ـا'], 'أ': ['أ', 'ـأ'], 'و': ['و', 'ـو'] };
 
