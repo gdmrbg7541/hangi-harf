@@ -469,6 +469,88 @@ img, video, canvas, svg{ max-width: 100%; height: auto; }
 .option:active{ transform: scale(0.985); }
 </style>
 
+
+<style>
+/* === Vertical Compact Mode (esnek yükseklik) === */
+:root{
+  --vpad: clamp(8px, 2vh, 16px);
+  --vgap: clamp(8px, 2.2vh, 18px);
+}
+
+/* Genel boşlukları dikeye duyarlı hale getir */
+body{
+  padding-top: calc(var(--headerH, 88px) + var(--vpad));
+}
+#game-wrapper{
+  gap: min(var(--vgap), 24px);
+}
+
+/* Panel içi boşluk ve köşe */
+.player-screen,
+.preview-player-screen{
+  padding: clamp(10px, 2.2vh, 22px);
+  border-radius: clamp(10px, 1.8vh, 20px);
+}
+
+/* Metin ve seçenekler dikeye göre ölçeklensin */
+.word{
+  /* Büyük ekranlarda büyük, kısa ekranlarda hızlı küçülür */
+  font-size: clamp(1.8rem, 8vh, 5rem);
+  line-height: 1.1;
+}
+.question-container{ gap: min(var(--vgap), 24px); }
+
+.options{
+  gap: min(var(--vgap), 20px);
+  /* yatay sığmıyorsa otomatik kır */
+  grid-auto-rows: minmax(44px, auto);
+}
+.option{
+  padding-block: clamp(8px, 1.6vh, 16px);
+  padding-inline: clamp(10px, 2vw, 18px);
+  min-height: clamp(44px, 6vh, 64px);
+  line-height: 1.15;
+  font-size: clamp(1.1rem, 4.8vh, 2rem);
+}
+
+/* Durum çubuğu daha sıkı */
+.status-bar{
+  gap: clamp(6px, 1.2vh, 12px);
+  padding: clamp(8px, 1.4vh, 14px) clamp(10px, 2vw, 18px);
+  font-size: clamp(0.9rem, 2.4vh, 1.2rem);
+}
+.progress-dot{
+  height: clamp(4px, 0.8vh, 8px);
+}
+
+/* Geri sayım metni kısa dikeyde küçülsün */
+#countdown-overlay{ font-size: clamp(2.4rem, 16vh, 10rem); }
+
+/* Çok kısa ekranlar: agresif sıkıştırma */
+@media (max-height: 700px){
+  :root{ --headerH: 64px; }
+  .site-header{ height: var(--headerH); }
+  body{ padding-top: calc(var(--headerH) + var(--vpad)); }
+
+  .word{ font-size: clamp(1.6rem, 7vh, 3.6rem); }
+  .option{ min-height: clamp(40px, 6.2vh, 56px); }
+  .status-bar{ font-size: clamp(0.85rem, 2.2vh, 1.05rem); }
+  .modal-content{
+    max-height: 80vh;
+    padding: clamp(12px, 2.6vh, 20px);
+  }
+}
+
+/* Ultra kısa ekranlar: 600px ve altı */
+@media (max-height: 600px){
+  :root{ --headerH: 56px; }
+  .site-header{ height: var(--headerH); }
+  .word{ font-size: clamp(1.4rem, 6.5vh, 3rem); }
+  .option{ min-height: clamp(38px, 6vh, 52px); }
+  #countdown-overlay{ font-size: clamp(2rem, 14vh, 8rem); }
+}
+</style>
+
 </head>
 <body>
 
