@@ -47,7 +47,7 @@
             width: 100%;
             max-width: 1200px; /* Geniş ekranlar için maksimum genişlik */
             max-height: 95vh; /* viewport'un %95'i gibi bir sınır */
-            /* display: flex; */
+            /* display: flex; */ /* HTML'e taşındı */
             flex-direction: row; /* Masaüstü varsayılan */
             gap: 1rem; /* player-screen'ler arası boşluk */
         }
@@ -84,9 +84,9 @@
         #player-1 { background-color: rgba(227, 242, 253, 0.5); } #player-2 { background-color: rgba(255, 243, 224, 0.5); }
         body.mode-1p #player-2 { display: none; } body.mode-1p #player-1 { width: 100%; max-width: 800px; margin: 0 auto; } body.mode-1p #game-wrapper { justify-content: center; } body.mode-1p #player-1 .player-icon-wrapper { display: none; } body.mode-1p #top-progress-bar { display: grid; order: -1; } body.mode-1p #player-1 #progress-1 { display: none; } body.mode-1p #player-2 #progress-2 { display: none; }
 
-        body.mode-1p #player-1 .status-bar { justify-content: flex-end; }
-        body.mode-1p #p1-timer { display: flex; } /* 'hidden' kalkınca flex olsun */
-        body.mode-1p #p1-score-wrapper { margin-right: auto; } /* Puanı sola it */
+        body.mode-1p #player-1 .status-bar { justify-content: space-between; } /* Puan ve Zamanı iki uca yasla */
+        body.mode-1p #p1-timer { display: flex; }
+        body.mode-1p #p1-score-wrapper { /* margin-right: auto; kaldırıldı */ }
 
         #modal.mode-1p #result-column-2 { display: none; } #modal.mode-1p .results-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
         body.mode-2p #player-1, body.mode-2p #player-2 { width: 50%; } #modal.mode-2p .results-grid { grid-template-columns: 1fr; } /* Varsayılan 1 sütun */ body.mode-2p #top-progress-bar { display: none; }
@@ -157,6 +157,40 @@
         .score-popup { position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); font-size: 2.5rem; font-weight: bold; color: #ffc107; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); animation: score-anim 1.2s ease-out forwards; pointer-events: none; z-index: 20; } @keyframes score-anim { 0% { opacity: 1; transform: translate(-50%, 0) scale(0.8); } 50% { transform: translate(-50%, -40px) scale(1.1); } 100% { opacity: 0; transform: translate(-50%, -80px) scale(0.9); } }
         .confetti { position: absolute; width: 10px; height: 10px; background-color: red; opacity: 0; animation: fall 4s linear infinite; } @keyframes fall { 0% { transform: translateY(-100vh) rotateZ(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotateZ(720deg); opacity: 0; } }
 
+        /* YATAY MOD ZORLAMA STİLLERİ */
+        #rotate-device-overlay {
+            position: fixed; inset: 0; z-index: 5000;
+            background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            color: white; display: none; /* Varsayılan olarak gizli */
+            flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 2rem;
+        }
+        #rotate-device-overlay svg {
+            width: 80px; height: 80px; margin-bottom: 1.5rem;
+            animation: rotate-anim 2s linear infinite;
+        }
+        @keyframes rotate-anim { 0% { transform: rotate(0deg); } 50% { transform: rotate(-90deg); } 100% { transform: rotate(-90deg); } }
+
+        /* Dikey Mod (Portrait) Algılandığında */
+        @media (orientation: portrait) {
+            #rotate-device-overlay {
+                display: flex; /* Uyarıyı göster */
+            }
+            /* Oyun içeriğini gizle */
+            .intro-screen, #game-wrapper, #modal, #back-btn, #countdown-overlay {
+                display: none !important; /* display:flex vs. durumlar için !important gerekebilir */
+            }
+        }
+        /* Yatay Mod (Landscape) Algılandığında (Ekstra kontrol) */
+         @media (orientation: landscape) {
+             #rotate-device-overlay {
+                 display: none; /* Uyarıyı gizle */
+             }
+             /* Oyun içeriğinin görünür olduğundan emin ol (JS ile gizlenmediyse) */
+             /* #rules-screen, #difficulty-screen, #game-wrapper vb. normalde zaten görünür olmalı */
+         }
+
+
         @media (min-width: 768px) {
             /* Tablet ve üstü için 2 sütunlu sonuç */
             #modal.mode-2p .results-grid { grid-template-columns: 1fr 1fr; }
@@ -188,26 +222,16 @@
                  flex-basis: 0; /* Eşit böl */
             }
 
-            .player-icon-wrapper h1 {
-                font-size: 2em; /* Mobil için biraz daha küçük */
-            }
-            .player-icon-wrapper svg {
-                font-size: 2em; /* Mobil için biraz daha küçük */
-            }
+            .player-icon-wrapper h1 { font-size: 2em; }
+            .player-icon-wrapper svg { font-size: 2em; }
 
-            /* Dikey boşluklar azaltıldı */
             .question-container { gap: 0.3rem; padding-bottom: 0.3rem; }
-            /* Minimum font boyutu azaltıldı */
             .word { font-size: clamp(1.8rem, 8vw, 3.5rem); }
             .options { gap: 0.5rem; }
-            /* Padding, min font boyutu ve min yükseklik azaltıldı */
             .option { padding: 0.4rem; font-size: clamp(1.4rem, 7vw, 2.2rem); min-height: 44px;}
-            /* Dikey padding azaltıldı */
             .status-bar { padding: 0.3rem 0.6rem; font-size: 0.9rem; }
-            /* Dikey margin azaltıldı */
             body.mode-2p #progress-1, body.mode-2p #progress-2 { gap: 2px; max-width: 150px; margin: 0.3rem auto 0.5rem auto; }
             body.mode-2p .progress-word { height: 4px; border-radius: 2px; }
-            /* Alt margin azaltıldı */
             #top-progress-bar { margin-bottom: 0.4rem; padding: 0 0.25rem; gap: 2px; }
             .progress-word { height: 5px; border-radius: 2.5px; }
             .modal-content{ padding: 1rem; width: 95%; max-height: 85vh; }
@@ -222,7 +246,7 @@
             p { font-size: 1rem !important; }
         }
         /* ... diğer kurallar ... */
-        .result-column h3 { font-family: 'Marhey', system-ui, sans-serif; } /* Marhey Font */
+        .result-column h3 { font-family: 'Marhey', system-ui, sans-serif; }
         .result-item span:first-child { direction: rtl; }
         .result-item span:nth-child(2) { direction: rtl; }
     </style>
@@ -232,6 +256,14 @@
     <div id="back-btn">
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
     </div>
+
+    <div id="rotate-device-overlay">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+            <path d="M16.89,15.5l-4.18-4.18V4a1,1,0,0,0-2,0v7.31l-4.18,4.18a1,1,0,0,0,0,1.42,1,1,0,0,0,1.41,0L12,13.41l3.48,3.52a1,1,0,0,0,1.41,0A1,1,0,0,0,16.89,15.5Zm3.94-1.85a1,1,0,0,0-1.28.62l-.2,1A7.006,7.006,0,0,1,5.63,13.4l-.2-1A1,1,0,0,0,4.15,11.8l-1,.2a1,1,0,0,0-.62,1.28l.2,1A9.008,9.008,0,0,0,11,20.91V22H9a1,1,0,0,0,0,2h6a1,1,0,0,0,0-2H13V20.91a9.008,9.008,0,0,0,8.23-6.63l.2-1a1,1,0,0,0-.62-1.28Z"/>
+        </svg>
+        <p class="text-xl md:text-2xl font-semibold">Lütfen cihazınızı yatay konuma çevirin.</p>
+    </div>
+
 
     <div id="rules-screen" class="intro-screen">
         <div class="w-full max-w-xl mx-auto px-4 text-center">
@@ -317,7 +349,7 @@
     </div>
 
     <script>
-        // KELİME LİSTESİ GÜNCELLENDİ (HAREKESİZ & HATALAR DÜZELTİLDİ)
+        // KELİME LİSTESİ DÜZELTİLDİ VE GÜNCELLENDİ
         const wordsByLetterWithHarakat = {
              'ب': ['باب', 'خبز', 'كتاب', 'طبيب', 'بيت', 'مكتب', 'سبورة', 'حقيبة', 'شباك', 'ثلاجة', 'مصباح', 'يكتب', 'يطبخ', 'أعمال البيت', 'يلبس الملابس', 'يتناول الفطور', 'يكتب الواجب', 'واجب', 'مبكرا', 'يحب', 'البيت السعيد', 'أب', 'أبناء', 'طيب', 'مبتسم', 'غضوب', 'أحب', 'مباريات', 'يجب أن', 'سبب النجاح', 'يتجنب المرض', 'جسم قوي', 'جبن', 'بيض', 'بطيخ', 'بصل', 'بيضة', 'أبيض'],
              'ت': ['اكتب', 'اكتبي', 'تحت', 'مكتب', 'دفتر', 'مسطرة', 'بيت', 'مطبخ', 'مرحاض', 'ستارة', 'متى', 'يتناول الفطور', 'يكتب الواجب', 'الكتاب', 'أتغدى', 'أكتب', 'أخت', 'احترام', 'طاعة', 'البيت السعيد', 'يتحدثون', 'يتعاونون', 'مستقبل', 'متواضع', 'كتابة', 'مكتبة', 'الوقت الفارغ', 'ممتع', 'وقتي', 'استراحة', 'يكتب', 'متأخرا', 'تخطيط', 'وقت', 'مستقبل', 'عادة', 'تطوير النفس', 'أسنان', 'متوازن', 'تمساح', 'تفاح', 'بنت', 'تمر', 'مفتاح', 'ثلاثة', 'أثاث', 'تلميذ'],
@@ -333,9 +365,9 @@
              'ش': ['شباك', 'شجرة', 'شمس', 'عش', 'فراشة', 'مشمش', 'شكر', 'يشكر', 'يشاهد التلفاز', 'أشاهد التلفاز', 'شخصية', 'نشيط', 'مشاهدة', 'يشاهد', 'يشرب الماء', 'الحياة النشيطة', 'المشروبات الغازية', 'العشاء', 'تشرفت', 'شخصية'],
              'ص': ['صباح الخير', 'صباح النور', 'صديق', 'صورة', 'قميص', 'بصل', 'مقصف', 'صقر', 'يصلي', 'أصلي', 'صلاة الظهر', 'صبر', 'يصبر', 'الصغار', 'الصغار', 'شخصية', 'صبور', 'تصوير', 'يصور', 'في الصباح', 'يصبر', 'الحياة الصحية', 'صحة', 'عادات صحية', 'الطعام الصحي', 'العصير', 'النصيحة', 'الصحة', 'الصلاة'],
              'ض': ['مريض', 'أبيض', 'بيضة', 'أرض', 'غضوب', 'أفضل', 'رياضة', 'يضيع الوقت', 'مرض', 'يتجنب المرض', 'أيضا', 'بعض', 'ضابط'],
-             'ا': ['السلام عليكم', 'انا', 'اهلا وسهلا', 'بابا', 'حالك', 'طاولة', 'هاتف', 'ثلاجة', 'دائما', 'نادرا', 'احيانا', 'ماذا', 'اقرا', 'اكتبي', 'اذهب', 'الله', 'اللقاء', 'امان', 'الى', 'أنا'], // 'أنا' eklendi
+             'ا': ['السلام عليكم', 'انا', 'اهلا وسهلا', 'بابا', 'حالك', 'طاولة', 'هاتف', 'ثلاجة', 'دائما', 'نادرا', 'احيانا', 'ماذا', 'اقرا', 'اكتبي', 'اذهب', 'الله', 'اللقاء', 'امان', 'الى', 'أنا'],
              'و': ['هو', 'وعليكم السلام', 'فوق', 'دولاب', 'وقت', 'يوم', 'اسبوع', 'طاولة', 'ضوء', 'وردة', 'ولد', 'واجب', 'واحد', 'وجه', 'وسخ', 'الوقت', 'نوم', 'صورة', 'خوخ', 'موز', 'عفوا', 'الواجب'],
-             'أ': ['أنا', 'أهلا وسهلا', 'أهلا بك', 'أنا بخير', 'أمان', 'اقرأ', 'اقرئي', 'أعد', 'أعيدي', 'أنت', 'أنا', 'أين', 'أنا من', 'أنا أيضا', 'أين', 'أمام', 'أعمال البيت', 'أحيانا', 'أستيقظ', 'أتغدى', 'أقرأ', 'أكتب', 'ألعب', 'أشاهد التلفاز', 'أساعد', 'أزور جدي', 'أذهب إلى المسجد', 'أرتب سريري', 'أنظف غرفتي', 'أراجع دروسي', 'أنام متأخرا', 'أمانة', 'أحد', 'أب', 'أم', 'أخ', 'أخت', 'أقارب', 'أبناء', 'أهل', 'أكتشف نفسي', 'أنا', 'أحب', 'أكره', 'أفضل', 'أحلامي', 'أهدافي', 'أريد أن أكون', 'أفلام', 'أستمتع بـ', 'أحيانا', 'أسبوع', 'أعمال', 'أجل', 'أسنان', 'أكل متوازن', 'أسد', 'أذن', 'أرض', 'أبيض'] // Kelimeler eklendi
+             'أ': ['أنا', 'أهلا وسهلا', 'أهلا بك', 'أنا بخير', 'أمان', 'اقرأ', 'اقرئي', 'أعد', 'أعيدي', 'أنت', 'أنا', 'أين', 'أنا من', 'أنا أيضا', 'أين', 'أمام', 'أعمال البيت', 'أحيانا', 'أستيقظ', 'أتغدى', 'أقرأ', 'أكتب', 'ألعب', 'أشاهد التلفاز', 'أساعد', 'أزور جدي', 'أذهب إلى المسجد', 'أرتب سريري', 'أنظف غرفتي', 'أراجع دروسي', 'أنام متأخرا', 'أمانة', 'أحد', 'أب', 'أم', 'أخ', 'أخت', 'أقارب', 'أبناء', 'أهل', 'أكتشف نفسي', 'أنا', 'أحب', 'أكره', 'أفضل', 'أحلامي', 'أهدافي', 'أريد أن أكون', 'أفلام', 'أستمتع بـ', 'أحيانا', 'أسبوع', 'أعمال', 'أجل', 'أسنان', 'أكل متوازن', 'أسد', 'أذن', 'أرض', 'أبيض']
          };
 
         const letterForms = {
@@ -363,14 +395,14 @@
 
         function animateLetterFly(player, optionEl) { if (!optionEl || !optionEl.firstElementChild) return; const playerScreen = players[player].el; if (!playerScreen) return; const letterSpan = optionEl.firstElementChild; const letter = letterSpan.textContent; const rect = optionEl.getBoundingClientRect(); const playerRect = playerScreen.getBoundingClientRect(); const flyingChar = document.createElement('span'); flyingChar.className = 'flying-char'; flyingChar.textContent = letter; flyingChar.lang = 'ar'; const startX = rect.left + rect.width / 2 - playerRect.left; const startY = rect.top + rect.height / 2 - playerRect.top; flyingChar.style.left = `${startX}px`; flyingChar.style.top = `${startY}px`; playerScreen.appendChild(flyingChar); requestAnimationFrame(() => { flyingChar.style.transform = `translate(-50%, -150px) scale(0.8)`; flyingChar.style.opacity = '0'; }); setTimeout(() => { if (flyingChar.parentNode === playerScreen) { playerScreen.removeChild(flyingChar); } }, 600); }
 
-        // GENERATEMASTERQUESTIONSET GÜNCELLENDİ (Kelime sayısı ayarlama mantığı)
-        function generateMasterQuestionSet(availableWords, targetNumQuestions) {
+        // GENERATEMASTERQUESTIONSET GÜNCELLENDİ
+        function generateMasterQuestionSet(targetNumQuestions) {
             console.log(`Generating questions for target: ${targetNumQuestions}`);
-            const allLetters = Object.keys(availableWords).filter(l => availableWords[l] && availableWords[l].length > 0 && letterForms[l]);
+            const allLetters = Object.keys(wordsByLetterWithHarakat).filter(l => wordsByLetterWithHarakat[l] && wordsByLetterWithHarakat[l].length > 0 && letterForms[l]);
             let allWordsList = [];
             allLetters.forEach(l => {
-                if(availableWords[l]){
-                    availableWords[l].forEach(ow => {
+                if(wordsByLetterWithHarakat[l]){
+                    wordsByLetterWithHarakat[l].forEach(ow => {
                          const cleanOriginal = removeHarakat(ow);
                          if (cleanOriginal.includes(l)) {
                              allWordsList.push({ letter: l, originalWord: ow });
@@ -382,13 +414,12 @@
             });
             allWordsList = shuffle(allWordsList);
 
-             // Mevcut kelime sayısını kontrol et
-             let actualWordCount = allWordsList.length;
-             let numQuestionsToGenerate = Math.min(targetNumQuestions, actualWordCount); // İstenen veya mevcut olanın küçüğü kadar üret
+            let actualWordCount = allWordsList.length;
+            let numQuestionsToGenerate = Math.min(targetNumQuestions, actualWordCount);
 
             console.log(`Available unique words for generation: ${actualWordCount}, generating: ${numQuestionsToGenerate}`);
 
-            // Eğer üretilecek soru sayısı hedeften az ise, oyun ayarını GÜNCELLE
+             // Eğer üretilecek soru sayısı hedeften az ise, oyun ayarını GÜNCELLE
              if (numQuestionsToGenerate < gameSettings.words) {
                  console.warn(`Insufficient words (${actualWordCount}) for target ${gameSettings.words}. Setting game words to ${numQuestionsToGenerate}.`);
                  gameSettings.words = numQuestionsToGenerate;
@@ -411,48 +442,34 @@
                 const correctForm = getCorrectForm(cleanWord, letter, cleanLetterIndex);
                 const availableForms = letterForms[letter];
 
-                if (!availableForms) {
-                    console.error(`Form list ERROR: "${letter}"`);
-                    return null;
-                }
-                if (!correctForm) {
-                     console.error(`Correct form ERROR: "${cleanWord}", "${letter}", index ${cleanLetterIndex}`);
-                     return null;
-                 }
+                if (!availableForms) { console.error(`Form list ERROR: "${letter}"`); return null; }
+                if (!correctForm) { console.error(`Correct form ERROR: "${cleanWord}", "${letter}", index ${cleanLetterIndex}`); return null; }
 
                 let options = [correctForm];
                 const incorrectForms = availableForms.filter(f => f !== correctForm);
                 const shuffledIncorrect = shuffle(incorrectForms);
 
                 for (let i = 0; i < shuffledIncorrect.length && options.length < 4; i++) {
-                     // Seçeneğin zaten eklenmediğinden emin ol (nadiren de olsa aynı form birden fazla listede olabilir)
-                     if (!options.includes(shuffledIncorrect[i])) {
-                         options.push(shuffledIncorrect[i]);
-                     }
+                     if (!options.includes(shuffledIncorrect[i])) options.push(shuffledIncorrect[i]);
                 }
 
                 let attempts = 0;
-                 while(options.length < 2 && availableForms.length > 0 && attempts < 10) { // En az 2 seçenek olmalı
+                 while(options.length < 2 && availableForms.length > 0 && attempts < 10) {
                      let potentialOption = availableForms[Math.floor(Math.random() * availableForms.length)];
-                      if (!options.includes(potentialOption)) { // Sadece unik ise ekle
-                          options.push(potentialOption);
-                      }
-                     // options = [...new Set(options)]; // Tekrarları kaldır (bu zaten yukarıdaki if ile sağlanıyor)
+                      if (!options.includes(potentialOption)) options.push(potentialOption);
                      attempts++;
                  }
-                  // Eğer hala 2 seçenek yoksa, bu soruyu geçersiz kılabiliriz
                   if (options.length < 2) {
-                       console.warn(`Could not generate at least 2 options for "${cleanWord}", letter "${letter}". Skipping question.`);
+                       console.warn(`Could not generate >= 2 options for "${cleanWord}", letter "${letter}". Skipping.`);
                        return null;
                    }
 
 
                 return { letter, originalWord, word: cleanWord, questionWord, correctForm, options: shuffle(options) };
-            }).filter(q => q !== null); // Hatalı (null) soruları filtrele
+            }).filter(q => q !== null);
 
-            // Filtreleme SONRASI soru sayısı GÜNCEL kelime sayısından az ise, ayarı TEKRAR güncelle (çok nadir olmalı)
              if (questions.length < gameSettings.words) {
-                 console.warn(`Post-filtering question count (${questions.length}) is less than current game words (${gameSettings.words}). Updating game words AGAIN.`);
+                 console.warn(`Post-filtering count (${questions.length}) < current game words (${gameSettings.words}). Updating AGAIN.`);
                  gameSettings.words = questions.length;
              }
 
@@ -460,13 +477,10 @@
             return questions;
         }
 
-        // GETCORRECTFORM GÜNCELLENDİ (Daha sağlam fallback)
+        // GETCORRECTFORM GÜNCELLENDİ
         function getCorrectForm(cleanWord, cleanLetter, cleanIndex) {
             const forms = letterForms[cleanLetter];
-            if (!forms || forms.length === 0) {
-                 console.error("getCorrectForm: Harf için form bulunamadı!", cleanLetter);
-                 return cleanLetter;
-            }
+            if (!forms || forms.length === 0) { console.error("getCorrectForm: No forms for letter!", cleanLetter); return cleanLetter; }
             if (forms.length === 1) return forms[0];
 
             const nonConnectingChars = ['ا', 'أ', 'د', 'ذ', 'ر', 'ز', 'و'];
@@ -476,29 +490,16 @@
              let targetForm = null;
 
              if (nonConnectingChars.includes(cleanLetter)) {
-                 if (connectsToRight && forms.length > 1) { // Ortada/Sonda sağa bitişik (ـا)
-                     targetForm = forms.find(f => f.startsWith('ـ')) || forms[1]; // Genellikle 2. form
-                 } else { // Başta/Tek başına (ا)
-                     targetForm = forms.find(f => !f.startsWith('ـ')) || forms[0]; // Genellikle 1. form
-                 }
-             } else { // Bitişen harf
-                 if (connectsToRight && connectsToLeft && forms.length > 1) { // Ortada (ـبـ)
-                     targetForm = forms.find(f => f.startsWith('ـ') && f.endsWith('ـ')) || forms[1]; // Genellikle 2. form
-                 } else if (connectsToRight && forms.length > 2) { // Sonda (ـب)
-                     targetForm = forms.find(f => f.startsWith('ـ') && !f.endsWith('ـ')) || forms[2]; // Genellikle 3. form
-                 } else if (connectsToLeft && forms.length > 0) { // Başta (بـ)
-                     targetForm = forms.find(f => !f.startsWith('ـ') && f.endsWith('ـ')) || forms[0]; // Genellikle 1. form
-                 } else if (forms.length > 3) { // Tek başına (ب)
-                     targetForm = forms.find(f => !f.startsWith('ـ') && !f.endsWith('ـ')) || forms[3]; // Genellikle 4. form
-                 } else { // Eğer 4 form yoksa, mevcutlara göre fallback
-                      if (connectsToRight) targetForm = forms[forms.length-1]; // Sona en yakın
-                      else targetForm = forms[0]; // Başa en yakın
-                  }
+                 targetForm = connectsToRight ? (forms.find(f => f.startsWith('ـ')) || forms[1]) : (forms.find(f => !f.startsWith('ـ')) || forms[0]);
+             } else {
+                 if (connectsToRight && connectsToLeft) { targetForm = forms.find(f => f.startsWith('ـ') && f.endsWith('ـ')) || forms[1]; }
+                 else if (connectsToRight) { targetForm = forms.find(f => f.startsWith('ـ') && !f.endsWith('ـ')) || (forms.length > 2 ? forms[2] : forms[0]); }
+                 else if (connectsToLeft) { targetForm = forms.find(f => !f.startsWith('ـ') && f.endsWith('ـ')) || forms[0]; }
+                 else { targetForm = forms.find(f => !f.startsWith('ـ') && !f.endsWith('ـ')) || (forms.length > 3 ? forms[3] : forms[0]); }
              }
 
-
              if (!targetForm) {
-                 console.warn(`getCorrectForm: Mantık form bulamadı! "${cleanWord}", "${cleanLetter}", index ${cleanIndex}. Fallback (ilk form veya harf) kullanılıyor.`);
+                 console.warn(`getCorrectForm: Logic failed! "${cleanWord}", "${cleanLetter}", idx ${cleanIndex}. Fallback.`);
                  targetForm = forms[0] || cleanLetter;
              }
              return targetForm;
@@ -515,12 +516,10 @@
         }
 
         function stopGameTimer() {
-            if (gameTimerInterval) {
-                clearInterval(gameTimerInterval);
-                gameTimerInterval = null;
-            }
+            if (gameTimerInterval) { clearInterval(gameTimerInterval); gameTimerInterval = null; }
         }
 
+        // STARTGAMETIMER GÜNCELLENDİ
         function startGameTimer() {
             stopGameTimer();
             if (gameMode !== '1p' || gameSettings.timerDuration <= 0 || gameSettings.words <= 0) {
@@ -528,7 +527,8 @@
                 return;
             }
 
-            totalTimeLeft = gameSettings.timerDuration * gameSettings.words;
+            totalTimeLeft = gameSettings.timerDuration * gameSettings.words; // GÜNCEL kelime sayısını kullan
+             console.log(`Starting timer with ${gameSettings.words} words, total time: ${totalTimeLeft}s`);
             if(p1TimerValueEl) p1TimerValueEl.textContent = formatTime(totalTimeLeft);
             if(p1TimerValueEl) p1TimerValueEl.style.color = '';
             if(p1TimerEl) p1TimerEl.classList.remove('hidden');
@@ -536,283 +536,237 @@
             gameTimerInterval = setInterval(() => {
                 totalTimeLeft--;
                 if(p1TimerValueEl) p1TimerValueEl.textContent = formatTime(totalTimeLeft);
-
-                if (totalTimeLeft <= 10 && totalTimeLeft > 0) {
-                    if(p1TimerValueEl) p1TimerValueEl.style.color = '#dc3545';
-                }
-
+                if (totalTimeLeft <= 10 && totalTimeLeft > 0) if(p1TimerValueEl) p1TimerValueEl.style.color = '#dc3545';
                 if (totalTimeLeft <= 0) {
-                    console.log("Oyun Süresi Doldu!");
-                    stopGameTimer();
-                    playIncorrectSound();
-                    endRound('timeup');
+                    console.log("Timer expired!");
+                    stopGameTimer(); playIncorrectSound(); endRound('timeup');
                 }
             }, 1000);
         }
 
-        // SETUPNEWGAME GÜNCELLENDİ (Kelime sayısı ayarlama mantığı iyileştirildi)
+        // SETUPNEWGAME GÜNCELLENDİ
         function setupNewGame() {
             console.log("setupNewGame:", gameMode);
-             // Başlangıçta hedeflenen kelime sayısını ayarla
             let targetWordCount = (gameMode === '1p') ? 20 : 10;
-            gameSettings.words = targetWordCount; // Ayarı başlangıçta güncelle
+            gameSettings.words = targetWordCount; // Ayarı BAŞLANGIÇTA yap
             console.log("Initial target words:", targetWordCount);
 
             if (gameMode === '1p' && p1TimerEl) {
                 p1TimerEl.classList.remove('hidden');
-                 if(p1TimerValueEl) p1TimerValueEl.textContent = formatTime(gameSettings.timerDuration * targetWordCount);
-            } else if (p1TimerEl) {
-                p1TimerEl.classList.add('hidden');
-            }
+                 if(p1TimerValueEl) p1TimerValueEl.textContent = formatTime(gameSettings.timerDuration * targetWordCount); // Hedef sayı ile başla
+            } else if (p1TimerEl) p1TimerEl.classList.add('hidden');
 
-            // --- Soru Setlerini Oluştur (generateMasterQuestionSet GEREKİRSE gameSettings.words'ü güncelleyecek) ---
-            let availableWords1 = JSON.parse(JSON.stringify(wordsByLetterWithHarakat));
-            const questions1 = generateMasterQuestionSet(availableWords1, targetWordCount);
-            let currentWordCount = gameSettings.words; // Generate sonrası GÜNCEL kelime sayısı
+            // --- Soruları Üret (generate GEREKİRSE gameSettings.words'ü günceller) ---
+            const questions1 = generateMasterQuestionSet(targetWordCount);
+            let currentWordCount = gameSettings.words; // Güncel sayı
              console.log("P1 Qs generated:", questions1.length, "Current game words:", currentWordCount);
 
-             // Eğer 1P ve kelime sayısı düştüyse, zamanı hemen GÜNCELLE
+             // 1P ve kelime sayısı düştüyse ZAMANI AYARLA
              if (gameMode === '1p' && currentWordCount < targetWordCount) {
-                 totalTimeLeft = gameSettings.timerDuration * currentWordCount;
-                 if(p1TimerValueEl) p1TimerValueEl.textContent = formatTime(totalTimeLeft);
-             }
+                  totalTimeLeft = gameSettings.timerDuration * currentWordCount; // Yeni zamanı hesapla
+                  if(p1TimerValueEl) p1TimerValueEl.textContent = formatTime(totalTimeLeft); // Göstergeyi güncelle
+                  console.log("Adjusted 1P timer for reduced word count:", totalTimeLeft);
+              }
 
-
-            state = { scores: { '1': 0 }, currentRound: -1, playerQuestions: { '1': questions1 }, answers: { '1': [] } }; // answers'ı boş array yap
-             if (gameMode === '2p') state.answers['2'] = []; // 2P için de
-
-            players['1'].scoreEl.textContent = '0';
-            players['1'].wordEl.textContent = "...";
+            state = { scores: { '1': 0 }, currentRound: -1, playerQuestions: { '1': questions1 }, answers: { '1': [] } };
+            players['1'].scoreEl.textContent = '0'; players['1'].wordEl.textContent = "...";
 
             if (gameMode === '2p') {
-                let availableWords2 = JSON.parse(JSON.stringify(wordsByLetterWithHarakat));
-                // P2 için generate et (bu da gameSettings.words'ü güncelleyebilir)
-                const questions2 = generateMasterQuestionSet(availableWords2, targetWordCount);
-                currentWordCount = gameSettings.words; // P2 sonrası en güncel kelime sayısı
+                state.answers['2'] = []; // 2P için cevap array'ini başlat
+                const questions2 = generateMasterQuestionSet(targetWordCount); // P2 için de üret (bu da gameSettings.words'ü etkileyebilir)
+                currentWordCount = gameSettings.words; // En GÜNCEL sayı
                 console.log("P2 Qs generated:", questions2.length, "Final game words:", currentWordCount);
 
-                // P1 ve P2 listelerini GÜNCEL kelime sayısına göre KISALT/AYARLA
+                // Listeleri GÜNCEL sayıya göre eşitle/kısalt
                  state.playerQuestions['1'] = questions1.slice(0, currentWordCount);
                 state.playerQuestions['2'] = questions2.slice(0, currentWordCount);
 
-
                 state.scores['2'] = 0;
-                // state.answers['2'] = []; // Yukarıda yapıldı
-                state.playerResponses = { '1': null, '2': null };
-                state.responseTimes = { '1': null, '2': null };
-                players['2'].scoreEl.textContent = '0';
-                players['2'].wordEl.textContent = "...";
+                state.playerResponses = { '1': null, '2': null }; state.responseTimes = { '1': null, '2': null };
+                players['2'].scoreEl.textContent = '0'; players['2'].wordEl.textContent = "...";
             }
 
              // --- Progress Bar'ları GÜNCEL kelime sayısına göre kur ---
-             setupProgressBars(); // Tüm generate işlemleri bittikten sonra çağır
-
+             setupProgressBars();
 
             modal.style.display = 'none';
-            if (gameSettings.words > 0) { // Her zaman GÜNCEL kelime sayısını kontrol et
-                if (gameMode === '1p') {
-                    startGameTimer(); // Timer'ı başlat (içeride güncel gameSettings.words'ü kullanır)
-                }
+            if (gameSettings.words > 0) {
+                if (gameMode === '1p') startGameTimer(); // Timer'ı başlat
                 nextQuestion();
             } else {
-                console.error("Başlatılacak soru yok!");
+                console.error("No questions generated!");
                 alert("Yeterli kelime bulunamadı, ana menüye dönülüyor.");
                 returnToMenu();
             }
         }
-        function setupProgressBars() { const numQuestions = gameSettings.words; console.log("Setting up progress bars for", numQuestions, "words"); if (numQuestions <= 0) return; topProgressBar.innerHTML = ''; players['1'].progressEl.innerHTML = ''; players['2'].progressEl.innerHTML = ''; if (gameMode === '1p') { let columns = numQuestions > 10 ? Math.ceil(numQuestions / 2) : numQuestions; columns = Math.min(10, columns); let rows = numQuestions > 10 ? 2 : 1; topProgressBar.style.display = 'grid'; topProgressBar.style.gridTemplateRows = `repeat(${rows}, 1fr)`; topProgressBar.style.gridTemplateColumns = `repeat(${columns}, 1fr)`; for (let i = 0; i < numQuestions; i++) { const wordDiv = document.createElement('div'); wordDiv.classList.add('progress-word'); topProgressBar.appendChild(wordDiv); } } else { ['1', '2'].forEach(p => { players[p].progressEl.style.gridTemplateColumns = `repeat(${numQuestions}, 1fr)`; for (let i = 0; i < numQuestions; i++) { const wordDiv = document.createElement('div'); wordDiv.classList.add('progress-word'); players[p].progressEl.appendChild(wordDiv); } }); } }
-        function displayQuestion(player, question) { if (!question || !question.questionWord || !question.options || question.options.length < 2) { console.error(`Geçersiz SORU veya SEÇENEK: P${player}, R${state.currentRound}`, question); endRound('error'); return; } if (!players[player] || !players[player].wordEl || !players[player].optionsEl) { console.error(`P${player} DOM elemanları yok!`); return; } players[player].wordEl.textContent = question.questionWord; players[player].optionsEl.innerHTML = ''; const shuffledOptions = shuffle([...question.options]); players[player].optionsEl.style.gridTemplateColumns = 'repeat(2, 1fr)'; shuffledOptions.forEach((opt) => { const optionDiv = document.createElement('div'); optionDiv.classList.add('option'); const charSpan = document.createElement('span'); charSpan.textContent = opt; optionDiv.appendChild(charSpan); optionDiv.onclick = (event) => handleAnswer(player, opt, question.correctForm, event.currentTarget); players[player].optionsEl.appendChild(optionDiv); }); }
 
-        function handleAnswer(player, selectedOption, correctOption, clickedEl) {
-            if (gameMode === '2p' && state.playerResponses[player] !== null) return;
-             // 1P modunda, mevcut tur için ZATEN cevap verilmişse tekrar işlem yapma
-             if (gameMode === '1p' && state.answers['1'][state.currentRound] !== undefined) {
-                 console.log(`Round ${state.currentRound} already answered for P1.`);
+        // SETUPPROGRESSBARS GÜNCELLENDİ (Sıfır kelime kontrolü)
+        function setupProgressBars() {
+             const numQuestions = gameSettings.words;
+             console.log("Setting up progress bars for", numQuestions, "words");
+             topProgressBar.innerHTML = ''; // Önce temizle
+             if (players['1'].progressEl) players['1'].progressEl.innerHTML = '';
+             if (players['2'].progressEl) players['2'].progressEl.innerHTML = '';
+
+             if (numQuestions <= 0) { // Eğer hiç soru yoksa, bar oluşturma
+                 console.warn("No questions to generate progress bar for.");
                  return;
              }
+
+             if (gameMode === '1p') {
+                 let columns = numQuestions > 10 ? Math.ceil(numQuestions / 2) : numQuestions;
+                 columns = Math.min(10, columns); // Max 10 sütun
+                 let rows = numQuestions > 10 ? 2 : 1; // 10'dan fazlaysa 2 satır
+                 topProgressBar.style.display = 'grid';
+                 topProgressBar.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+                 topProgressBar.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+                 for (let i = 0; i < numQuestions; i++) {
+                     const wordDiv = document.createElement('div');
+                     wordDiv.classList.add('progress-word');
+                     topProgressBar.appendChild(wordDiv);
+                 }
+             } else { // 2P
+                 ['1', '2'].forEach(p => {
+                     if(players[p].progressEl) {
+                         players[p].progressEl.style.gridTemplateColumns = `repeat(${numQuestions}, 1fr)`;
+                         for (let i = 0; i < numQuestions; i++) {
+                             const wordDiv = document.createElement('div');
+                             wordDiv.classList.add('progress-word');
+                             players[p].progressEl.appendChild(wordDiv);
+                         }
+                     }
+                 });
+             }
+         }
+
+        function displayQuestion(player, question) { if (!question || !question.questionWord || !question.options || question.options.length < 2) { console.error(`Invalid Q or Options: P${player}, R${state.currentRound}`, question); endRound('error'); return; } if (!players[player] || !players[player].wordEl || !players[player].optionsEl) { console.error(`P${player} DOM elements missing!`); return; } players[player].wordEl.textContent = question.questionWord; players[player].optionsEl.innerHTML = ''; const shuffledOptions = shuffle([...question.options]); players[player].optionsEl.style.gridTemplateColumns = 'repeat(2, 1fr)'; shuffledOptions.forEach((opt) => { const optionDiv = document.createElement('div'); optionDiv.classList.add('option'); const charSpan = document.createElement('span'); charSpan.textContent = opt; optionDiv.appendChild(charSpan); optionDiv.onclick = (event) => handleAnswer(player, opt, question.correctForm, event.currentTarget); players[player].optionsEl.appendChild(optionDiv); }); }
+
+        // HANDLEANSWER GÜNCELLENDİ (Tur tekrar cevaplama engeli, progress bar index kontrolü)
+        function handleAnswer(player, selectedOption, correctOption, clickedEl) {
+             // 1P modunda, bu tur için ZATEN cevap verilmişse engelle
+             if (gameMode === '1p' && state.answers['1'][state.currentRound] !== undefined) {
+                 // console.log(`Round ${state.currentRound} already answered for P1.`);
+                 return;
+             }
+             // 2P modunda, bu oyuncu bu tur için ZATEN cevap vermişse engelle
+              if (gameMode === '2p' && state.playerResponses[player] !== null) {
+                  // console.log(`Player ${player} already answered round ${state.currentRound}.`);
+                  return;
+              }
 
 
             initAudio();
-            if (state.currentRound < 0 || state.currentRound >= gameSettings.words) {
-                 console.warn(`handleAnswer called for invalid round: ${state.currentRound}`);
-                 return;
-            }
-            const currentQuestion = state.playerQuestions[player] ? state.playerQuestions[player][state.currentRound] : null;
-            if (!currentQuestion) { console.error("handleAnswer: Soru yok!"); return; }
+            if (state.currentRound < 0 || state.currentRound >= gameSettings.words) { console.warn(`handleAnswer called for invalid round: ${state.currentRound}`); return; }
+            const currentQuestion = state.playerQuestions[player]?.[state.currentRound];
+            if (!currentQuestion) { console.error(`handleAnswer: Q not found for P${player} R${state.currentRound}!`); return; }
 
-            if (correctOption === null || correctOption === undefined) {
-                 console.error("handleAnswer: CorrectOption tanımsız!", currentQuestion);
-                 highlightOptions(player, selectedOption, null);
-                 setTimeout(nextQuestion, 1500);
-                 return;
-             }
+            if (correctOption === null || correctOption === undefined) { console.error("handleAnswer: CorrectOption undefined!", currentQuestion); highlightOptions(player, selectedOption, null); setTimeout(nextQuestion, 1500); return; }
 
             const isCorrect = selectedOption === correctOption;
             const playerScreen = players[player].el;
             if (!playerScreen) return;
 
-            if (isCorrect) {
-                playCorrectSound();
-                playerScreen.classList.add('flash-correct');
-                animateLetterFly(player, clickedEl);
-                if(players[player].wordEl) {
-                    setTimeout(() => { if(players[player].wordEl) players[player].wordEl.textContent = currentQuestion.word; }, 500);
-                }
-                setTimeout(() => playerScreen.classList.remove('flash-correct'), 600);
-            } else {
-                playIncorrectSound();
-                playerScreen.classList.add('incorrect-answer-effect');
-                setTimeout(() => playerScreen.classList.remove('incorrect-answer-effect'), 600);
-            }
+            if (isCorrect) { playCorrectSound(); playerScreen.classList.add('flash-correct'); animateLetterFly(player, clickedEl); if(players[player].wordEl) { setTimeout(() => { if(players[player].wordEl) players[player].wordEl.textContent = currentQuestion.word; }, 500); } setTimeout(() => playerScreen.classList.remove('flash-correct'), 600); }
+            else { playIncorrectSound(); playerScreen.classList.add('incorrect-answer-effect'); setTimeout(() => playerScreen.classList.remove('incorrect-answer-effect'), 600); }
 
             highlightOptions(player, selectedOption, correctOption);
 
             if (gameMode === '1p') {
                 state.answers['1'][state.currentRound] = { word: currentQuestion.word, correct: isCorrect };
-
-                let p1Points = 0;
-                if (isCorrect) { p1Points = 5; showScorePopup('1', p1Points); }
-                state.scores['1'] += p1Points;
-                players['1'].scoreEl.textContent = state.scores['1'];
+                let p1Points = isCorrect ? 5 : 0; if (isCorrect) showScorePopup('1', p1Points);
+                state.scores['1'] += p1Points; players['1'].scoreEl.textContent = state.scores['1'];
 
                 const progressWords = topProgressBar.children;
-                 // Progress bar index kontrolü
-                if (state.currentRound >= 0 && state.currentRound < progressWords.length) {
-                    progressWords[state.currentRound].classList.add(isCorrect ? 'correct' : 'incorrect');
-                } else {
-                     console.warn("1P Progress bar item index out of bounds:", state.currentRound, "length:", progressWords.length);
-                 }
+                 if (state.currentRound >= 0 && state.currentRound < progressWords.length) { progressWords[state.currentRound].classList.add(isCorrect ? 'correct' : 'incorrect'); }
+                 else { console.warn("1P Progress idx out of bounds:", state.currentRound, "len:", progressWords.length); }
                 setTimeout(nextQuestion, 1500);
-            } else { // 2P Modu
-                state.playerResponses[player] = selectedOption;
-                state.responseTimes[player] = new Date().getTime();
-                 // Cevabı state'e ekle (index kullanarak) - ÖNEMLİ: state.answers[player] array olmalı
-                 if (!state.answers[player]) state.answers[player] = []; // Eğer array yoksa oluştur
+            } else { // 2P
+                state.playerResponses[player] = selectedOption; state.responseTimes[player] = Date.now();
+                 if (!state.answers[player]) state.answers[player] = [];
                  state.answers[player][state.currentRound] = { word: currentQuestion.word, correct: isCorrect, time: state.responseTimes[player] };
 
                 const otherPlayer = player === '1' ? '2' : '1';
-                // Diğer oyuncu ZATEN cevap verdiyse VEYA diğer oyuncunun bu turda sorusu yoksa (hata durumu)
-                 if (state.playerResponses[otherPlayer] !== null || !state.playerQuestions[otherPlayer] || !state.playerQuestions[otherPlayer][state.currentRound]) {
-                     // Eğer diğer oyuncu cevap vermişse skorları güncelle ve sonraki soruya geç
-                     if (state.playerResponses[otherPlayer] !== null) {
-                         updateScores();
-                         setTimeout(nextQuestion, 2000);
-                     } else {
-                          // Diğer oyuncunun sorusu yoksa, sadece sonraki soruya geçmeyi dene (hata durumu)
-                          console.warn(`Other player (${otherPlayer}) has no question for round ${state.currentRound}. Proceeding.`);
-                          setTimeout(nextQuestion, 2000);
-                      }
-                }
-                 // Eğer diğer oyuncu henüz cevap vermemişse, sadece bekle.
+                 if (state.playerResponses[otherPlayer] !== null || !state.playerQuestions[otherPlayer]?.[state.currentRound]) {
+                     updateScores(); setTimeout(nextQuestion, 2000);
+                 }
             }
         }
 
 
         function highlightOptions(player, selected, correct) { const optionsContainer = players[player].optionsEl; if (!optionsContainer) return; const options = optionsContainer.children; for (let opt of options) { opt.classList.add('disabled'); if (opt.firstElementChild) { const optionText = opt.firstElementChild.textContent; if (optionText === correct) { opt.classList.add('correct'); } else if (optionText === selected && correct !== null) { opt.classList.add('incorrect'); } } } }
 
+        // UPDATESCORES GÜNCELLENDİ
         function updateScores() {
-             if (state.currentRound < 0 || state.currentRound >= gameSettings.words) { console.warn("updateScores geçersiz tur:", state.currentRound); return; }
-             const p1Q = state.playerQuestions['1'][state.currentRound];
-             const p2Q = state.playerQuestions['2'][state.currentRound];
-             if (!p1Q || !p2Q) { console.error("updateScores: Soru nesneleri bulunamadı!", state.currentRound); return; }
+             if (state.currentRound < 0 || state.currentRound >= gameSettings.words) { console.warn("updateScores invalid round:", state.currentRound); return; }
+             const p1Q = state.playerQuestions['1']?.[state.currentRound]; const p2Q = state.playerQuestions['2']?.[state.currentRound];
+             if (!p1Q || !p2Q) { console.error("updateScores: Q objects not found!", state.currentRound); return; }
 
-             // Cevapların varlığını kontrol et, yoksa false kabul et
-             const p1Response = state.playerResponses['1'];
-             const p2Response = state.playerResponses['2'];
+             const p1Response = state.playerResponses['1']; const p2Response = state.playerResponses['2'];
              const p1Correct = p1Response !== null && p1Response === p1Q.correctForm;
              const p2Correct = p2Response !== null && p2Response === p2Q.correctForm;
 
              let p1Pts = 0; let p2Pts = 0;
-             const t1 = state.responseTimes['1']; // null olabilir
-             const t2 = state.responseTimes['2']; // null olabilir
+             const t1 = state.responseTimes['1']; const t2 = state.responseTimes['2'];
 
-             if (p1Correct && p2Correct) { // İkisi de doğruysa
-                 // Zamanları karşılaştır (null kontrolü ile)
-                 if (t1 !== null && (t2 === null || t1 < t2)) { p1Pts = 10; p2Pts = 5; } // P1 daha hızlı veya P2 cevaplamadı
-                 else if (t2 !== null && (t1 === null || t2 < t1)) { p1Pts = 5; p2Pts = 10; } // P2 daha hızlı veya P1 cevaplamadı
-                 else { p1Pts = 5; p2Pts = 5; } // Eşit süre veya ikisi de null (teorik olarak olmamalı)
-             } else if (p1Correct && !p2Correct) { // Sadece P1 doğruysa
-                 p1Pts = 10; p2Pts = 0;
-             } else if (!p1Correct && p2Correct) { // Sadece P2 doğruysa
-                 p1Pts = 0; p2Pts = 10;
-             } // İkisi de yanlış veya cevaplamadıysa 0 puan
+             if (p1Correct && p2Correct) { if (t1 !== null && (t2 === null || t1 < t2)) { p1Pts = 10; p2Pts = 5; } else if (t2 !== null && (t1 === null || t2 < t1)) { p1Pts = 5; p2Pts = 10; } else { p1Pts = 5; p2Pts = 5; } }
+             else if (p1Correct) { p1Pts = 10; p2Pts = 0; }
+             else if (p2Correct) { p1Pts = 0; p2Pts = 10; }
 
              showScorePopup('1', p1Pts); showScorePopup('2', p2Pts);
              state.scores['1'] += p1Pts; state.scores['2'] += p2Pts;
-             players['1'].scoreEl.textContent = state.scores['1'];
-             players['2'].scoreEl.textContent = state.scores['2'];
+             players['1'].scoreEl.textContent = state.scores['1']; players['2'].scoreEl.textContent = state.scores['2'];
 
+             // Progress bar updates with index check
              const p1Prg = players['1'].progressEl?.children;
-             if (p1Prg && state.currentRound < p1Prg.length) {
-                 p1Prg[state.currentRound].classList.add(p1Correct ? 'correct' : 'incorrect');
-             } else { console.warn("P1 Progress bar item index out of bounds:", state.currentRound); }
+             if (p1Prg && state.currentRound < p1Prg.length) p1Prg[state.currentRound].classList.add(p1Correct ? 'correct' : 'incorrect');
+             else console.warn("P1 Progress idx out of bounds:", state.currentRound);
+
              const p2Prg = players['2'].progressEl?.children;
-              if (p2Prg && state.currentRound < p2Prg.length) {
-                 p2Prg[state.currentRound].classList.add(p2Correct ? 'correct' : 'incorrect');
-              } else { console.warn("P2 Progress bar item index out of bounds:", state.currentRound); }
+              if (p2Prg && state.currentRound < p2Prg.length) p2Prg[state.currentRound].classList.add(p2Correct ? 'correct' : 'incorrect');
+              else console.warn("P2 Progress idx out of bounds:", state.currentRound);
         }
 
 
+        // NEXTQUESTION GÜNCELLENDİ
         function nextQuestion() {
             state.currentRound++;
-            console.log("Next Round:", state.currentRound + 1, "/", gameSettings.words);
+            console.log(`Next Round: ${state.currentRound + 1} / ${gameSettings.words}`); // Log format düzeltildi
             if (state.currentRound >= gameSettings.words) {
-                console.log("Oyun Bitti");
+                console.log("Game Over - All questions presented.");
                 endRound('completed');
                 return;
             }
             if (gameMode === '1p') {
-                if (state.playerQuestions['1'] && state.playerQuestions['1'][state.currentRound]) {
-                    displayQuestion('1', state.playerQuestions['1'][state.currentRound]);
-                } else {
-                    console.error(`1P Soru ${state.currentRound} yüklenemedi!`);
-                    endRound('error');
-                }
+                const question = state.playerQuestions['1']?.[state.currentRound];
+                if (question) displayQuestion('1', question);
+                else { console.error(`1P Q ${state.currentRound} not loaded!`); endRound('error'); }
             } else { // 2P
-                state.playerResponses = { '1': null, '2': null }; // Cevapları sıfırla
-                state.responseTimes = { '1': null, '2': null }; // Zamanları sıfırla
-                 // state.answers[player][state.currentRound] handleAnswer içinde ayarlanacak
-
-                 let p1HasQuestion = state.playerQuestions['1'] && state.playerQuestions['1'][state.currentRound];
-                 let p2HasQuestion = state.playerQuestions['2'] && state.playerQuestions['2'][state.currentRound];
-
-                 if (p1HasQuestion && p2HasQuestion) { // İki oyuncu için de soru varsa
-                     displayQuestion('1', state.playerQuestions['1'][state.currentRound]);
-                     displayQuestion('2', state.playerQuestions['2'][state.currentRound]);
-                 } else {
-                      // Eğer herhangi bir oyuncu için soru yoksa, bu bir hata durumudur
-                      console.error(`2P Soru yüklenemedi! P1:${!!p1HasQuestion}, P2:${!!p2HasQuestion} for round ${state.currentRound}`);
-                      endRound('error');
-                      return;
-                  }
+                state.playerResponses = { '1': null, '2': null }; state.responseTimes = { '1': null, '2': null };
+                 const q1 = state.playerQuestions['1']?.[state.currentRound];
+                 const q2 = state.playerQuestions['2']?.[state.currentRound];
+                 if (q1 && q2) { displayQuestion('1', q1); displayQuestion('2', q2); }
+                 else { console.error(`2P Q load error! P1:${!!q1}, P2:${!!q2} for R${state.currentRound}`); endRound('error'); }
             }
-            if (gameMode === '1p') {
-                if (p1TimerValueEl) {
-                    p1TimerValueEl.style.color = (totalTimeLeft <= 10 && totalTimeLeft > 0) ? '#dc3545' : '';
-                }
-            }
+            if (gameMode === '1p' && p1TimerValueEl) {
+                 p1TimerValueEl.style.color = (totalTimeLeft <= 10 && totalTimeLeft > 0) ? '#dc3545' : '';
+             }
         }
-        // ENDROUND GÜNCELLENDİ (Sonuç listesi mantığı)
-        function endRound(reason) {
+        // ENDROUND GÜNCELLENDİ
+         function endRound(reason) {
              console.log("endRound:", reason, "Total words:", gameSettings.words);
              stopGameTimer();
              modal.classList.add(gameMode === '1p' ? 'mode-1p' : 'mode-2p');
              modal.classList.remove(gameMode === '1p' ? 'mode-2p' : 'mode-1p');
 
-             const totalQuestions = gameSettings.words;
-             if (totalQuestions <= 0 && reason !== 'error') { // Hata durumu hariç kelime yoksa
-                 winnerText.textContent = "Yeterli soru bulunamadı!";
-                 if (players['1'].resultsEl) players['1'].resultsEl.innerHTML = '';
-                 if (players['2'].resultsEl) players['2'].resultsEl.innerHTML = '';
-                 document.getElementById('result-column-2').style.display = 'none';
-                 modal.style.display = 'flex';
-                 return;
-             } else if (reason === 'error') {
-                  winnerText.textContent = "Oyun Hatası!";
-                  // Sonuçları temizle veya boş bırak
+             const totalQuestions = gameSettings.words; // Gerçekleşen toplam soru sayısı
+
+             // Hata durumu veya sıfır soru durumu
+              if (reason === 'error' || (totalQuestions <= 0 && reason !== 'error')) {
+                  winnerText.textContent = (reason === 'error') ? "Oyun Hatası!" : "Yeterli soru bulunamadı!";
                   if (players['1'].resultsEl) players['1'].resultsEl.innerHTML = '';
                   if (players['2'].resultsEl) players['2'].resultsEl.innerHTML = '';
-                   if(gameMode === '1p') document.getElementById('result-column-2').style.display = 'none';
+                   if (document.getElementById('result-column-2')) document.getElementById('result-column-2').style.display = 'none';
+                   if (document.querySelector('#results-container .results-grid')) document.querySelector('#results-container .results-grid').style.gridTemplateColumns = '1fr';
                   modal.style.display = 'flex';
                   return;
               }
@@ -821,19 +775,18 @@
              const arabicNumerals = Array.from({length: totalQuestions}, (_, i) => (i + 1).toLocaleString('ar-EG'));
 
              const score1 = state.scores ? state.scores['1'] : 0;
-             const p1Answers = state.answers['1'] || []; // Undefined ise boş array
+             const p1Answers = state.answers['1'] || [];
              const numQuestionsAnswered1P = p1Answers.filter(a => a !== undefined && a !== null).length;
 
-
-             if (players['1'].resultsEl) players['1'].resultsEl.innerHTML = ''; else console.error("P1 sonuç elemanı yok!");
+             if (players['1'].resultsEl) players['1'].resultsEl.innerHTML = ''; else console.error("P1 results element missing!");
              winnerText.lang = 'tr'; winnerText.dir = 'ltr';
 
              if (gameMode === '1p') {
-                 const correctCount = p1Answers.filter(a => a && a.correct).length;
+                 const correctCount = p1Answers.filter(a => a?.correct).length; // null/undefined kontrolü
 
-                 if (reason === 'timeup') { winnerText.textContent = `Süre Bitti! Skor: ${score1}`; }
-                 else if (reason === 'completed') { winnerText.textContent = `Tebrikler! Skor: ${score1}`; }
-                 else { winnerText.textContent = `Oyun Bitti! Skor: ${score1}`; }
+                 if (reason === 'timeup') winnerText.textContent = `Süre Bitti! Skor: ${score1}`;
+                 else if (reason === 'completed') winnerText.textContent = `Tebrikler! Skor: ${score1}`;
+                 else winnerText.textContent = `Oyun Bitti! Skor: ${score1}`;
 
 
                  const p1H3 = document.querySelector('#result-column-1 h3');
@@ -845,19 +798,16 @@
                  players['1'].resultsEl.appendChild(scoreDiv1);
 
                  const countDiv = document.createElement('div');
-                 countDiv.className = 'flex items-center justify-center gap-2 text-2xl mb-4 w-full text-gray-700';
-                 countDiv.dir = 'ltr';
-                 let countText = `✓ ${correctCount} / ${totalQuestions}`;
-                 if (reason === 'timeup') countText = `✓ ${correctCount} / ${numQuestionsAnswered1P} (Toplam: ${totalQuestions})`;
-                 countDiv.innerHTML = countText;
+                 countDiv.className = 'flex items-center justify-center gap-2 text-2xl mb-4 w-full text-gray-700'; countDiv.dir = 'ltr';
+                 countDiv.innerHTML = (reason === 'timeup') ? `✓ ${correctCount} / ${numQuestionsAnswered1P} (Toplam: ${totalQuestions})` : `✓ ${correctCount} / ${totalQuestions}`;
                  players['1'].resultsEl.appendChild(countDiv);
 
                  // Sonuç listesi
                  for(let i=0; i < totalQuestions; i++){
-                      const ans1 = p1Answers[i]; // Undefined olabilir
-                      const questionWord = (state.playerQuestions && state.playerQuestions['1'] && state.playerQuestions['1'][i]) ? state.playerQuestions['1'][i].word : '-';
-                      const wordToShow = ans1 ? ans1.word : questionWord;
-                      const isCorrect = ans1 ? ans1.correct : false;
+                      const ans1 = p1Answers[i];
+                      const questionWord = state.playerQuestions['1']?.[i]?.word ?? '-'; // ?? ile fallback
+                      const wordToShow = ans1?.word ?? questionWord;
+                      const isCorrect = ans1?.correct ?? false;
                       const mark1 = ans1 ? (isCorrect ? '✓' : '✗') : '-';
                       const color = ans1 ? (isCorrect ? 'green' : 'red') : 'grey';
 
@@ -871,7 +821,7 @@
                  if (grid1P) grid1P.style.gridTemplateColumns = '1fr';
 
              } else { // 2P Mode
-                 if (players['2'].resultsEl) players['2'].resultsEl.innerHTML = ''; else console.error("P2 sonuç elemanı yok!");
+                 if (players['2'].resultsEl) players['2'].resultsEl.innerHTML = ''; else console.error("P2 results element missing!");
                  document.getElementById('result-column-2').style.display = 'block';
 
                  const p1H3 = document.querySelector('#result-column-1 h3');
@@ -884,7 +834,7 @@
                  else if (score2 > score1) { triggerConfetti('2'); winnerText.textContent = `Oyuncu 1 Kazandı!`; }
                  else { winnerText.textContent = 'Berabere!'; }
 
-                 const p2Answers = state.answers['2'] || []; // Undefined ise boş array
+                 const p2Answers = state.answers['2'] || [];
 
                  const scoreDiv1 = document.createElement('div');
                  scoreDiv1.className = 'flex items-center justify-center gap-2 text-3xl mb-4 w-full';
@@ -898,42 +848,46 @@
 
                  // Sonuç listesi
                  for(let i=0; i < totalQuestions; i++){
-                     const ans1 = p1Answers[i]; const ans2 = p2Answers[i]; // Undefined olabilirler
-                     const q1 = state.playerQuestions['1'][i]; const q2 = state.playerQuestions['2'][i];
+                     const ans1 = p1Answers[i]; const ans2 = p2Answers[i];
+                     const q1 = state.playerQuestions['1']?.[i]; const q2 = state.playerQuestions['2']?.[i];
 
-                     const word1 = ans1 ? ans1.word : (q1 ? q1.word : '-');
-                     const correct1 = ans1 ? ans1.correct : false;
-                     const time1 = ans1 ? ans1.time : Infinity;
+                     const word1 = ans1?.word ?? q1?.word ?? '-';
+                     const correct1 = ans1?.correct ?? false;
+                     const time1 = ans1?.time ?? Infinity;
 
-                     const word2 = ans2 ? ans2.word : (q2 ? q2.word : '-');
-                     const correct2 = ans2 ? ans2.correct : false;
-                     const time2 = ans2 ? ans2.time : Infinity;
+                     const word2 = ans2?.word ?? q2?.word ?? '-';
+                     const correct2 = ans2?.correct ?? false;
+                     const time2 = ans2?.time ?? Infinity;
 
                      let p1Speed = false; let p2Speed = false;
-                     if (ans1 && ans2) { // İkisi de cevapladıysa
-                          if (correct1 && correct2) { if (time1 < time2) p1Speed = true; else if (time2 < time1) p2Speed = true; } // Eşitse hız yok
-                          else if (correct1 && !correct2) { p1Speed = true; }
-                          else if (!correct1 && correct2) { p2Speed = true; }
-                      } else if (ans1 && correct1) { p1Speed = true; } // Sadece P1 doğru
-                       else if (ans2 && correct2) { p2Speed = true; } // Sadece P2 doğru
+                     if (ans1 && ans2) { if (correct1 && correct2) { if (time1 < time2) p1Speed = true; else if (time2 < time1) p2Speed = true; } else if (correct1) p1Speed = true; else if (correct2) p2Speed = true; }
+                     else if (ans1 && correct1) p1Speed = true;
+                     else if (ans2 && correct2) p2Speed = true;
 
                      const icon = '⚡️';
                      const div1 = document.createElement('div'); div1.classList.add('result-item');
-                     const mark1 = ans1 ? (correct1 ? '✓' : '✗') : '-';
-                     const color1 = ans1 ? (correct1 ? 'green' : 'red') : 'grey';
+                     const mark1 = ans1 ? (correct1 ? '✓' : '✗') : '-'; const color1 = ans1 ? (correct1 ? 'green' : 'red') : 'grey';
                      div1.innerHTML = `<span lang="ar">${arabicNumerals[i]}</span><span lang="ar">${word1}</span><span style="color: ${color1};">${mark1}</span>${p1Speed ? `<span class="text-yellow-500">${icon}</span>` : ''}`;
                      players['1'].resultsEl.appendChild(div1);
 
                      const div2 = document.createElement('div'); div2.classList.add('result-item');
-                     const mark2 = ans2 ? (correct2 ? '✓' : '✗') : '-';
-                     const color2 = ans2 ? (correct2 ? 'green' : 'red') : 'grey';
+                     const mark2 = ans2 ? (correct2 ? '✓' : '✗') : '-'; const color2 = ans2 ? (correct2 ? 'green' : 'red') : 'grey';
                      div2.innerHTML = `<span lang="ar">${arabicNumerals[i]}</span><span lang="ar">${word2}</span><span style="color: ${color2};">${mark2}</span>${p2Speed ? `<span class="text-yellow-500">${icon}</span>` : ''}`;
                      if (players['2'].resultsEl) players['2'].resultsEl.appendChild(div2);
                  }
+                 // Tablet ve üstü için 2 sütunlu grid ayarı (CSS'de yoksa JS ile yapılabilir)
+                 const resultsGrid = document.querySelector('#modal.mode-2p .results-grid');
+                 if (resultsGrid && window.innerWidth >= 768) {
+                     resultsGrid.style.gridTemplateColumns = '1fr 1fr';
+                 } else if (resultsGrid) {
+                     resultsGrid.style.gridTemplateColumns = '1fr';
+                 }
+
              }
              resultsWrapper.style.display = 'block';
              modal.style.display = 'flex';
         }
+
 
 
         function startIntroCountdown(callback) { console.log("Intro Countdown"); if (introCountdownInterval) clearInterval(introCountdownInterval); const nums = { '3': '٣', '2': '٢', '1': '١' }; let count = 3; countdownOverlay.classList.remove('hidden'); countdownNumber.textContent = nums[count]; introCountdownInterval = setInterval(() => { count--; if (count > 0) { countdownNumber.textContent = nums[count]; } else { clearInterval(introCountdownInterval); introCountdownInterval = null; countdownOverlay.classList.add('hidden'); if(callback) { callback(); } } }, 1000); }
@@ -956,97 +910,90 @@
             setupNewGame();
         }
 
+        // RETURNTOMENU GÜNCELLENDİ
         function returnToMenu() {
             console.log("returnToMenu");
             if (introCountdownInterval) { clearInterval(introCountdownInterval); introCountdownInterval = null; countdownOverlay.classList.add('hidden'); }
             stopGameTimer();
             state = {}; gameSettings = { words: 10, difficulty: null, timerDuration: 0 }; // Ayarları sıfırla
-            modal.style.display = 'none';
-            gameWrapper.classList.add('hidden');
-            difficultyScreen.classList.add('hidden');
-            rulesScreen.classList.remove('hidden');
+            modal.style.display = 'none'; // Modalı gizle
+            gameWrapper.classList.add('hidden'); // Oyun alanını gizle
+            difficultyScreen.classList.add('hidden'); // Zorluk ekranını gizle
+            rulesScreen.classList.remove('hidden'); // Ana menüyü göster
             if (players['1'].wordEl) players['1'].wordEl.textContent = "...";
             if (players['2'].wordEl) players['2'].wordEl.textContent = "...";
             document.body.classList.remove('mode-1p', 'mode-2p');
             gameMode = null;
         }
 
+        // RETURNTODifficultyScreen GÜNCELLENDİ
         function returnToDifficultyScreen() {
             console.log("returnToDifficultyScreen");
             stopGameTimer();
-            state = {}; // gameSettings'i SIFIRLAMA, difficulty ve timerDuration kalsın
+            state = {}; // Mevcut oyun durumunu sıfırla
+            // gameSettings'i sıfırlama, zorluk seçimine geri dönüldü
             modal.style.display = 'none';
             gameWrapper.classList.add('hidden');
-            difficultyScreen.classList.remove('hidden');
-            rulesScreen.classList.add('hidden');
+            difficultyScreen.classList.remove('hidden'); // Zorluk ekranını göster
+            rulesScreen.classList.add('hidden'); // Ana menüyü gizle
             if (players['1'].wordEl) players['1'].wordEl.textContent = "...";
             // Mod zaten '1p' olmalı
         }
 
 
-        // --- Event Listeners ---
+        // EVENT LISTENERS GÜNCELLENDİ (Geri butonu mantığı)
         document.addEventListener('DOMContentLoaded', () => {
              console.log("DOM Loaded");
 
              if(backBtn) {
                  backBtn.onclick = () => {
-                      // Geri butonuna basıldığında GÖRÜNEN ekrana göre karar ver
-                      if (!rulesScreen.classList.contains('hidden')) {
-                           // Ana menüdeyse bir şey yapma (veya uygulamadan çık?)
-                           console.log("Back button pressed on main menu.");
-                       } else if (!difficultyScreen.classList.contains('hidden')) {
-                           // Zorluk ekranındaysa ana menüye dön
-                           returnToMenu();
-                       } else if (!gameWrapper.classList.contains('hidden')) {
-                           // Oyun ekranındaysa
-                           if (gameMode === '1p') {
-                               returnToDifficultyScreen(); // 1P ise zorluk seçimine dön
-                           } else {
-                               returnToMenu(); // 2P ise ana menüye dön
-                           }
-                       } else if (modal.style.display === 'flex') {
-                            // Modal açıksa (oyun bittiyse), hangi modda bittiğine göre dön
-                            if (gameMode === '1p') {
-                                returnToDifficultyScreen();
-                            } else {
-                                returnToMenu();
-                            }
-                       }
-                       else { // Diğer durumlar için ana menüye dön (güvenlik)
-                           returnToMenu();
-                       }
+                      let onRules = !rulesScreen.classList.contains('hidden');
+                      let onDifficulty = !difficultyScreen.classList.contains('hidden');
+                      let onGame = !gameWrapper.classList.contains('hidden');
+                      let onModal = modal.style.display === 'flex';
+
+                      console.log(`Back btn: rules=${onRules}, diff=${onDifficulty}, game=${onGame}, modal=${onModal}, mode=${gameMode}`);
+
+                      if (onDifficulty) returnToMenu(); // Zorluktaysan -> Ana Menü
+                      else if (onGame) { // Oyundaysan
+                           if (gameMode === '1p') returnToDifficultyScreen(); // 1P -> Zorluk
+                           else returnToMenu(); // 2P -> Ana Menü
+                      }
+                      else if (onModal) { // Oyun sonu modalı açıksa
+                           if (gameMode === '1p') returnToDifficultyScreen(); // 1P -> Zorluk
+                           else returnToMenu(); // 2P -> Ana Menü
+                      }
+                       // Ana menüdeyse (onRules) bir şey yapma
+                       // Beklenmedik durum -> Ana Menü
+                       else if (!onRules) returnToMenu();
+
                  };
-             } else { console.error("backBtn yok!"); }
+             } else { console.error("backBtn missing!"); }
 
 
              if (start1PBtn) {
                  start1PBtn.onclick = () => {
                      console.log("1P clicked");
                      gameMode = '1p';
-                     document.body.classList.remove('mode-2p');
-                     document.body.classList.add('mode-1p');
-                     rulesScreen.classList.add('hidden');
-                     difficultyScreen.classList.remove('hidden');
+                     document.body.classList.remove('mode-2p'); document.body.classList.add('mode-1p');
+                     rulesScreen.classList.add('hidden'); difficultyScreen.classList.remove('hidden');
                  };
-             } else { console.error("start1PBtn yok!"); }
+             } else { console.error("start1PBtn missing!"); }
+
              if (start2PBtn) {
                  start2PBtn.onclick = () => {
                      console.log("2P clicked");
                      gameMode = '2p';
-                      // gameSettings setupNewGame içinde ayarlanacak
-                     gameSettings.difficulty = null;
-                     gameSettings.timerDuration = 0;
-                     document.body.classList.remove('mode-1p');
-                     document.body.classList.add('mode-2p');
-                     rulesScreen.classList.add('hidden');
-                     gameWrapper.classList.remove('hidden');
+                     gameSettings.difficulty = null; gameSettings.timerDuration = 0; // words setupNewGame'de ayarlanacak
+                     document.body.classList.remove('mode-1p'); document.body.classList.add('mode-2p');
+                     rulesScreen.classList.add('hidden'); gameWrapper.classList.remove('hidden');
                      startIntroCountdown(setupNewGame);
                 };
-             } else { console.error("start2PBtn yok!"); }
+             } else { console.error("start2PBtn missing!"); }
 
-             if (easyBtn) easyBtn.onclick = () => start1PGame('easy'); else console.error("easyBtn yok!");
-             if (mediumBtn) mediumBtn.onclick = () => start1PGame('medium'); else console.error("mediumBtn yok!");
-             if (hardBtn) hardBtn.onclick = () => start1PGame('hard'); else console.error("hardBtn yok!");
+             if (easyBtn) easyBtn.onclick = () => start1PGame('easy'); else console.error("easyBtn missing!");
+             if (mediumBtn) mediumBtn.onclick = () => start1PGame('medium'); else console.error("mediumBtn missing!");
+             if (hardBtn) hardBtn.onclick = () => start1PGame('hard'); else console.error("hardBtn missing!");
         });
     </script>
 
