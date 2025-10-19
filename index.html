@@ -14,138 +14,42 @@
     <style>
         html, body {
             height: 100%;
-            overflow: hidden; /* Body'nin kaymasını genel olarak engelle */
+            overflow: hidden;
         }
         body {
-            font-family: 'Marhey', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; /* Marhey Font */
+            font-family: 'Marhey', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             padding: 1rem; padding-top: 1rem;
             background-image: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
             background-attachment: fixed; background-size: 200% 200%;
             animation: background-pan 15s ease infinite;
             overscroll-behavior-y: contain;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
         @keyframes background-pan { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
-        /* Arapça Font Önceliği */
         [lang="ar"], .word, .option span { font-family: 'Arakom', 'Harmattan', system-ui, sans-serif; direction: rtl; }
-
         body, button, h1, h2, h3, p, div:not([lang="ar"]) { direction: ltr; }
-        #back-btn {
-            position: fixed; top: 1rem; left: 1rem; z-index: 3000; width: 48px; height: 48px;
-            background-color: rgba(255, 255, 255, 0.4); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-            border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease-in-out;
-            border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+        #back-btn { position: fixed; top: 1rem; left: 1rem; z-index: 3000; width: 48px; height: 48px; background-color: rgba(255, 255, 255, 0.4); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease-in-out; border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         #back-btn svg { width: 24px; height: 24px; }
-
-        #game-wrapper {
-            width: 100%;
-            max-width: 1200px; /* Geniş ekranlar için maksimum genişlik */
-            max-height: 95vh; /* viewport'un %95'i gibi bir sınır */
-            /* display: flex; */ /* HTML'e taşındı */
-            flex-direction: row; /* Masaüstü varsayılan */
-            gap: 1rem; /* player-screen'ler arası boşluk */
-        }
-
-        #top-progress-bar {
-            display: none;
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto 1rem auto;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 4px;
-            padding: 0 0.5rem;
-            flex-shrink: 0;
-            direction: rtl; /* Sağdan sola ilerleme */
-        }
+        #game-wrapper { width: 100%; max-width: 1200px; max-height: 95vh; flex-direction: row; gap: 1rem; }
+        #top-progress-bar { display: none; width: 100%; max-width: 800px; margin: 0 auto 1rem auto; grid-template-columns: repeat(10, 1fr); gap: 4px; padding: 0 0.5rem; flex-shrink: 0; direction: rtl; }
         .progress-word { height: 8px; background-color: rgba(255, 255, 255, 0.4); border-radius: 4px; transition: background-color 0.3s ease; }
         .progress-word.correct { background-color: #28a745; } .progress-word.incorrect { background-color: #dc3545; }
-        .player-screen {
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem;
-            border-radius: 1.5rem;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
-            flex-grow: 1;
-            flex-basis: 0;
-            min-height: 0;
-            justify-content: space-between;
-        }
+        .player-screen { display: flex; flex-direction: column; padding: 1.5rem; border-radius: 1.5rem; position: relative; overflow: hidden; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2); flex-grow: 1; flex-basis: 0; min-height: 0; justify-content: space-between; }
         #player-1 { background-color: rgba(227, 242, 253, 0.5); } #player-2 { background-color: rgba(255, 243, 224, 0.5); }
-        body.mode-1p #player-2 { display: none; } body.mode-1p #player-1 { width: 100%; max-width: 800px; margin: 0 auto; } body.mode-1p #game-wrapper { justify-content: center; } body.mode-1p #player-1 .player-icon-wrapper { display: none; } body.mode-1p #top-progress-bar { display: grid; order: -1; } body.mode-1p #player-1 #progress-1 { display: none; } body.mode-1p #player-2 #progress-2 { display: none; }
-
-        body.mode-1p #player-1 .status-bar { justify-content: space-between; } /* Puan ve Zamanı iki uca yasla */
-        body.mode-1p #p1-timer { display: flex; }
-        body.mode-1p #p1-score-wrapper { /* margin-right: auto; kaldırıldı */ }
-
+        body.mode-1p #player-2 { display: none; } body.mode-1p #player-1 { width: 100%; max-width: 800px; margin: 0 auto; } body.mode-1p #game-wrapper { justify-content: center; } body.mode-1p #player-1 .player-icon-wrapper { display: none; } body.mode-1p #top-progress-bar { display: grid; order: -1; } body.mode-1p #player-1 #progress-1, body.mode-1p #player-2 #progress-2 { display: none; }
+        body.mode-1p #player-1 .status-bar { justify-content: space-between; } body.mode-1p #p1-timer { display: flex; } body.mode-1p #p1-score-wrapper { }
         #modal.mode-1p #result-column-2 { display: none; } #modal.mode-1p .results-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
-        body.mode-2p #player-1, body.mode-2p #player-2 { width: 50%; } #modal.mode-2p .results-grid { grid-template-columns: 1fr; } /* Varsayılan 1 sütun */ body.mode-2p #top-progress-bar { display: none; }
-        body.mode-2p #progress-1, body.mode-2p #progress-2 {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 4px;
-            width: 100%;
-            max-width: 300px;
-            margin: 0.5rem auto 1rem auto;
-            flex-shrink: 0;
-            direction: rtl; /* Sağdan sola ilerleme */
-        }
-        body.mode-2p .progress-word { height: 8px; border-radius: 4px; }
-        body.mode-2p .status-bar { justify-content: flex-end; }
-
-        .player-icon-wrapper .flex {
-            align-items: center; /* Dikey hizalama */
-            line-height: 1; /* H1'deki ekstra boşluğu azaltmak için */
-        }
-        .player-icon-wrapper h1 {
-            direction: ltr;
-            font-size: 2.5em;
-            line-height: 1; /* Dikey boşluğu kaldır */
-        }
-        .player-icon-wrapper svg {
-            width: 1em;  /* Font boyutuna göre ölçeklen */
-            height: 1em; /* Font boyutuna göre ölçeklen */
-            font-size: 2.5em; /* H1 ile aynı em değeri */
-        }
-
-
-        .question-container {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center; /* Dikey Ortalama */
-            align-items: center;
-            gap: 1rem;
-            order: 0;
-            overflow-y: auto; /* İçerik Kaydırma */
-            min-height: 0;
-            padding-bottom: 1rem; /* Alt boşluk */
-        }
+        body.mode-2p #player-1, body.mode-2p #player-2 { width: 50%; } #modal.mode-2p .results-grid { grid-template-columns: 1fr; } body.mode-2p #top-progress-bar { display: none; }
+        body.mode-2p #progress-1, body.mode-2p #progress-2 { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; width: 100%; max-width: 300px; margin: 0.5rem auto 1rem auto; flex-shrink: 0; direction: rtl; }
+        body.mode-2p .progress-word { height: 8px; border-radius: 4px; } body.mode-2p .status-bar { justify-content: flex-end; }
+        .player-icon-wrapper .flex { align-items: center; line-height: 1; }
+        .player-icon-wrapper h1 { direction: ltr; font-size: 2.5em; line-height: 1; }
+        .player-icon-wrapper svg { width: 1em; height: 1em; font-size: 2.5em; }
+        .question-container { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 1rem; order: 0; overflow-y: auto; min-height: 0; padding-bottom: 1rem; }
         .word { font-size: clamp(2.5rem, 10vw, 5rem); color: #1f2937; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); font-weight: 700; }
         .options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; width: 100%; max-width: 400px; }
         .option { background-color: #ffffff; border: 1px solid rgba(0, 0, 0, 0.05); color: #1f2937; border-radius: 1rem; padding: 1rem; text-align: center; font-size: clamp(1.8rem, 8vw, 3rem); cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); } .option:hover { background-color: #f8f9fa; transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.12); } .option:active { transform: scale(0.98); transition-duration: 0.1s; } .option.correct { background-color: #d4edda; border-color: #28a745; } .option.incorrect { background-color: #f8d7da; border-color: #dc3545; } .option.disabled { pointer-events: none; opacity: 0.7; } .option span { color: #111827; font-weight: 700; }
-        .status-bar {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: rgba(255, 255, 255, 0.25);
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 1rem;
-            font-size: 1.25rem;
-            position: relative;
-            flex-shrink: 0;
-        }
+        .status-bar { display: flex; align-items: center; width: 100%; padding: 0.75rem 1rem; background: rgba(255, 255, 255, 0.25); border-top: 1px solid rgba(255, 255, 255, 0.2); border-radius: 1rem; font-size: 1.25rem; position: relative; flex-shrink: 0; }
         #modal { position: fixed; inset: 0; z-index: 1000; overflow-y: auto; padding: 1rem; display: none; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); } .modal-content { background-color: white; padding: 2rem; border-radius: 1.5rem; text-align: center; width: 95%; max-width: 800px; position: relative; margin: auto; max-height: 90vh; overflow-y: auto; } .results-grid { display: grid; gap: 1rem; margin-top: 1.5rem; } .result-column { padding: 1rem; border-radius: 1rem; position: relative; overflow: hidden; }
         .result-item { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem; }
         .intro-screen { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; padding: 1rem; overflow-y: auto; } .info-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 1.5rem; padding: 2rem; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2); }
@@ -158,97 +62,73 @@
         .confetti { position: absolute; width: 10px; height: 10px; background-color: red; opacity: 0; animation: fall 4s linear infinite; } @keyframes fall { 0% { transform: translateY(-100vh) rotateZ(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotateZ(720deg); opacity: 0; } }
 
         /* YATAY MOD ZORLAMA STİLLERİ */
-        #rotate-device-overlay {
-            position: fixed; inset: 0; z-index: 5000;
-            background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
-            color: white; display: none; /* Varsayılan olarak gizli */
-            flex-direction: column; justify-content: center; align-items: center;
-            text-align: center; padding: 2rem;
-        }
-        #rotate-device-overlay svg {
-            width: 80px; height: 80px; margin-bottom: 1.5rem;
-            animation: rotate-anim 2s linear infinite;
-        }
+        #rotate-device-overlay { position: fixed; inset: 0; z-index: 5000; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); color: white; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem; }
+        #rotate-device-overlay svg { width: 80px; height: 80px; margin-bottom: 1.5rem; animation: rotate-anim 2s linear infinite; }
         @keyframes rotate-anim { 0% { transform: rotate(0deg); } 50% { transform: rotate(-90deg); } 100% { transform: rotate(-90deg); } }
+        @media (orientation: portrait) { #rotate-device-overlay { display: flex; } .intro-screen, #game-wrapper, #modal, #back-btn, #countdown-overlay { display: none !important; } }
+        @media (orientation: landscape) { #rotate-device-overlay { display: none; } }
 
-        /* Dikey Mod (Portrait) Algılandığında */
-        @media (orientation: portrait) {
-            #rotate-device-overlay {
-                display: flex; /* Uyarıyı göster */
-            }
-            /* Oyun içeriğini gizle */
-            .intro-screen, #game-wrapper, #modal, #back-btn, #countdown-overlay {
-                display: none !important; /* display:flex vs. durumlar için !important gerekebilir */
-            }
-        }
-        /* Yatay Mod (Landscape) Algılandığında (Ekstra kontrol) */
-         @media (orientation: landscape) {
-             #rotate-device-overlay {
-                 display: none; /* Uyarıyı gizle */
-             }
-             /* Oyun içeriğinin görünür olduğundan emin ol (JS ile gizlenmediyse) */
-             /* #rules-screen, #difficulty-screen, #game-wrapper vb. normalde zaten görünür olmalı */
-         }
-
-
-        @media (min-width: 768px) {
-            /* Tablet ve üstü için 2 sütunlu sonuç */
-            #modal.mode-2p .results-grid { grid-template-columns: 1fr 1fr; }
+        /* Tablet (genişlik 768px+) Yatay Mod */
+        @media (min-width: 768px) and (orientation: landscape) {
+             #modal.mode-2p .results-grid { grid-template-columns: 1fr 1fr; }
         }
 
-        /* MOBİL GÖRÜNÜM AYARLARI */
+        /* GENEL MOBİL (ÖNCELİKLE PORTRAIT İÇİN) - Max Genişlik 900px */
         @media (max-width: 900px) {
-             body {
-                padding: 1rem 0.5rem;
-                justify-content: center;
-            }
-
-            #back-btn { top: 0.5rem; left: 0.5rem; width: 40px; height: 40px; }
-            #back-btn svg { width: 20px; height: 20px; }
-            #game-wrapper{
-                flex-direction: column;
-                gap: 0.5rem;
-                max-height: 90vh; /* Mobil dikey yükseklik sınırı */
-            }
-            .player-screen{
-                /* Dikey padding azaltıldı */
-                padding: 0.5rem 0.75rem;
-                width: 100% !important;
-                max-width: 100% !important;
-                flex-grow: 1; /* Alanı doldur */
-                min-height: 0; /* Küçülmeye izin ver */
-            }
-            body.mode-2p .player-screen {
-                 flex-basis: 0; /* Eşit böl */
-            }
-
-            .player-icon-wrapper h1 { font-size: 2em; }
-            .player-icon-wrapper svg { font-size: 2em; }
-
-            .question-container { gap: 0.3rem; padding-bottom: 0.3rem; }
-            .word { font-size: clamp(1.8rem, 8vw, 3.5rem); }
-            .options { gap: 0.5rem; }
-            .option { padding: 0.4rem; font-size: clamp(1.4rem, 7vw, 2.2rem); min-height: 44px;}
-            .status-bar { padding: 0.3rem 0.6rem; font-size: 0.9rem; }
-            body.mode-2p #progress-1, body.mode-2p #progress-2 { gap: 2px; max-width: 150px; margin: 0.3rem auto 0.5rem auto; }
-            body.mode-2p .progress-word { height: 4px; border-radius: 2px; }
-            #top-progress-bar { margin-bottom: 0.4rem; padding: 0 0.25rem; gap: 2px; }
-            .progress-word { height: 5px; border-radius: 2.5px; }
-            .modal-content{ padding: 1rem; width: 95%; max-height: 85vh; }
-            .results-grid { margin-top: 0.75rem; }
-            .result-column { padding: 0.5rem; }
-            .result-item { font-size: 1.2rem; gap: 0.4rem; }
-            #modal-buttons { flex-direction: column; align-items: center; margin-top: 1rem; }
-            .modal-secondary-btn { font-size: 1rem; width: 100%; max-width: 200px; padding: 0.6rem 1rem; }
-            h1 { font-size: 2rem !important; }
-            h2 { font-size: 1.5rem !important; }
-            h3:not([lang="ar"]) { font-size: 1.2rem !important; }
-            p { font-size: 1rem !important; }
+             body { padding: 1rem 0.5rem; justify-content: center; }
+             #back-btn { top: 0.5rem; left: 0.5rem; width: 40px; height: 40px; } #back-btn svg { width: 20px; height: 20px; }
+             /* Portrait mobil için dikey dizilim */
+             #game-wrapper{ flex-direction: column; gap: 0.5rem; max-height: 90vh; }
+             .player-screen{ padding: 0.5rem 0.75rem; width: 100% !important; max-width: 100% !important; flex-grow: 1; min-height: 0; }
+             body.mode-2p .player-screen { flex-basis: 0; }
+             .player-icon-wrapper h1, .player-icon-wrapper svg { font-size: 2em; }
+             .question-container { gap: 0.3rem; padding-bottom: 0.3rem; }
+             .word { font-size: clamp(1.8rem, 8vw, 3.5rem); }
+             .options { gap: 0.5rem; } .option { padding: 0.4rem; font-size: clamp(1.4rem, 7vw, 2.2rem); min-height: 44px;}
+             .status-bar { padding: 0.3rem 0.6rem; font-size: 0.9rem; }
+             body.mode-2p #progress-1, body.mode-2p #progress-2 { gap: 2px; max-width: 150px; margin: 0.3rem auto 0.5rem auto; }
+             body.mode-2p .progress-word { height: 4px; border-radius: 2px; }
+             #top-progress-bar { margin-bottom: 0.4rem; padding: 0 0.25rem; gap: 2px; } .progress-word { height: 5px; border-radius: 2.5px; }
+             .modal-content{ padding: 1rem; width: 95%; max-height: 85vh; } .results-grid { margin-top: 0.75rem; }
+             .result-column { padding: 0.5rem; } .result-item { font-size: 1.2rem; gap: 0.4rem; }
+             h1 { font-size: 2rem !important; } h2 { font-size: 1.5rem !important; } h3:not([lang="ar"]) { font-size: 1.2rem !important; } p { font-size: 1rem !important; }
         }
-        /* ... diğer kurallar ... */
+
+        /* MOBİL YATAY MOD ÖZELLEŞTİRMELERİ (Düşük Yükseklik) */
+        @media (max-width: 900px) and (orientation: landscape) {
+            body { padding: 0.5rem; } /* Dikey padding azalt */
+             #back-btn { top: 0.5rem; left: 0.5rem; width: 36px; height: 36px; } #back-btn svg { width: 18px; height: 18px; }
+             /* Yatay mobil için yan yana dizilim */
+            #game-wrapper { flex-direction: row; gap: 0.5rem; max-height: 95vh; } /* Dikey limiti biraz artırabiliriz */
+            .player-screen {
+                padding: 0.4rem 0.6rem; /* Padding'i daha da azalt */
+                width: 50% !important; /* Yan yana sığdır */
+                flex-basis: 0;
+            }
+             body.mode-1p #player-1 { max-width: 600px; /* 1P modunda biraz daha daralt */ }
+            .player-icon-wrapper h1, .player-icon-wrapper svg { font-size: 1.5em; /* İkon/sayı boyutunu küçült */ }
+            .question-container { gap: 0.2rem; padding-bottom: 0.2rem; /* Boşlukları azalt */ }
+            .word { font-size: clamp(1.4rem, 6vh, 2.2rem); /* Fontu küçült, vh kullanabilir */ }
+            .options { gap: 0.3rem; max-width: 300px; /* Seçenek aralığını ve max genişliği azalt */ }
+            .option { padding: 0.3rem; font-size: clamp(1.1rem, 5vh, 1.6rem); min-height: 32px; /* Seçenekleri küçült */ border-radius: 0.75rem; }
+            .status-bar { padding: 0.2rem 0.5rem; font-size: 0.75rem; /* Durum çubuğunu küçült */ border-radius: 0.75rem; }
+             .status-bar span:first-child { font-size: 1.2em; /* Emoji/ikon boyutunu ayarla */ }
+            body.mode-2p #progress-1, body.mode-2p #progress-2 { max-width: 100px; margin: 0.2rem auto 0.4rem auto; gap: 1px; /* İlerleme çubuğunu küçült */ }
+             body.mode-2p .progress-word { height: 3px; border-radius: 1.5px; }
+             #top-progress-bar { margin-bottom: 0.3rem; gap: 1px; max-width: 500px; }
+             #top-progress-bar .progress-word { height: 4px; border-radius: 2px; }
+              /* Modal içeriğini de küçültmek gerekebilir */
+             .modal-content { padding: 0.8rem; max-height: 85vh;}
+             .results-grid { margin-top: 0.5rem; gap: 0.5rem; }
+             .result-column { padding: 0.4rem; }
+             .result-item { font-size: 0.9rem; gap: 0.3rem; margin-bottom: 0.3rem;}
+             .modal-content h2 { font-size: 1.3rem !important; margin-bottom: 0.5rem;}
+             .result-column h3 { font-size: 1rem !important; margin-bottom: 0.3rem;}
+        }
+
+
         .result-column h3 { font-family: 'Marhey', system-ui, sans-serif; }
-        .result-item span:first-child { direction: rtl; }
-        .result-item span:nth-child(2) { direction: rtl; }
+        .result-item span:first-child { direction: rtl; } .result-item span:nth-child(2) { direction: rtl; }
     </style>
 </head>
 
@@ -349,26 +229,26 @@
     </div>
 
     <script>
-        // KELİME LİSTESİ DÜZELTİLDİ VE GÜNCELLENDİ
+        // KELİME LİSTESİ - SADECE TEK KELİMELER VE HAREKESİZ
         const wordsByLetterWithHarakat = {
-             'ب': ['باب', 'خبز', 'كتاب', 'طبيب', 'بيت', 'مكتب', 'سبورة', 'حقيبة', 'شباك', 'ثلاجة', 'مصباح', 'يكتب', 'يطبخ', 'أعمال البيت', 'يلبس الملابس', 'يتناول الفطور', 'يكتب الواجب', 'واجب', 'مبكرا', 'يحب', 'البيت السعيد', 'أب', 'أبناء', 'طيب', 'مبتسم', 'غضوب', 'أحب', 'مباريات', 'يجب أن', 'سبب النجاح', 'يتجنب المرض', 'جسم قوي', 'جبن', 'بيض', 'بطيخ', 'بصل', 'بيضة', 'أبيض'],
-             'ت': ['اكتب', 'اكتبي', 'تحت', 'مكتب', 'دفتر', 'مسطرة', 'بيت', 'مطبخ', 'مرحاض', 'ستارة', 'متى', 'يتناول الفطور', 'يكتب الواجب', 'الكتاب', 'أتغدى', 'أكتب', 'أخت', 'احترام', 'طاعة', 'البيت السعيد', 'يتحدثون', 'يتعاونون', 'مستقبل', 'متواضع', 'كتابة', 'مكتبة', 'الوقت الفارغ', 'ممتع', 'وقتي', 'استراحة', 'يكتب', 'متأخرا', 'تخطيط', 'وقت', 'مستقبل', 'عادة', 'تطوير النفس', 'أسنان', 'متوازن', 'تمساح', 'تفاح', 'بنت', 'تمر', 'مفتاح', 'ثلاثة', 'أثاث', 'تلميذ'],
+             'ب': ['باب', 'خبز', 'كتاب', 'طبيب', 'بيت', 'مكتب', 'سبورة', 'حقيبة', 'شباك', 'ثلاجة', 'مصباح', 'يكتب', 'يطبخ', 'يلبس', 'واجب', 'مبكرا', 'يحب', 'أب', 'أبناء', 'طيب', 'مبتسم', 'غضوب', 'أحب', 'مباريات', 'جبن', 'بيض', 'بطيخ', 'بصل', 'بيضة', 'أبيض'],
+             'ت': ['اكتب', 'اكتبي', 'تحت', 'مكتب', 'دفتر', 'مسطرة', 'بيت', 'مطبخ', 'مرحاض', 'ستارة', 'متى', 'أتغدى', 'أكتب', 'أخت', 'احترام', 'طاعة', 'يتحدثون', 'يتعاونون', 'مستقبل', 'متواضع', 'كتابة', 'مكتبة', 'ممتع', 'وقتي', 'استراحة', 'متأخرا', 'تخطيط', 'وقت', 'عادة', 'أسنان', 'متوازن', 'تمساح', 'تفاح', 'بنت', 'تمر', 'مفتاح', 'ثلاثة', 'أثاث', 'تلميذ'],
              'ث': ['ثلاجة', 'مثلث', 'ثلاثة', 'أثاث', 'ثوب', 'ثعلب', 'يتحدثون'],
-             'ج': ['جبل', 'دجاجة', 'شجرة', 'مسجد', 'ثلج', 'حاجة', 'خروج', 'جديد', 'يجلس', 'سجادة', 'ثلاجة', 'يخرج', 'راجع', 'مجتهد', 'جنس', 'نجاح', 'جرح', 'وجه', 'جسم قوي', 'جبن', 'وجبة', 'الغداء', 'العشاء', 'جدي', 'جمل', 'خارج', 'يرجع', 'جيد'],
-             'ح': ['صباح الخير', 'مرحبا', 'الحمد لله', 'حقيبة', 'مفتاح', 'تمساح', 'ملح', 'لوح', 'حمام', 'مرحاض', 'سطح', 'يحمل', 'صحة', 'جرح', 'يستحم', 'عادات صحية', 'الحياة الصحية', 'صحي', 'النصيحة', 'صحة', 'جسم سليم', 'حاضر', 'حكمة', 'الحسنة', 'حالك', 'فطور', 'الحب', 'فرح'],
-             'خ': ['صباح الخير', 'أنا بخير', 'خبز', 'خروف', 'نخلة', 'مطبخ', 'خوخ', 'بطيخ', 'خلف', 'خارج', 'يخرج', 'يدخل', 'أخ', 'خال', 'خالة', 'إخلاص', 'آخرين', 'أخي', 'الخبز', 'الخضراوات', 'متأخرا', 'يخطط', 'تخطيط'],
-             'د': ['ديك', 'مدرسة', 'يد', 'جديد', 'أسد', 'الحمد لله', 'أعد', 'أعيدي', 'مدرس', 'صديق', 'والدان', 'جد', 'جدة', 'يد الوالدين', 'مجتهد', 'هادئ', 'أريد أن', 'مهندس', 'عدد', 'دائما', 'جدول', 'يدرس', 'نادرا', 'إبداع', 'جد', 'يضيع الوقت', 'يدان', 'دواء', 'بأدب', 'الوالدين', 'دولاب', 'دروس'],
+             'ج': ['جبل', 'دجاجة', 'شجرة', 'مسجد', 'ثلج', 'حاجة', 'خروج', 'جديد', 'يجلس', 'سجادة', 'ثلاجة', 'يخرج', 'راجع', 'مجتهد', 'جنس', 'نجاح', 'جرح', 'وجه', 'جبن', 'وجبة', 'الغداء', 'العشاء', 'جدي', 'جمل', 'خارج', 'يرجع', 'جيد'],
+             'ح': ['مرحبا', 'حقيبة', 'مفتاح', 'تمساح', 'ملح', 'لوح', 'حمام', 'مرحاض', 'سطح', 'يحمل', 'صحة', 'جرح', 'يستحم', 'صحي', 'النصيحة', 'حاضر', 'حكمة', 'الحسنة', 'حالك', 'فطور', 'الحب', 'فرح'],
+             'خ': ['أنا', 'بخير', 'خبز', 'خروف', 'نخلة', 'مطبخ', 'خوخ', 'بطيخ', 'خلف', 'خارج', 'يخرج', 'يدخل', 'أخ', 'خال', 'خالة', 'إخلاص', 'آخرين', 'أخي', 'الخبز', 'الخضراوات', 'متأخرا', 'يخطط', 'تخطيط'],
+             'د': ['ديك', 'مدرسة', 'يد', 'جديد', 'أسد', 'أعد', 'أعيدي', 'مدرس', 'صديق', 'والدان', 'جد', 'جدة', 'مجتهد', 'هادئ', 'مهندس', 'عدد', 'دائما', 'جدول', 'يدرس', 'نادرا', 'إبداع', 'جد', 'يدان', 'دواء', 'بأدب', 'دولاب', 'دروس'],
              'ذ': ['ذرة', 'أذن', 'تلميذ', 'لذيذ', 'ذهب', 'اذهب', 'أخذ', 'اعتذار', 'يؤذي', 'الغذاء', 'يأخذ'],
-             'ر': ['اقرأ', 'اقرئي', 'صباح الخير', 'مرحبا', 'شكرا', 'كرسي', 'أرنب', 'جزر', 'فرس', 'صورة', 'مريض', 'أرض', 'غرفة', 'سرير', 'مروحة', 'يقرأ', 'فرن', 'يرتب', 'مرآة', 'مرتب', 'يرجع', 'يستريح', 'يقرأ الكتاب', 'مبكرا', 'أراجع دروسي', 'احترام', 'رحمة', 'صبر', 'آخرين', 'الكبار', 'الصغار', 'مر', 'أقارب', 'أسرة', 'تراحم', 'يزور الأقارب', 'عمر', 'أريد أن', 'قراءة', 'رسم', 'رياضة', 'كرة القدم', 'كرة سلة', 'سفر', 'يقرأ', 'يرسم', 'يسافر', 'يصور', 'في الوقت الفارغ', 'الفراغ', 'استراحة', 'يدرس', 'يستريح', 'نادر', 'شرب', 'يرتب', 'سريري', 'أراجع دروسي', 'مرض', 'رياضة', 'يفرش الأسنان', 'يشرب الماء', 'يمارس الرياضة', 'يزور الطبيب', 'العصير', 'السريع', 'المشروبات الغازية', 'أرتب سريري', 'أراجع دروسي', 'رأس', 'قمر', 'نهر', 'مدرس'],
-             'ز': ['زرافة', 'ميزان', 'خبز', 'موز', 'جزر', 'تلفاز', 'أزور جدي', 'اعتذار', 'يعتذر', 'يزور الأقارب', 'عزف', 'متوازن', 'غازية', 'فطور'],
-             'س': ['السلام عليكم', 'وعليكم السلام', 'صباح النور', 'مساء الخير', 'أهلا وسهلا', 'اسمك', 'اسمي', 'اسكت', 'مدرس', 'مدرسة', 'كرسي', 'مكتب', 'مسطرة', 'يجلس', 'يغسل', 'مغسلة', 'نفسي', 'كسول', 'مبتسم', 'مستقبل', 'مهندس', 'فنان', 'رسم', 'كرة سلة', 'موسيقى', 'يسافر', 'أستمتع بـ', 'فسحة', 'يدرس', 'يستريح', 'المساء', 'أسبوع', 'مسابقة', 'يستغل الوقت', 'ماضي', 'سبب النجاح', 'تطوير النفس', 'الجسم', 'أسنان', 'يغسل', 'يفرش الأسنان', 'يستحم', 'يمارس الرياضة', 'جسم قوي', 'نوم كاف', 'أكل متوازن', 'السمك', 'العصير', 'الدسم', 'السريع', 'المشروبات الغازية', 'جسم سليم', 'عقل سليم', 'السمنة', 'المسجد', 'لسان', 'سمكة', 'شمس'],
-             'ش': ['شباك', 'شجرة', 'شمس', 'عش', 'فراشة', 'مشمش', 'شكر', 'يشكر', 'يشاهد التلفاز', 'أشاهد التلفاز', 'شخصية', 'نشيط', 'مشاهدة', 'يشاهد', 'يشرب الماء', 'الحياة النشيطة', 'المشروبات الغازية', 'العشاء', 'تشرفت', 'شخصية'],
-             'ص': ['صباح الخير', 'صباح النور', 'صديق', 'صورة', 'قميص', 'بصل', 'مقصف', 'صقر', 'يصلي', 'أصلي', 'صلاة الظهر', 'صبر', 'يصبر', 'الصغار', 'الصغار', 'شخصية', 'صبور', 'تصوير', 'يصور', 'في الصباح', 'يصبر', 'الحياة الصحية', 'صحة', 'عادات صحية', 'الطعام الصحي', 'العصير', 'النصيحة', 'الصحة', 'الصلاة'],
-             'ض': ['مريض', 'أبيض', 'بيضة', 'أرض', 'غضوب', 'أفضل', 'رياضة', 'يضيع الوقت', 'مرض', 'يتجنب المرض', 'أيضا', 'بعض', 'ضابط'],
-             'ا': ['السلام عليكم', 'انا', 'اهلا وسهلا', 'بابا', 'حالك', 'طاولة', 'هاتف', 'ثلاجة', 'دائما', 'نادرا', 'احيانا', 'ماذا', 'اقرا', 'اكتبي', 'اذهب', 'الله', 'اللقاء', 'امان', 'الى', 'أنا'],
-             'و': ['هو', 'وعليكم السلام', 'فوق', 'دولاب', 'وقت', 'يوم', 'اسبوع', 'طاولة', 'ضوء', 'وردة', 'ولد', 'واجب', 'واحد', 'وجه', 'وسخ', 'الوقت', 'نوم', 'صورة', 'خوخ', 'موز', 'عفوا', 'الواجب'],
-             'أ': ['أنا', 'أهلا وسهلا', 'أهلا بك', 'أنا بخير', 'أمان', 'اقرأ', 'اقرئي', 'أعد', 'أعيدي', 'أنت', 'أنا', 'أين', 'أنا من', 'أنا أيضا', 'أين', 'أمام', 'أعمال البيت', 'أحيانا', 'أستيقظ', 'أتغدى', 'أقرأ', 'أكتب', 'ألعب', 'أشاهد التلفاز', 'أساعد', 'أزور جدي', 'أذهب إلى المسجد', 'أرتب سريري', 'أنظف غرفتي', 'أراجع دروسي', 'أنام متأخرا', 'أمانة', 'أحد', 'أب', 'أم', 'أخ', 'أخت', 'أقارب', 'أبناء', 'أهل', 'أكتشف نفسي', 'أنا', 'أحب', 'أكره', 'أفضل', 'أحلامي', 'أهدافي', 'أريد أن أكون', 'أفلام', 'أستمتع بـ', 'أحيانا', 'أسبوع', 'أعمال', 'أجل', 'أسنان', 'أكل متوازن', 'أسد', 'أذن', 'أرض', 'أبيض']
-         };
+             'ر': ['اقرأ', 'اقرئي', 'مرحبا', 'شكرا', 'كرسي', 'أرنب', 'جزر', 'فرس', 'صورة', 'مريض', 'أرض', 'غرفة', 'سرير', 'مروحة', 'يقرأ', 'فرن', 'يرتب', 'مرآة', 'مرتب', 'يرجع', 'يستريح', 'مبكرا', 'احترام', 'رحمة', 'صبر', 'آخرين', 'الكبار', 'الصغار', 'مر', 'أقارب', 'أسرة', 'تراحم', 'عمر', 'قراءة', 'رسم', 'رياضة', 'سفر', 'يقرأ', 'يرسم', 'يسافر', 'يصور', 'الفراغ', 'استراحة', 'يدرس', 'يستريح', 'نادر', 'شرب', 'يرتب', 'سريري', 'مرض', 'رياضة', 'العصير', 'السريع', 'غازية', 'رأس', 'قمر', 'نهر', 'مدرس'],
+             'ز': ['زرافة', 'ميزان', 'خبز', 'موز', 'جزر', 'تلفاز', 'اعتذار', 'يعتذر', 'يزور', 'عزف', 'متوازن', 'غازية', 'فطور'],
+             'س': ['اسمي', 'اسكت', 'مدرس', 'مدرسة', 'كرسي', 'مكتب', 'مسطرة', 'يجلس', 'يغسل', 'مغسلة', 'نفسي', 'كسول', 'مبتسم', 'مستقبل', 'مهندس', 'فنان', 'رسم', 'موسيقى', 'يسافر', 'فسحة', 'يدرس', 'يستريح', 'المساء', 'أسبوع', 'مسابقة', 'ماضي', 'الجسم', 'أسنان', 'يغسل', 'يستحم', 'يمارس', 'السمك', 'العصير', 'الدسم', 'السريع', 'السمنة', 'المسجد', 'لسان', 'سمكة', 'شمس'],
+             'ش': ['شباك', 'شجرة', 'شمس', 'عش', 'فراشة', 'مشمش', 'شكر', 'يشكر', 'شخصية', 'نشيط', 'مشاهدة', 'يشاهد', 'غازية', 'العشاء', 'تشرفت'],
+             'ص': ['صديق', 'صورة', 'قميص', 'بصل', 'مقصف', 'صقر', 'يصلي', 'أصلي', 'صبر', 'يصبر', 'الصغار', 'شخصية', 'صبور', 'تصوير', 'يصور', 'الصباح', 'صحة', 'صحي', 'الصحة', 'الصلاة'],
+             'ض': ['مريض', 'أبيض', 'بيضة', 'أرض', 'غضوب', 'أفضل', 'رياضة', 'مرض', 'أيضا', 'بعض', 'ضابط'],
+             'ا': ['انا', 'بابا', 'حالك', 'طاولة', 'هاتف', 'ثلاجة', 'دائما', 'نادرا', 'احيانا', 'ماذا', 'اقرا', 'اكتبي', 'اذهب', 'الله', 'اللقاء', 'امان', 'الى', 'أنا'],
+             'و': ['هو', 'فوق', 'دولاب', 'وقت', 'يوم', 'اسبوع', 'طاولة', 'ضوء', 'وردة', 'ولد', 'واجب', 'واحد', 'وجه', 'وسخ', 'الوقت', 'نوم', 'صورة', 'خوخ', 'موز', 'عفوا', 'الواجب'],
+             'أ': ['أنا', 'بخير', 'أمان', 'اقرأ', 'اقرئي', 'أعد', 'أعيدي', 'أنت', 'أين', 'أيضا', 'أمام', 'أحيانا', 'أستيقظ', 'أتغدى', 'أقرأ', 'أكتب', 'ألعب', 'أساعد', 'أذهب', 'أرتب', 'أنظف', 'أراجع', 'أنام', 'أمانة', 'أحد', 'أب', 'أم', 'أخ', 'أخت', 'أقارب', 'أبناء', 'أهل', 'أكتشف', 'أحب', 'أكره', 'أفضل', 'أحلامي', 'أهدافي', 'أفلام', 'أسبوع', 'أعمال', 'أجل', 'أسنان', 'أكل', 'أسد', 'أذن', 'أرض', 'أبيض', 'أخي']
+        };
 
         const letterForms = {
             'ب': ['بـ', 'ـبـ', 'ـب', 'ب'], 'ت': ['تـ', 'ـتـ', 'ـت', 'ت'], 'ث': ['ثـ', 'ـثـ', 'ـث', 'ث'],
@@ -395,7 +275,6 @@
 
         function animateLetterFly(player, optionEl) { if (!optionEl || !optionEl.firstElementChild) return; const playerScreen = players[player].el; if (!playerScreen) return; const letterSpan = optionEl.firstElementChild; const letter = letterSpan.textContent; const rect = optionEl.getBoundingClientRect(); const playerRect = playerScreen.getBoundingClientRect(); const flyingChar = document.createElement('span'); flyingChar.className = 'flying-char'; flyingChar.textContent = letter; flyingChar.lang = 'ar'; const startX = rect.left + rect.width / 2 - playerRect.left; const startY = rect.top + rect.height / 2 - playerRect.top; flyingChar.style.left = `${startX}px`; flyingChar.style.top = `${startY}px`; playerScreen.appendChild(flyingChar); requestAnimationFrame(() => { flyingChar.style.transform = `translate(-50%, -150px) scale(0.8)`; flyingChar.style.opacity = '0'; }); setTimeout(() => { if (flyingChar.parentNode === playerScreen) { playerScreen.removeChild(flyingChar); } }, 600); }
 
-        // GENERATEMASTERQUESTIONSET GÜNCELLENDİ
         function generateMasterQuestionSet(targetNumQuestions) {
             console.log(`Generating questions for target: ${targetNumQuestions}`);
             const allLetters = Object.keys(wordsByLetterWithHarakat).filter(l => wordsByLetterWithHarakat[l] && wordsByLetterWithHarakat[l].length > 0 && letterForms[l]);
@@ -406,8 +285,6 @@
                          const cleanOriginal = removeHarakat(ow);
                          if (cleanOriginal.includes(l)) {
                              allWordsList.push({ letter: l, originalWord: ow });
-                         } else {
-                              // console.warn(`Word "${ow}" doesn't contain key letter "${l}", skipping.`);
                          }
                     });
                 }
@@ -419,12 +296,10 @@
 
             console.log(`Available unique words for generation: ${actualWordCount}, generating: ${numQuestionsToGenerate}`);
 
-             // Eğer üretilecek soru sayısı hedeften az ise, oyun ayarını GÜNCELLE
              if (numQuestionsToGenerate < gameSettings.words) {
                  console.warn(`Insufficient words (${actualWordCount}) for target ${gameSettings.words}. Setting game words to ${numQuestionsToGenerate}.`);
                  gameSettings.words = numQuestionsToGenerate;
              }
-
 
             const selectedWords = allWordsList.slice(0, numQuestionsToGenerate);
 
@@ -433,10 +308,7 @@
                 const cleanWord = removeHarakat(originalWord);
                 const cleanLetterIndex = cleanWord.indexOf(letter);
 
-                if (cleanLetterIndex === -1) {
-                    console.error(`Letter find ERROR: "${cleanWord}", "${letter}", OW:"${originalWord}"`);
-                    return null;
-                }
+                if (cleanLetterIndex === -1) { console.error(`Letter find ERROR: "${cleanWord}", "${letter}", OW:"${originalWord}"`); return null; }
 
                 const questionWord = cleanWord.substring(0, cleanLetterIndex) + 'ـ ـ ـ' + cleanWord.substring(cleanLetterIndex + 1);
                 const correctForm = getCorrectForm(cleanWord, letter, cleanLetterIndex);
@@ -459,11 +331,7 @@
                       if (!options.includes(potentialOption)) options.push(potentialOption);
                      attempts++;
                  }
-                  if (options.length < 2) {
-                       console.warn(`Could not generate >= 2 options for "${cleanWord}", letter "${letter}". Skipping.`);
-                       return null;
-                   }
-
+                  if (options.length < 2) { console.warn(`Could not generate >= 2 options for "${cleanWord}", letter "${letter}". Skipping.`); return null; }
 
                 return { letter, originalWord, word: cleanWord, questionWord, correctForm, options: shuffle(options) };
             }).filter(q => q !== null);
@@ -477,7 +345,6 @@
             return questions;
         }
 
-        // GETCORRECTFORM GÜNCELLENDİ
         function getCorrectForm(cleanWord, cleanLetter, cleanIndex) {
             const forms = letterForms[cleanLetter];
             if (!forms || forms.length === 0) { console.error("getCorrectForm: No forms for letter!", cleanLetter); return cleanLetter; }
@@ -519,7 +386,6 @@
             if (gameTimerInterval) { clearInterval(gameTimerInterval); gameTimerInterval = null; }
         }
 
-        // STARTGAMETIMER GÜNCELLENDİ
         function startGameTimer() {
             stopGameTimer();
             if (gameMode !== '1p' || gameSettings.timerDuration <= 0 || gameSettings.words <= 0) {
@@ -527,7 +393,7 @@
                 return;
             }
 
-            totalTimeLeft = gameSettings.timerDuration * gameSettings.words; // GÜNCEL kelime sayısını kullan
+            totalTimeLeft = gameSettings.timerDuration * gameSettings.words;
              console.log(`Starting timer with ${gameSettings.words} words, total time: ${totalTimeLeft}s`);
             if(p1TimerValueEl) p1TimerValueEl.textContent = formatTime(totalTimeLeft);
             if(p1TimerValueEl) p1TimerValueEl.style.color = '';
@@ -544,7 +410,6 @@
             }, 1000);
         }
 
-        // SETUPNEWGAME GÜNCELLENDİ
         function setupNewGame() {
             console.log("setupNewGame:", gameMode);
             let targetWordCount = (gameMode === '1p') ? 20 : 10;
@@ -556,12 +421,11 @@
                  if(p1TimerValueEl) p1TimerValueEl.textContent = formatTime(gameSettings.timerDuration * targetWordCount); // Hedef sayı ile başla
             } else if (p1TimerEl) p1TimerEl.classList.add('hidden');
 
-            // --- Soruları Üret (generate GEREKİRSE gameSettings.words'ü günceller) ---
+            // --- Soruları Üret ---
             const questions1 = generateMasterQuestionSet(targetWordCount);
             let currentWordCount = gameSettings.words; // Güncel sayı
              console.log("P1 Qs generated:", questions1.length, "Current game words:", currentWordCount);
 
-             // 1P ve kelime sayısı düştüyse ZAMANI AYARLA
              if (gameMode === '1p' && currentWordCount < targetWordCount) {
                   totalTimeLeft = gameSettings.timerDuration * currentWordCount; // Yeni zamanı hesapla
                   if(p1TimerValueEl) p1TimerValueEl.textContent = formatTime(totalTimeLeft); // Göstergeyi güncelle
@@ -572,8 +436,8 @@
             players['1'].scoreEl.textContent = '0'; players['1'].wordEl.textContent = "...";
 
             if (gameMode === '2p') {
-                state.answers['2'] = []; // 2P için cevap array'ini başlat
-                const questions2 = generateMasterQuestionSet(targetWordCount); // P2 için de üret (bu da gameSettings.words'ü etkileyebilir)
+                state.answers['2'] = [];
+                const questions2 = generateMasterQuestionSet(targetWordCount);
                 currentWordCount = gameSettings.words; // En GÜNCEL sayı
                 console.log("P2 Qs generated:", questions2.length, "Final game words:", currentWordCount);
 
@@ -586,8 +450,7 @@
                 players['2'].scoreEl.textContent = '0'; players['2'].wordEl.textContent = "...";
             }
 
-             // --- Progress Bar'ları GÜNCEL kelime sayısına göre kur ---
-             setupProgressBars();
+             setupProgressBars(); // Tüm generate işlemleri bittikten sonra çağır
 
             modal.style.display = 'none';
             if (gameSettings.words > 0) {
@@ -600,40 +463,25 @@
             }
         }
 
-        // SETUPPROGRESSBARS GÜNCELLENDİ (Sıfır kelime kontrolü)
         function setupProgressBars() {
              const numQuestions = gameSettings.words;
              console.log("Setting up progress bars for", numQuestions, "words");
-             topProgressBar.innerHTML = ''; // Önce temizle
+             topProgressBar.innerHTML = '';
              if (players['1'].progressEl) players['1'].progressEl.innerHTML = '';
              if (players['2'].progressEl) players['2'].progressEl.innerHTML = '';
 
-             if (numQuestions <= 0) { // Eğer hiç soru yoksa, bar oluşturma
-                 console.warn("No questions to generate progress bar for.");
-                 return;
-             }
+             if (numQuestions <= 0) { console.warn("No questions for progress bar."); return; }
 
              if (gameMode === '1p') {
-                 let columns = numQuestions > 10 ? Math.ceil(numQuestions / 2) : numQuestions;
-                 columns = Math.min(10, columns); // Max 10 sütun
-                 let rows = numQuestions > 10 ? 2 : 1; // 10'dan fazlaysa 2 satır
-                 topProgressBar.style.display = 'grid';
-                 topProgressBar.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-                 topProgressBar.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
-                 for (let i = 0; i < numQuestions; i++) {
-                     const wordDiv = document.createElement('div');
-                     wordDiv.classList.add('progress-word');
-                     topProgressBar.appendChild(wordDiv);
-                 }
-             } else { // 2P
+                 let columns = numQuestions > 10 ? Math.ceil(numQuestions / 2) : numQuestions; columns = Math.min(10, columns);
+                 let rows = numQuestions > 10 ? 2 : 1;
+                 topProgressBar.style.display = 'grid'; topProgressBar.style.gridTemplateRows = `repeat(${rows}, 1fr)`; topProgressBar.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+                 for (let i = 0; i < numQuestions; i++) { const wordDiv = document.createElement('div'); wordDiv.classList.add('progress-word'); topProgressBar.appendChild(wordDiv); }
+             } else {
                  ['1', '2'].forEach(p => {
                      if(players[p].progressEl) {
                          players[p].progressEl.style.gridTemplateColumns = `repeat(${numQuestions}, 1fr)`;
-                         for (let i = 0; i < numQuestions; i++) {
-                             const wordDiv = document.createElement('div');
-                             wordDiv.classList.add('progress-word');
-                             players[p].progressEl.appendChild(wordDiv);
-                         }
+                         for (let i = 0; i < numQuestions; i++) { const wordDiv = document.createElement('div'); wordDiv.classList.add('progress-word'); players[p].progressEl.appendChild(wordDiv); }
                      }
                  });
              }
@@ -641,19 +489,9 @@
 
         function displayQuestion(player, question) { if (!question || !question.questionWord || !question.options || question.options.length < 2) { console.error(`Invalid Q or Options: P${player}, R${state.currentRound}`, question); endRound('error'); return; } if (!players[player] || !players[player].wordEl || !players[player].optionsEl) { console.error(`P${player} DOM elements missing!`); return; } players[player].wordEl.textContent = question.questionWord; players[player].optionsEl.innerHTML = ''; const shuffledOptions = shuffle([...question.options]); players[player].optionsEl.style.gridTemplateColumns = 'repeat(2, 1fr)'; shuffledOptions.forEach((opt) => { const optionDiv = document.createElement('div'); optionDiv.classList.add('option'); const charSpan = document.createElement('span'); charSpan.textContent = opt; optionDiv.appendChild(charSpan); optionDiv.onclick = (event) => handleAnswer(player, opt, question.correctForm, event.currentTarget); players[player].optionsEl.appendChild(optionDiv); }); }
 
-        // HANDLEANSWER GÜNCELLENDİ (Tur tekrar cevaplama engeli, progress bar index kontrolü)
         function handleAnswer(player, selectedOption, correctOption, clickedEl) {
-             // 1P modunda, bu tur için ZATEN cevap verilmişse engelle
-             if (gameMode === '1p' && state.answers['1'][state.currentRound] !== undefined) {
-                 // console.log(`Round ${state.currentRound} already answered for P1.`);
-                 return;
-             }
-             // 2P modunda, bu oyuncu bu tur için ZATEN cevap vermişse engelle
-              if (gameMode === '2p' && state.playerResponses[player] !== null) {
-                  // console.log(`Player ${player} already answered round ${state.currentRound}.`);
-                  return;
-              }
-
+             if (gameMode === '1p' && state.answers['1'][state.currentRound] !== undefined) return;
+             if (gameMode === '2p' && state.playerResponses[player] !== null) return;
 
             initAudio();
             if (state.currentRound < 0 || state.currentRound >= gameSettings.words) { console.warn(`handleAnswer called for invalid round: ${state.currentRound}`); return; }
@@ -695,7 +533,6 @@
 
         function highlightOptions(player, selected, correct) { const optionsContainer = players[player].optionsEl; if (!optionsContainer) return; const options = optionsContainer.children; for (let opt of options) { opt.classList.add('disabled'); if (opt.firstElementChild) { const optionText = opt.firstElementChild.textContent; if (optionText === correct) { opt.classList.add('correct'); } else if (optionText === selected && correct !== null) { opt.classList.add('incorrect'); } } } }
 
-        // UPDATESCORES GÜNCELLENDİ
         function updateScores() {
              if (state.currentRound < 0 || state.currentRound >= gameSettings.words) { console.warn("updateScores invalid round:", state.currentRound); return; }
              const p1Q = state.playerQuestions['1']?.[state.currentRound]; const p2Q = state.playerQuestions['2']?.[state.currentRound];
@@ -716,7 +553,6 @@
              state.scores['1'] += p1Pts; state.scores['2'] += p2Pts;
              players['1'].scoreEl.textContent = state.scores['1']; players['2'].scoreEl.textContent = state.scores['2'];
 
-             // Progress bar updates with index check
              const p1Prg = players['1'].progressEl?.children;
              if (p1Prg && state.currentRound < p1Prg.length) p1Prg[state.currentRound].classList.add(p1Correct ? 'correct' : 'incorrect');
              else console.warn("P1 Progress idx out of bounds:", state.currentRound);
@@ -727,15 +563,11 @@
         }
 
 
-        // NEXTQUESTION GÜNCELLENDİ
         function nextQuestion() {
             state.currentRound++;
-            console.log(`Next Round: ${state.currentRound + 1} / ${gameSettings.words}`); // Log format düzeltildi
-            if (state.currentRound >= gameSettings.words) {
-                console.log("Game Over - All questions presented.");
-                endRound('completed');
-                return;
-            }
+            console.log(`Next Round: ${state.currentRound + 1} / ${gameSettings.words}`);
+            if (state.currentRound >= gameSettings.words) { console.log("Game Over - All questions presented."); endRound('completed'); return; }
+
             if (gameMode === '1p') {
                 const question = state.playerQuestions['1']?.[state.currentRound];
                 if (question) displayQuestion('1', question);
@@ -747,33 +579,25 @@
                  if (q1 && q2) { displayQuestion('1', q1); displayQuestion('2', q2); }
                  else { console.error(`2P Q load error! P1:${!!q1}, P2:${!!q2} for R${state.currentRound}`); endRound('error'); }
             }
-            if (gameMode === '1p' && p1TimerValueEl) {
-                 p1TimerValueEl.style.color = (totalTimeLeft <= 10 && totalTimeLeft > 0) ? '#dc3545' : '';
-             }
+            if (gameMode === '1p' && p1TimerValueEl) p1TimerValueEl.style.color = (totalTimeLeft <= 10 && totalTimeLeft > 0) ? '#dc3545' : '';
         }
-        // ENDROUND GÜNCELLENDİ
-         function endRound(reason) {
+
+        function endRound(reason) {
              console.log("endRound:", reason, "Total words:", gameSettings.words);
              stopGameTimer();
-             modal.classList.add(gameMode === '1p' ? 'mode-1p' : 'mode-2p');
-             modal.classList.remove(gameMode === '1p' ? 'mode-2p' : 'mode-1p');
+             modal.classList.add(gameMode === '1p' ? 'mode-1p' : 'mode-2p'); modal.classList.remove(gameMode === '1p' ? 'mode-2p' : 'mode-1p');
 
-             const totalQuestions = gameSettings.words; // Gerçekleşen toplam soru sayısı
+             const totalQuestions = gameSettings.words;
 
-             // Hata durumu veya sıfır soru durumu
               if (reason === 'error' || (totalQuestions <= 0 && reason !== 'error')) {
                   winnerText.textContent = (reason === 'error') ? "Oyun Hatası!" : "Yeterli soru bulunamadı!";
-                  if (players['1'].resultsEl) players['1'].resultsEl.innerHTML = '';
-                  if (players['2'].resultsEl) players['2'].resultsEl.innerHTML = '';
+                  if (players['1'].resultsEl) players['1'].resultsEl.innerHTML = ''; if (players['2'].resultsEl) players['2'].resultsEl.innerHTML = '';
                    if (document.getElementById('result-column-2')) document.getElementById('result-column-2').style.display = 'none';
-                   if (document.querySelector('#results-container .results-grid')) document.querySelector('#results-container .results-grid').style.gridTemplateColumns = '1fr';
-                  modal.style.display = 'flex';
-                  return;
+                   const grid = document.querySelector('#results-container .results-grid'); if (grid) grid.style.gridTemplateColumns = '1fr';
+                  modal.style.display = 'flex'; return;
               }
 
-
              const arabicNumerals = Array.from({length: totalQuestions}, (_, i) => (i + 1).toLocaleString('ar-EG'));
-
              const score1 = state.scores ? state.scores['1'] : 0;
              const p1Answers = state.answers['1'] || [];
              const numQuestionsAnswered1P = p1Answers.filter(a => a !== undefined && a !== null).length;
@@ -782,218 +606,101 @@
              winnerText.lang = 'tr'; winnerText.dir = 'ltr';
 
              if (gameMode === '1p') {
-                 const correctCount = p1Answers.filter(a => a?.correct).length; // null/undefined kontrolü
+                 const correctCount = p1Answers.filter(a => a?.correct).length;
+                 winnerText.textContent = (reason === 'timeup') ? `Süre Bitti! Skor: ${score1}` : `Tebrikler! Skor: ${score1}`;
 
-                 if (reason === 'timeup') winnerText.textContent = `Süre Bitti! Skor: ${score1}`;
-                 else if (reason === 'completed') winnerText.textContent = `Tebrikler! Skor: ${score1}`;
-                 else winnerText.textContent = `Oyun Bitti! Skor: ${score1}`;
+                 const p1H3 = document.querySelector('#result-column-1 h3'); if (p1H3) { p1H3.textContent = 'Sonuçların'; p1H3.lang = 'tr'; p1H3.dir = 'ltr'; }
+                 const scoreDiv1 = document.createElement('div'); scoreDiv1.className = 'flex items-center justify-center gap-2 text-3xl mb-2 w-full'; scoreDiv1.innerHTML = `<span class="text-4xl">⭐</span><span>${score1}</span>`; players['1'].resultsEl.appendChild(scoreDiv1);
+                 const countDiv = document.createElement('div'); countDiv.className = 'flex items-center justify-center gap-2 text-2xl mb-4 w-full text-gray-700'; countDiv.dir = 'ltr'; countDiv.innerHTML = (reason === 'timeup') ? `✓ ${correctCount} / ${numQuestionsAnswered1P} (Toplam: ${totalQuestions})` : `✓ ${correctCount} / ${totalQuestions}`; players['1'].resultsEl.appendChild(countDiv);
 
-
-                 const p1H3 = document.querySelector('#result-column-1 h3');
-                 if (p1H3) { p1H3.textContent = 'Sonuçların'; p1H3.lang = 'tr'; p1H3.dir = 'ltr'; }
-
-                 const scoreDiv1 = document.createElement('div');
-                 scoreDiv1.className = 'flex items-center justify-center gap-2 text-3xl mb-2 w-full';
-                 scoreDiv1.innerHTML = `<span class="text-4xl">⭐</span><span>${score1}</span>`;
-                 players['1'].resultsEl.appendChild(scoreDiv1);
-
-                 const countDiv = document.createElement('div');
-                 countDiv.className = 'flex items-center justify-center gap-2 text-2xl mb-4 w-full text-gray-700'; countDiv.dir = 'ltr';
-                 countDiv.innerHTML = (reason === 'timeup') ? `✓ ${correctCount} / ${numQuestionsAnswered1P} (Toplam: ${totalQuestions})` : `✓ ${correctCount} / ${totalQuestions}`;
-                 players['1'].resultsEl.appendChild(countDiv);
-
-                 // Sonuç listesi
                  for(let i=0; i < totalQuestions; i++){
-                      const ans1 = p1Answers[i];
-                      const questionWord = state.playerQuestions['1']?.[i]?.word ?? '-'; // ?? ile fallback
-                      const wordToShow = ans1?.word ?? questionWord;
-                      const isCorrect = ans1?.correct ?? false;
-                      const mark1 = ans1 ? (isCorrect ? '✓' : '✗') : '-';
-                      const color = ans1 ? (isCorrect ? 'green' : 'red') : 'grey';
-
-                      const div1 = document.createElement('div'); div1.classList.add('result-item');
-                      div1.innerHTML = `<span lang="ar">${arabicNumerals[i]}</span><span lang="ar">${wordToShow}</span><span style="color: ${color};">${mark1}</span>`;
-                      players['1'].resultsEl.appendChild(div1);
+                      const ans1 = p1Answers[i]; const questionWord = state.playerQuestions['1']?.[i]?.word ?? '-';
+                      const wordToShow = ans1?.word ?? questionWord; const isCorrect = ans1?.correct ?? false;
+                      const mark1 = ans1 ? (isCorrect ? '✓' : '✗') : '-'; const color = ans1 ? (isCorrect ? 'green' : 'red') : 'grey';
+                      const div1 = document.createElement('div'); div1.classList.add('result-item'); div1.innerHTML = `<span lang="ar">${arabicNumerals[i]}</span><span lang="ar">${wordToShow}</span><span style="color: ${color};">${mark1}</span>`; players['1'].resultsEl.appendChild(div1);
                   }
-
-                 document.getElementById('result-column-2').style.display = 'none';
-                 const grid1P = document.querySelector('#results-container .results-grid');
-                 if (grid1P) grid1P.style.gridTemplateColumns = '1fr';
+                 document.getElementById('result-column-2').style.display = 'none'; const grid1P = document.querySelector('#results-container .results-grid'); if (grid1P) grid1P.style.gridTemplateColumns = '1fr';
 
              } else { // 2P Mode
                  if (players['2'].resultsEl) players['2'].resultsEl.innerHTML = ''; else console.error("P2 results element missing!");
                  document.getElementById('result-column-2').style.display = 'block';
 
-                 const p1H3 = document.querySelector('#result-column-1 h3');
-                 if (p1H3) { p1H3.textContent = 'Oyuncu 2'; p1H3.lang = 'tr'; p1H3.dir = 'ltr'; }
-                 const p2H3 = document.querySelector('#result-column-2 h3');
-                 if (p2H3) { p2H3.textContent = 'Oyuncu 1'; p2H3.lang = 'tr'; p2H3.dir = 'ltr'; }
+                 const p1H3 = document.querySelector('#result-column-1 h3'); if (p1H3) { p1H3.textContent = 'Oyuncu 2'; p1H3.lang = 'tr'; p1H3.dir = 'ltr'; }
+                 const p2H3 = document.querySelector('#result-column-2 h3'); if (p2H3) { p2H3.textContent = 'Oyuncu 1'; p2H3.lang = 'tr'; p2H3.dir = 'ltr'; }
 
                  const score2 = state.scores ? state.scores['2'] : 0;
-                 if (score1 > score2) { triggerConfetti('1'); winnerText.textContent = `Oyuncu 2 Kazandı!`; }
-                 else if (score2 > score1) { triggerConfetti('2'); winnerText.textContent = `Oyuncu 1 Kazandı!`; }
-                 else { winnerText.textContent = 'Berabere!'; }
+                 if (score1 > score2) { triggerConfetti('1'); winnerText.textContent = `Oyuncu 2 Kazandı!`; } else if (score2 > score1) { triggerConfetti('2'); winnerText.textContent = `Oyuncu 1 Kazandı!`; } else { winnerText.textContent = 'Berabere!'; }
 
                  const p2Answers = state.answers['2'] || [];
+                 const scoreDiv1 = document.createElement('div'); scoreDiv1.className = 'flex items-center justify-center gap-2 text-3xl mb-4 w-full'; scoreDiv1.innerHTML = `<span class="text-4xl">⭐</span><span>${score1}</span>`; players['1'].resultsEl.appendChild(scoreDiv1);
+                 const scoreDiv2 = document.createElement('div'); scoreDiv2.className = 'flex items-center justify-center gap-2 text-3xl mb-4 w-full'; scoreDiv2.innerHTML = `<span class="text-4xl">⭐</span><span>${score2}</span>`; players['2'].resultsEl.appendChild(scoreDiv2);
 
-                 const scoreDiv1 = document.createElement('div');
-                 scoreDiv1.className = 'flex items-center justify-center gap-2 text-3xl mb-4 w-full';
-                 scoreDiv1.innerHTML = `<span class="text-4xl">⭐</span><span>${score1}</span>`;
-                 players['1'].resultsEl.appendChild(scoreDiv1);
-
-                 const scoreDiv2 = document.createElement('div');
-                 scoreDiv2.className = 'flex items-center justify-center gap-2 text-3xl mb-4 w-full';
-                 scoreDiv2.innerHTML = `<span class="text-4xl">⭐</span><span>${score2}</span>`;
-                 players['2'].resultsEl.appendChild(scoreDiv2);
-
-                 // Sonuç listesi
                  for(let i=0; i < totalQuestions; i++){
-                     const ans1 = p1Answers[i]; const ans2 = p2Answers[i];
-                     const q1 = state.playerQuestions['1']?.[i]; const q2 = state.playerQuestions['2']?.[i];
-
-                     const word1 = ans1?.word ?? q1?.word ?? '-';
-                     const correct1 = ans1?.correct ?? false;
-                     const time1 = ans1?.time ?? Infinity;
-
-                     const word2 = ans2?.word ?? q2?.word ?? '-';
-                     const correct2 = ans2?.correct ?? false;
-                     const time2 = ans2?.time ?? Infinity;
+                     const ans1 = p1Answers[i]; const ans2 = p2Answers[i]; const q1 = state.playerQuestions['1']?.[i]; const q2 = state.playerQuestions['2']?.[i];
+                     const word1 = ans1?.word ?? q1?.word ?? '-'; const correct1 = ans1?.correct ?? false; const time1 = ans1?.time ?? Infinity;
+                     const word2 = ans2?.word ?? q2?.word ?? '-'; const correct2 = ans2?.correct ?? false; const time2 = ans2?.time ?? Infinity;
 
                      let p1Speed = false; let p2Speed = false;
                      if (ans1 && ans2) { if (correct1 && correct2) { if (time1 < time2) p1Speed = true; else if (time2 < time1) p2Speed = true; } else if (correct1) p1Speed = true; else if (correct2) p2Speed = true; }
-                     else if (ans1 && correct1) p1Speed = true;
-                     else if (ans2 && correct2) p2Speed = true;
+                     else if (ans1 && correct1) p1Speed = true; else if (ans2 && correct2) p2Speed = true;
 
                      const icon = '⚡️';
-                     const div1 = document.createElement('div'); div1.classList.add('result-item');
-                     const mark1 = ans1 ? (correct1 ? '✓' : '✗') : '-'; const color1 = ans1 ? (correct1 ? 'green' : 'red') : 'grey';
-                     div1.innerHTML = `<span lang="ar">${arabicNumerals[i]}</span><span lang="ar">${word1}</span><span style="color: ${color1};">${mark1}</span>${p1Speed ? `<span class="text-yellow-500">${icon}</span>` : ''}`;
-                     players['1'].resultsEl.appendChild(div1);
-
-                     const div2 = document.createElement('div'); div2.classList.add('result-item');
-                     const mark2 = ans2 ? (correct2 ? '✓' : '✗') : '-'; const color2 = ans2 ? (correct2 ? 'green' : 'red') : 'grey';
-                     div2.innerHTML = `<span lang="ar">${arabicNumerals[i]}</span><span lang="ar">${word2}</span><span style="color: ${color2};">${mark2}</span>${p2Speed ? `<span class="text-yellow-500">${icon}</span>` : ''}`;
-                     if (players['2'].resultsEl) players['2'].resultsEl.appendChild(div2);
+                     const div1 = document.createElement('div'); div1.classList.add('result-item'); const mark1 = ans1 ? (correct1 ? '✓' : '✗') : '-'; const color1 = ans1 ? (correct1 ? 'green' : 'red') : 'grey'; div1.innerHTML = `<span lang="ar">${arabicNumerals[i]}</span><span lang="ar">${word1}</span><span style="color: ${color1};">${mark1}</span>${p1Speed ? `<span class="text-yellow-500">${icon}</span>` : ''}`; players['1'].resultsEl.appendChild(div1);
+                     const div2 = document.createElement('div'); div2.classList.add('result-item'); const mark2 = ans2 ? (correct2 ? '✓' : '✗') : '-'; const color2 = ans2 ? (correct2 ? 'green' : 'red') : 'grey'; div2.innerHTML = `<span lang="ar">${arabicNumerals[i]}</span><span lang="ar">${word2}</span><span style="color: ${color2};">${mark2}</span>${p2Speed ? `<span class="text-yellow-500">${icon}</span>` : ''}`; if (players['2'].resultsEl) players['2'].resultsEl.appendChild(div2);
                  }
-                 // Tablet ve üstü için 2 sütunlu grid ayarı (CSS'de yoksa JS ile yapılabilir)
-                 const resultsGrid = document.querySelector('#modal.mode-2p .results-grid');
-                 if (resultsGrid && window.innerWidth >= 768) {
-                     resultsGrid.style.gridTemplateColumns = '1fr 1fr';
-                 } else if (resultsGrid) {
-                     resultsGrid.style.gridTemplateColumns = '1fr';
-                 }
-
+                 const resultsGrid = document.querySelector('#modal.mode-2p .results-grid'); if (resultsGrid && window.innerWidth >= 768) resultsGrid.style.gridTemplateColumns = '1fr 1fr'; else if (resultsGrid) resultsGrid.style.gridTemplateColumns = '1fr';
              }
-             resultsWrapper.style.display = 'block';
-             modal.style.display = 'flex';
+             resultsWrapper.style.display = 'block'; modal.style.display = 'flex';
         }
-
 
 
         function startIntroCountdown(callback) { console.log("Intro Countdown"); if (introCountdownInterval) clearInterval(introCountdownInterval); const nums = { '3': '٣', '2': '٢', '1': '١' }; let count = 3; countdownOverlay.classList.remove('hidden'); countdownNumber.textContent = nums[count]; introCountdownInterval = setInterval(() => { count--; if (count > 0) { countdownNumber.textContent = nums[count]; } else { clearInterval(introCountdownInterval); introCountdownInterval = null; countdownOverlay.classList.add('hidden'); if(callback) { callback(); } } }, 1000); }
 
         function start1PGame(difficulty) {
             console.log("start1PGame:", difficulty);
-            let timerDuration = 0;
-            if (difficulty === 'easy') { timerDuration = 6; }
-            else if (difficulty === 'medium') { timerDuration = 4.5; }
-            else if (difficulty === 'hard') { timerDuration = 3; }
-
-            gameSettings.difficulty = difficulty;
-            gameSettings.timerDuration = timerDuration;
-            // gameSettings.words setupNewGame içinde 20 olarak ayarlanacak
-
-            document.body.classList.remove('mode-2p');
-            document.body.classList.add('mode-1p');
-            difficultyScreen.classList.add('hidden');
-            gameWrapper.classList.remove('hidden');
+            let timerDuration = {'easy': 6, 'medium': 4.5, 'hard': 3}[difficulty] || 5;
+            gameSettings.difficulty = difficulty; gameSettings.timerDuration = timerDuration;
+            document.body.classList.remove('mode-2p'); document.body.classList.add('mode-1p');
+            difficultyScreen.classList.add('hidden'); gameWrapper.classList.remove('hidden');
             setupNewGame();
         }
 
-        // RETURNTOMENU GÜNCELLENDİ
         function returnToMenu() {
             console.log("returnToMenu");
             if (introCountdownInterval) { clearInterval(introCountdownInterval); introCountdownInterval = null; countdownOverlay.classList.add('hidden'); }
-            stopGameTimer();
-            state = {}; gameSettings = { words: 10, difficulty: null, timerDuration: 0 }; // Ayarları sıfırla
-            modal.style.display = 'none'; // Modalı gizle
-            gameWrapper.classList.add('hidden'); // Oyun alanını gizle
-            difficultyScreen.classList.add('hidden'); // Zorluk ekranını gizle
-            rulesScreen.classList.remove('hidden'); // Ana menüyü göster
-            if (players['1'].wordEl) players['1'].wordEl.textContent = "...";
-            if (players['2'].wordEl) players['2'].wordEl.textContent = "...";
-            document.body.classList.remove('mode-1p', 'mode-2p');
-            gameMode = null;
+            stopGameTimer(); state = {}; gameSettings = { words: 10, difficulty: null, timerDuration: 0 };
+            modal.style.display = 'none'; gameWrapper.classList.add('hidden'); difficultyScreen.classList.add('hidden'); rulesScreen.classList.remove('hidden');
+            if (players['1'].wordEl) players['1'].wordEl.textContent = "..."; if (players['2'].wordEl) players['2'].wordEl.textContent = "...";
+            document.body.classList.remove('mode-1p', 'mode-2p'); gameMode = null;
         }
 
-        // RETURNTODifficultyScreen GÜNCELLENDİ
         function returnToDifficultyScreen() {
             console.log("returnToDifficultyScreen");
-            stopGameTimer();
-            state = {}; // Mevcut oyun durumunu sıfırla
-            // gameSettings'i sıfırlama, zorluk seçimine geri dönüldü
-            modal.style.display = 'none';
-            gameWrapper.classList.add('hidden');
-            difficultyScreen.classList.remove('hidden'); // Zorluk ekranını göster
-            rulesScreen.classList.add('hidden'); // Ana menüyü gizle
+            stopGameTimer(); state = {};
+            modal.style.display = 'none'; gameWrapper.classList.add('hidden');
+            difficultyScreen.classList.remove('hidden'); rulesScreen.classList.add('hidden');
             if (players['1'].wordEl) players['1'].wordEl.textContent = "...";
-            // Mod zaten '1p' olmalı
         }
 
 
-        // EVENT LISTENERS GÜNCELLENDİ (Geri butonu mantığı)
+        // EVENT LISTENERS
         document.addEventListener('DOMContentLoaded', () => {
              console.log("DOM Loaded");
+             if(!backBtn || !start1PBtn || !start2PBtn || !easyBtn || !mediumBtn || !hardBtn) console.error("One or more essential buttons are missing!");
 
-             if(backBtn) {
-                 backBtn.onclick = () => {
-                      let onRules = !rulesScreen.classList.contains('hidden');
-                      let onDifficulty = !difficultyScreen.classList.contains('hidden');
-                      let onGame = !gameWrapper.classList.contains('hidden');
-                      let onModal = modal.style.display === 'flex';
-
-                      console.log(`Back btn: rules=${onRules}, diff=${onDifficulty}, game=${onGame}, modal=${onModal}, mode=${gameMode}`);
-
-                      if (onDifficulty) returnToMenu(); // Zorluktaysan -> Ana Menü
-                      else if (onGame) { // Oyundaysan
-                           if (gameMode === '1p') returnToDifficultyScreen(); // 1P -> Zorluk
-                           else returnToMenu(); // 2P -> Ana Menü
-                      }
-                      else if (onModal) { // Oyun sonu modalı açıksa
-                           if (gameMode === '1p') returnToDifficultyScreen(); // 1P -> Zorluk
-                           else returnToMenu(); // 2P -> Ana Menü
-                      }
-                       // Ana menüdeyse (onRules) bir şey yapma
-                       // Beklenmedik durum -> Ana Menü
-                       else if (!onRules) returnToMenu();
-
-                 };
-             } else { console.error("backBtn missing!"); }
-
-
-             if (start1PBtn) {
-                 start1PBtn.onclick = () => {
-                     console.log("1P clicked");
-                     gameMode = '1p';
-                     document.body.classList.remove('mode-2p'); document.body.classList.add('mode-1p');
-                     rulesScreen.classList.add('hidden'); difficultyScreen.classList.remove('hidden');
-                 };
-             } else { console.error("start1PBtn missing!"); }
-
-             if (start2PBtn) {
-                 start2PBtn.onclick = () => {
-                     console.log("2P clicked");
-                     gameMode = '2p';
-                     gameSettings.difficulty = null; gameSettings.timerDuration = 0; // words setupNewGame'de ayarlanacak
-                     document.body.classList.remove('mode-1p'); document.body.classList.add('mode-2p');
-                     rulesScreen.classList.add('hidden'); gameWrapper.classList.remove('hidden');
-                     startIntroCountdown(setupNewGame);
-                };
-             } else { console.error("start2PBtn missing!"); }
-
-             if (easyBtn) easyBtn.onclick = () => start1PGame('easy'); else console.error("easyBtn missing!");
-             if (mediumBtn) mediumBtn.onclick = () => start1PGame('medium'); else console.error("mediumBtn missing!");
-             if (hardBtn) hardBtn.onclick = () => start1PGame('hard'); else console.error("hardBtn missing!");
+             if(backBtn) backBtn.onclick = () => {
+                  let onRules = !rulesScreen.classList.contains('hidden'); let onDifficulty = !difficultyScreen.classList.contains('hidden'); let onGame = !gameWrapper.classList.contains('hidden'); let onModal = modal.style.display === 'flex';
+                  console.log(`Back btn: rules=${onRules}, diff=${onDifficulty}, game=${onGame}, modal=${onModal}, mode=${gameMode}`);
+                  if (onDifficulty) returnToMenu();
+                  else if (onGame) { if (gameMode === '1p') returnToDifficultyScreen(); else returnToMenu(); }
+                  else if (onModal) { if (gameMode === '1p') returnToDifficultyScreen(); else returnToMenu(); }
+                  else if (!onRules) returnToMenu(); // Fallback
+             };
+             if (start1PBtn) start1PBtn.onclick = () => { console.log("1P clicked"); gameMode = '1p'; document.body.classList.remove('mode-2p'); document.body.classList.add('mode-1p'); rulesScreen.classList.add('hidden'); difficultyScreen.classList.remove('hidden'); };
+             if (start2PBtn) start2PBtn.onclick = () => { console.log("2P clicked"); gameMode = '2p'; gameSettings.difficulty = null; gameSettings.timerDuration = 0; document.body.classList.remove('mode-1p'); document.body.classList.add('mode-2p'); rulesScreen.classList.add('hidden'); gameWrapper.classList.remove('hidden'); startIntroCountdown(setupNewGame); };
+             if (easyBtn) easyBtn.onclick = () => start1PGame('easy');
+             if (mediumBtn) mediumBtn.onclick = () => start1PGame('medium');
+             if (hardBtn) hardBtn.onclick = () => start1PGame('hard');
         });
     </script>
 
