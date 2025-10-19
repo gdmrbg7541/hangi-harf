@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>اِخْتِيار الحَرْف الصَّحيح</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -378,6 +378,95 @@ body{
 @media (max-width: 480px){
   .options{ grid-template-columns: 1fr; max-width: 100%; }
 }
+</style>
+
+
+<style>
+/* === Mobile Optimizations (<= 900px) === */
+* { -webkit-tap-highlight-color: transparent; }
+html{ -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+img, video, canvas, svg{ max-width: 100%; height: auto; }
+
+@media (max-width: 900px){
+  :root{ --headerH: 76px; }
+  body{ padding-inline: clamp(10px, 3.5vw, 18px); }
+
+  /* İki oyuncu paneli üst üste gelsin */
+  #game-wrapper{
+    flex-direction: column;
+    align-items: stretch;
+    min-height: auto; /* daha serbest */
+    gap: clamp(12px, 3.5vw, 24px);
+  }
+
+  .player-screen, .preview-player-screen{
+    width: 100%;
+    max-width: 100%;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+  }
+
+  /* Başlık daha kompakt ve yapışkan */
+  .site-header{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: saturate(130%) blur(6px);
+  }
+
+  /* Büyük kelime ve seçenek tipleri biraz küçülsün */
+  .word{ font-size: clamp(1.8rem, 9vw, 3.8rem); }
+  .options{
+    grid-template-columns: 1fr;
+    max-width: 100%;
+    gap: clamp(10px, 3.4vw, 18px);
+  }
+  .option{
+    width: 100%;
+    min-height: 56px;            /* dokunmatik için hedef alan */
+    padding: clamp(12px, 3vw, 18px);
+    font-size: clamp(1.25rem, 5vw, 1.9rem);
+  }
+
+  /* Durum/ilerleme çubuğu sıkışınca tek satır */
+  .status-bar{
+    flex-wrap: wrap;
+    row-gap: 6px;
+    column-gap: 10px;
+    font-size: clamp(0.95rem, 3.6vw, 1.1rem);
+  }
+  .progress-dot{
+    width: clamp(18px, 6vw, 28px);
+    height: clamp(5px, 1.4vw, 8px);
+  }
+
+  /* Modal pencereler ekrana sığsın */
+  .modal-content{
+    width: min(96vw, 640px);
+    max-height: 86vh;
+    overflow: auto;
+    padding: clamp(14px, 4vw, 28px);
+  }
+
+  /* Geri sayım dev yazı biraz küçülsün */
+  #countdown-overlay{ font-size: clamp(3rem, 16vw, 8rem); }
+}
+
+/* Çok dar telefonlar (<= 380px) için daha agresif sıkıştırma */
+@media (max-width: 380px){
+  :root{ --headerH: 68px; }
+  .word{ font-size: clamp(1.6rem, 10.5vw, 3rem); }
+  .option{ min-height: 52px; font-size: clamp(1.1rem, 5.4vw, 1.6rem); }
+}
+</style>
+
+
+<style>
+.button, button, .option{
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+}
+.option:active{ transform: scale(0.985); }
 </style>
 
 </head>
