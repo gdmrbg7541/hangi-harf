@@ -301,6 +301,85 @@
             }
         }
     </style>
+
+<style>
+/* === Responsive Overrides: Ekran & Boyutlandırma === */
+:root{
+  /* Sabit px yerine akışkan boşluklar */
+  --space: clamp(12px, 2.5vw, 24px);
+}
+
+/* Global: mobil adres çubuğu dalgalanması için svh/dvh desteği */
+body{
+  padding-inline: var(--space);
+  padding-top: calc(var(--headerH, 88px) + var(--space));
+  min-height: 100svh;           /* mobilde daha doğru */
+  overflow: auto;               /* taşma durumunda kaydırma */
+  background-attachment: scroll;/* iOS sabit arkaplan takılmasını önle */
+}
+@supports (height: 100dvh){
+  body{ min-height: 100dvh; }   /* tarayıcı destekliyorsa bunu kullan */
+}
+
+/* Oyun kapsayıcısı: sabit yükseklik yerine min-height */
+#game-wrapper{
+  min-height: calc(var(--appH, 100svh) - var(--headerH, 88px) - var(--space));
+  gap: clamp(12px, 2vw, 32px);
+}
+
+/* Kart/panel dolgu ve köşeler akışkan */
+.player-screen,
+.preview-player-screen{
+  padding: clamp(12px, 2.2vw, 32px);
+  border-radius: clamp(12px, 2vw, 24px);
+}
+
+/* Panel içinde sabit yükseklik yok; içerik akışkan */
+.player-screen{ min-height: auto; }
+
+.question-container{ gap: clamp(12px, 2vw, 32px); }
+
+/* Metinler: clamp ile ölçekli */
+.word{ font-size: clamp(2.25rem, 8vw, 5.5rem); }
+
+.options{
+  gap: clamp(10px, 2vw, 24px);
+  width: 100%;
+  max-width: min(560px, 90vw);
+}
+.option{
+  padding: clamp(12px, 2.2vw, 24px);
+  font-size: clamp(1.6rem, 5.5vw, 3rem);
+}
+
+/* Alt durum çubuğu ve ilerleme */
+.status-bar{
+  font-size: clamp(1rem, 2.8vw, 1.5rem);
+  padding: clamp(10px, 1.8vw, 16px) clamp(14px, 2vw, 24px);
+  border-radius: clamp(10px, 1.6vw, 16px);
+}
+.progress-dot{
+  width: clamp(22px, 4vw, 40px);
+  height: clamp(6px, 1vw, 10px);
+}
+
+/* Geri sayım yazısı da akışkan */
+#countdown-overlay{ font-size: clamp(4rem, 20vw, 14rem); }
+
+/* Başlık ve giriş/sonuç ekranlarında kenar boşlukları akışkan */
+.site-header{ height: var(--headerH, 88px); padding-inline: var(--space); }
+.intro-screen{ padding: var(--space); }
+.modal-content{
+  width: min(92vw, 860px);
+  padding: clamp(16px, 3vw, 48px);
+}
+
+/* Çok dar ekranlarda seçenekleri 1 kolona düşür */
+@media (max-width: 480px){
+  .options{ grid-template-columns: 1fr; max-width: 100%; }
+}
+</style>
+
 </head>
 <body>
 
@@ -396,7 +475,7 @@
         <span id="countdown-number"></span>
     </div>
 
-    <div id="game-wrapper" class="flex h-screen space-x-8 rtl:space-x-reverse hidden">
+    <div id="game-wrapper" class="flex space-x-8 rtl:space-x-reverse hidden">
         <div id="player-2" class="w-1/2 player-screen">
             <div class="w-full flex justify-center">
                 <div class="flex items-center gap-3">
@@ -1015,5 +1094,18 @@
         
         initializeWords();
     </script>
+
+<script>
+/* === Viewport yükseklik düzeltmesi (iOS/Android tarayıcı çubukları için) === */
+(function(){
+  function setAppHeight(){
+    document.documentElement.style.setProperty('--appH', window.innerHeight + 'px');
+  }
+  setAppHeight();
+  window.addEventListener('resize', setAppHeight, { passive: true });
+  window.addEventListener('orientationchange', setAppHeight);
+})();
+</script>
+
 </body>
 </html>
