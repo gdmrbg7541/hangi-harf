@@ -551,6 +551,58 @@ body{
 }
 </style>
 
+
+<style id="mobile-optimizations-v2">
+  /* 1) Global overflow ve güvenli yükseklik */
+  :root { --vh: 1vh; }
+  html, body { height: auto; min-height: 100svh; }
+  body { overflow: auto !important; }
+
+  /* 2) Çok dar telefonlar için (≤360px) tipografi/padding sıkılaştırma */
+  @media (max-width: 360px){
+    .word{ font-size: clamp(1.3rem, 9.5vw, 2.6rem) !important; }
+    .option{
+      min-height: 48px !important;
+      font-size: clamp(1rem, 4.6vw, 1.4rem) !important;
+      padding: 10px 12px !important;
+    }
+    .status-bar{ font-size: clamp(0.85rem, 3.6vw, 1rem) !important; }
+    .progress-dot{ width: clamp(16px, 5.5vw, 24px) !important; }
+    #countdown-overlay{ font-size: clamp(2rem, 14vw, 6rem) !important; }
+  }
+
+  /* 3) Çok kısa dikeyler için (örn. yatay telefon, <600px yükseklik) */
+  @media (max-height: 600px){
+    .option{ min-height: 44px !important; }
+    .modal-content{ max-height: 80vh; overflow:auto; }
+  }
+
+  /* 4) Düşük donanım cihazlarda bulanıklığı hafiflet (performans) */
+  @media (max-width: 480px){
+    .player-screen,
+    .preview-player-screen,
+    .info-card{
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background-color: rgba(255,255,255,0.7) !important;
+    }
+  }
+
+  /* 5) Header davranışı: küçük ekranda sticky kalsın */
+  @media (max-width: 900px){
+    .site-header{
+      position: sticky !important;
+      top: 0;
+      inset-inline: 0;
+      z-index: 50;
+    }
+  }
+
+  /* 6) Uzun içeriklerde intro/modaller kayabilsin */
+  .intro-screen{ overflow-y: auto !important; }
+  #modal{ overflow-y: auto !important; }
+</style>
+
 </head>
 <body>
 
@@ -1276,6 +1328,60 @@ body{
   window.addEventListener('resize', setAppHeight, { passive: true });
   window.addEventListener('orientationchange', setAppHeight);
 })();
+</script>
+
+
+<script id="mobile-boot-v2">
+  (function(){
+    /* A) iOS/Android adres çubuğu dalgalanması için --vh düzeltmesi */
+    function setVhUnit(){
+      const vh = window.visualViewport ? window.visualViewport.height * 0.01
+                                       : window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    setVhUnit();
+    window.addEventListener('resize', setVhUnit);
+    window.addEventListener('orientationchange', setVhUnit);
+
+    /* B) Body padding-top’u güvenli hesapla (header + içerik) */
+    function adjustBodyPadding(){
+      const header = document.querySelector('.site-header');
+      const headerH = header ? header.getBoundingClientRect().height : 0;
+      const style = getComputedStyle(document.documentElement);
+      const vpad = parseFloat(style.getPropertyValue('--vpad')) || 12;
+      document.body.style.paddingTop = `calc(${headerH}px + ${vpad}px)`;
+    }
+    window.addEventListener('load', adjustBodyPadding);
+    window.addEventListener('resize', adjustBodyPadding);
+
+    /* C) Web Audio API: ilk dokunuşta güvenilir başlatma */
+    function primeAudioOnce(){
+      try{
+        if (window.AudioContext || window.webkitAudioContext){
+          if (!window.__audioCtx) {
+            window.__audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          }
+          if (window.__audioCtx.state === 'suspended') {
+            window.__audioCtx.resume && window.__audioCtx.resume();
+          }
+        }
+      }catch(e){}
+      window.removeEventListener('touchstart', primeAudioOnce, {passive:true});
+      window.removeEventListener('click', primeAudioOnce, {passive:true});
+    }
+    window.addEventListener('touchstart', primeAudioOnce, {passive:true, once:true});
+    window.addEventListener('click', primeAudioOnce, {passive:true, once:true});
+
+    /* D) Modal/intro uzunluklarında güvenli kaydırma */
+    const modal = document.getElementById('modal');
+    const rules = document.getElementById('rules-screen');
+    const start = document.getElementById('start-screen');
+    [modal, rules, start].forEach(el=>{
+      if(!el) return;
+      el.style.maxHeight = 'calc(var(--vh, 1vh) * 100)';
+      el.style.overflowY = 'auto';
+    });
+  })();
 </script>
 
 </body>
