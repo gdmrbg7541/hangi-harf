@@ -242,7 +242,8 @@
             .question-container { gap: 0.2rem; padding-bottom: 0.2rem; }
             .word { font-size: clamp(1.4rem, 6vh, 2.2rem); }
             .options { gap: 0.3rem; max-width: 300px; }
-            .option { padding: 0.3rem; font-size: clamp(1.1rem, 5vh, 1.6rem); min-height: 32px; border-radius: 0.75rem; }
+            /* GÜNCELLENDİ: Font boyutu büyütüldü */
+            .option { padding: 0.3rem; font-size: clamp(1.4rem, 6vh, 2rem); min-height: 32px; border-radius: 0.75rem; } 
             .status-bar { padding: 0.2rem 0.5rem; font-size: 0.75rem; border-radius: 0.75rem; }
              .status-bar span:first-child { font-size: 1.2em; }
             body.mode-2p #progress-1, body.mode-2p #progress-2 { max-width: 100px; margin: 0.2rem auto 0.4rem auto; gap: 1px; }
@@ -275,7 +276,7 @@
     <div id="modal" class="items-center justify-center"> <div class="absolute inset-0 bg-black bg-opacity-60" style="backdrop-filter: blur(4px);"></div> <div class="modal-content relative"> <div id="results-wrapper"> <h2 id="winner-text" class="text-2xl md:text-3xl font-bold mb-4"></h2> <div id="results-container"> <div class="results-grid"> <div id="result-column-1" class="result-column" style="background-color: #e3f2fd;"><h3 class="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-center" lang="tr">Oyuncu 2</h3><div id="player-1-results" class="flex flex-col items-start" lang="ar"></div></div> <div id="result-column-2" class="result-column" style="background-color: #fff3e0;"><h3 class="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-center" lang="tr">Oyuncu 1</h3><div id="player-2-results" class="flex flex-col items-start" lang="ar"></div></div> </div> </div> </div> </div> </div>
 
     <script>
-        // GÜNCELLENDİ: Hatalı kelimeler düzeltildi
+        // GÜNCELLENDİ: Hatalı kelimeler düzeltildi/kaldırıldı
         const wordsByLetterWithHarakat = { 
             'ب': ['باب', 'خبز', 'كتاب', 'طبيب', 'بيت', 'مكتب', 'سبورة', 'حقيبة', 'شباك', 'ثلاجة', 'مصباح', 'يكتب', 'يطبخ', 'يلبس', 'واجب', 'مبكرا', 'يحب', 'أب', 'أبناء', 'طيب', 'مبتسم', 'غضوب', 'أحب', 'مباريات', 'جبن', 'بيض', 'بطيخ', 'بصل', 'بيضة', 'أبيض'], 
             'ت': ['اكتب', 'اكتبي', 'تحت', 'مكتب', 'دفتر', 'مسطرة', 'بيت', 'مطبخ', 'مرحاض', 'ستارة', 'متى', 'أتغدى', 'أكتب', 'أخت', 'احترام', 'طاعة', 'يتحدثون', 'يتعاونون', 'مستقبل', 'متواضع', 'كتابة', 'مكتبة', 'ممتع', 'وقتي', 'استراحة', 'متأخرا', 'تخطيط', 'وقت', 'عادة', 'أسنان', 'متوازن', 'تمساح', 'تفاح', 'بنت', 'تمر', 'مفتاح', 'ثلاثة', 'أثاث', 'تلميذ'], 
@@ -291,7 +292,7 @@
             'ش': ['شباك', 'شجرة', 'شمس', 'عش', 'فراشة', 'مشمش', 'شكر', 'يشكر', 'شخصية', 'نشيط', 'مشاهدة', 'يشاهد', 'غازية', 'العشاء', 'تشرفت'], 
             'ص': ['صديق', 'صورة', 'قميص', 'بصل', 'مقصف', 'صقر', 'يصلي', 'أصلي', 'صبر', 'يصبر', 'الصغار', 'شخصية', 'صبور', 'تصوير', 'يصور', 'الصباح', 'صحة', 'صحي', 'الصحة', 'الصلاة'], 
             'ض': ['مريض', 'أبيض', 'بيضة', 'أرض', 'غضوب', 'أفضل', 'رياضة', 'مرض', 'أيضا', 'بعض', 'ضابط'], 
-            'ا': ['انا', 'بابا', 'حالك', 'طاولة', 'هاتف', 'ثلاجة', 'دائما', 'نادرا', 'احيانا', 'ماذا', 'اقرا', 'اكتبي', 'اذهب', 'الله', 'اللقاء', 'امان', 'الى', 'أنا'], 
+            'ا': ['بابا', 'حالك', 'طاولة', 'هاتف', 'ثلاجة', 'دائما', 'نادرا', 'ماذا', 'الله', 'اللقاء'], // Hatalı/gereksiz kelimeler kaldırıldı
             'و': ['هو', 'فوق', 'دولاب', 'وقت', 'يوم', 'اسبوع', 'طاولة', 'ضوء', 'وردة', 'ولد', 'واجب', 'واحد', 'وجه', 'وسخ', 'الوقت', 'نوم', 'صورة', 'خوخ', 'موز', 'عفوا', 'الواجب'], 
             'أ': ['أنا', 'بخير', 'أمان', 'اقرأ', 'اقرئي', 'أعد', 'أعيدي', 'أنت', 'أين', 'أيضا', 'أمام', 'أحيانا', 'أستيقظ', 'أتغدى', 'أقرأ', 'أكتب', 'ألعب', 'أساعد', 'أذهب', 'أرتب', 'أنظف', 'أراجع', 'أنام', 'أمانة', 'أحد', 'أب', 'أم', 'أخ', 'أخت', 'أقارب', 'أبناء', 'أهل', 'أكتشف', 'أحب', 'أكره', 'أفضل', 'أحلامي', 'أهدافي', 'أفلام', 'أسبوع', 'أعمال', 'أجل', 'أسنان', 'أكل', 'أسد', 'أذن', 'أرض', 'أبيض', 'أخي'] 
         };
