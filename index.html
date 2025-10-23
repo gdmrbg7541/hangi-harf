@@ -46,7 +46,7 @@
         #game-wrapper {
             width: 100%;
             max-width: 1200px; /* Geniş ekranlar için maksimum genişlik */
-            max-height: 95vh; /* viewport'un %95'i gibi bir sınır */
+            max-height: calc(var(--vh, 1vh) * 95); /* 95vh -> vh fix */
             /* display: flex; */ /* HTML'e taşındı */
             flex-direction: row; /* Masaüstü varsayılan */
             gap: 1rem; /* player-screen'ler arası boşluk */
@@ -146,7 +146,10 @@
             position: relative;
             flex-shrink: 0;
         }
-        #modal { position: fixed; inset: 0; z-index: 1000; overflow-y: auto; padding: 1rem; display: none; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); } .modal-content { background-color: white; padding: 2rem; border-radius: 1.5rem; text-align: center; width: 95%; max-width: 800px; position: relative; margin: auto; max-height: 90vh; overflow-y: auto; } .results-grid { display: grid; gap: 1rem; margin-top: 1.5rem; } .result-column { padding: 1rem; border-radius: 1rem; position: relative; overflow: hidden; }
+        #modal { position: fixed; inset: 0; z-index: 1000; overflow-y: auto; padding: 1rem; display: none; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); } 
+        .modal-content { background-color: white; padding: 2rem; border-radius: 1.5rem; text-align: center; width: 95%; max-width: 800px; position: relative; margin: auto; max-height: calc(var(--vh, 1vh) * 90); overflow-y: auto; } /* 90vh -> vh fix */
+        .results-grid { display: grid; gap: 1rem; margin-top: 1.5rem; } 
+        .result-column { padding: 1rem; border-radius: 1rem; position: relative; overflow: hidden; }
 
         .result-item {
             font-size: 1.75rem;
@@ -158,7 +161,8 @@
             direction: rtl; /* <<< SAĞDAN SOLA SIRALAMA İÇİN */
         }
 
-        .intro-screen { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; padding: 1rem; overflow-y: auto; } .info-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 1.5rem; padding: 2rem; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2); }
+        .intro-screen { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; padding: 1rem; overflow-y: auto; } 
+        .info-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 1.5rem; padding: 2rem; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2); }
         .difficulty-btn { padding: 0.8rem 2rem; font-size: 1.5rem; color: white; border-radius: 0.75rem; transition: all 0.2s; width: 100%; max-width: 384px; } .difficulty-btn.easy { background-color: #22c55e; } .difficulty-btn.easy:hover { background-color: #16a34a; } .difficulty-btn.medium { background-color: #f97316; } .difficulty-btn.medium:hover { background-color: #ea580c; } .difficulty-btn.hard { background-color: #ef4444; } .difficulty-btn.hard:hover { background-color: #dc2626; }
         .modal-secondary-btn { font-size: 1.25rem; font-weight: 600; padding: 0.75rem 1.5rem; background-color: #f3f4f6; color: #1f2937; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); transition: all 0.2s ease; } .modal-secondary-btn:hover { background-color: #e5e7eb; }
         #countdown-overlay { font-size: clamp(8rem, 30vw, 15rem); color: white; font-weight: bold; text-shadow: 0 0 20px rgba(0,0,0,0.5); }
@@ -167,24 +171,43 @@
         .score-popup { position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); font-size: 2.5rem; font-weight: bold; color: #ffc107; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); animation: score-anim 1.2s ease-out forwards; pointer-events: none; z-index: 20; } @keyframes score-anim { 0% { opacity: 1; transform: translate(-50%, 0) scale(0.8); } 50% { transform: translate(-50%, -40px) scale(1.1); } 100% { opacity: 0; transform: translate(-50%, -80px) scale(0.9); } }
         .confetti { position: absolute; width: 10px; height: 10px; background-color: red; opacity: 0; animation: fall 4s linear infinite; } @keyframes fall { 0% { transform: translateY(-100vh) rotateZ(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotateZ(720deg); opacity: 0; } }
 
-        /* YATAY MOD ZORLAMA STİLLERİ */
+        /* YATAY MOD ZORLAMA STİLLERİ --- KALDIRILDI --- */
+        /*
         #rotate-device-overlay { position: fixed; inset: 0; z-index: 5000; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); color: white; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem; }
         #rotate-device-overlay svg { width: 80px; height: 80px; margin-bottom: 1.5rem; animation: rotate-anim 2s linear infinite; }
         @keyframes rotate-anim { 0% { transform: rotate(0deg); } 50% { transform: rotate(-90deg); } 100% { transform: rotate(-90deg); } }
-        @media (orientation: portrait) { #rotate-device-overlay { display: flex; } .intro-screen, #game-wrapper, #modal, #back-btn, #countdown-overlay { display: none !important; } }
-        @media (orientation: landscape) { #rotate-device-overlay { display: none; } }
-
+        @media (orientation: portrait) { 
+            #rotate-device-overlay { display: flex; } 
+            .intro-screen, #game-wrapper, #modal, #back-btn, #countdown-overlay { display: none !important; } 
+        }
+        @media (orientation: landscape) { 
+            #rotate-device-overlay { display: none; } 
+        }
+        */
+        
         /* Tablet (genişlik 768px+) Yatay Mod */
         @media (min-width: 768px) and (orientation: landscape) {
              #modal.mode-2p .results-grid { grid-template-columns: 1fr 1fr; }
         }
 
         /* GENEL MOBİL (ÖNCELİKLE PORTRAIT İÇİN) - Max Genişlik 900px */
+        /* Bu blok artık hem dikey hem yatay için temel mobil ayarları içerir */
         @media (max-width: 900px) {
              body { padding: 1rem 0.5rem; justify-content: center; }
              #back-btn { top: 0.5rem; left: 0.5rem; width: 40px; height: 40px; } #back-btn svg { width: 20px; height: 20px; }
-             #game-wrapper{ flex-direction: column; gap: 0.5rem; max-height: 90vh; }
-             .player-screen{ padding: 0.5rem 0.75rem; width: 100% !important; max-width: 100% !important; flex-grow: 1; min-height: 0; }
+             /* Dikey (Portrait) modda oyun ekranları alt alta gelir */
+             #game-wrapper{ 
+                flex-direction: column; 
+                gap: 0.5rem; 
+                max-height: calc(var(--vh, 1vh) * 90); /* 90vh -> vh fix */
+             }
+             .player-screen{ 
+                padding: 0.5rem 0.75rem; 
+                width: 100% !important; 
+                max-width: 100% !important; 
+                flex-grow: 1; 
+                min-height: 0; 
+             }
              body.mode-2p .player-screen { flex-basis: 0; }
              .player-icon-wrapper h1, .player-icon-wrapper svg { font-size: 2em; }
              .question-container { gap: 0.3rem; padding-bottom: 0.3rem; }
@@ -194,17 +217,32 @@
              body.mode-2p #progress-1, body.mode-2p #progress-2 { gap: 2px; max-width: 150px; margin: 0.3rem auto 0.5rem auto; }
              body.mode-2p .progress-word { height: 4px; border-radius: 2px; }
              #top-progress-bar { margin-bottom: 0.4rem; padding: 0 0.25rem; gap: 2px; } .progress-word { height: 5px; border-radius: 2.5px; }
-             .modal-content{ padding: 1rem; width: 95%; max-height: 85vh; } .results-grid { margin-top: 0.75rem; }
+             .modal-content{ 
+                padding: 1rem; 
+                width: 95%; 
+                max-height: calc(var(--vh, 1vh) * 85); /* 85vh -> vh fix */
+             } 
+             .results-grid { margin-top: 0.75rem; }
              .result-column { padding: 0.5rem; } .result-item { font-size: 1.2rem; gap: 0.4rem; margin-bottom: 0.3rem; } /* direction: rtl; yukarıdan miras alınır */
              h1 { font-size: 2rem !important; } h2 { font-size: 1.5rem !important; } h3:not([lang="ar"]) { font-size: 1.2rem !important; } p { font-size: 1rem !important; }
         }
 
         /* MOBİL YATAY MOD ÖZELLEŞTİRMELERİ */
+        /* Bu blok, dikey mod ayarlarını yatay mod için ezer (override) */
         @media (max-width: 900px) and (orientation: landscape) {
             body { padding: 0.5rem; }
              #back-btn { top: 0.5rem; left: 0.5rem; width: 36px; height: 36px; } #back-btn svg { width: 18px; height: 18px; }
-            #game-wrapper { flex-direction: row; gap: 0.5rem; max-height: 95vh; }
-            .player-screen { padding: 0.4rem 0.6rem; width: 50% !important; flex-basis: 0; }
+            /* Yatay (Landscape) modda oyun ekranları yan yana gelir */
+            #game-wrapper { 
+                flex-direction: row; 
+                gap: 0.5rem; 
+                max-height: calc(var(--vh, 1vh) * 95); /* 95vh -> vh fix */
+            }
+            .player-screen { 
+                padding: 0.4rem 0.6rem; 
+                width: 50% !important; 
+                flex-basis: 0; 
+            }
              body.mode-1p #player-1 { max-width: 600px; }
             .player-icon-wrapper h1, .player-icon-wrapper svg { font-size: 1.5em; }
             .question-container { gap: 0.2rem; padding-bottom: 0.2rem; }
@@ -217,7 +255,11 @@
              body.mode-2p .progress-word { height: 3px; border-radius: 1.5px; }
              #top-progress-bar { margin-bottom: 0.3rem; gap: 1px; max-width: 500px; }
              #top-progress-bar .progress-word { height: 4px; border-radius: 2px; }
-             .modal-content { padding: 0.8rem; max-height: 85vh;} .results-grid { margin-top: 0.5rem; gap: 0.5rem; }
+             .modal-content { 
+                padding: 0.8rem; 
+                max-height: calc(var(--vh, 1vh) * 85); /* 85vh -> vh fix */
+             } 
+             .results-grid { margin-top: 0.5rem; gap: 0.5rem; }
              .result-column { padding: 0.4rem; } .result-item { font-size: 0.9rem; gap: 0.3rem; margin-bottom: 0.3rem;} /* direction: rtl; yukarıdan miras alınır */
              .modal-content h2 { font-size: 1.3rem !important; margin-bottom: 0.5rem;}
              .result-column h3 { font-size: 1rem !important; margin-bottom: 0.3rem;}
@@ -230,7 +272,7 @@
 
 <body>
     <div id="back-btn"> <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> </div>
-    <div id="rotate-device-overlay"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"> <path d="M16.89,15.5l-4.18-4.18V4a1,1,0,0,0-2,0v7.31l-4.18,4.18a1,1,0,0,0,0,1.42,1,1,0,0,0,1.41,0L12,13.41l3.48,3.52a1,1,0,0,0,1.41,0A1,1,0,0,0,16.89,15.5Zm3.94-1.85a1,1,0,0,0-1.28.62l-.2,1A7.006,7.006,0,0,1,5.63,13.4l-.2-1A1,1,0,0,0,4.15,11.8l-1,.2a1,1,0,0,0-.62,1.28l.2,1A9.008,9.008,0,0,0,11,20.91V22H9a1,1,0,0,0,0,2h6a1,1,0,0,0,0-2H13V20.91a9.008,9.008,0,0,0,8.23-6.63l.2-1a1,1,0,0,0-.62-1.28Z"/> </svg> <p class="text-xl md:text-2xl font-semibold">Lütfen cihazınızı yatay konuma çevirin.</p> </div>
+    
     <div id="rules-screen" class="intro-screen"> <div class="w-full max-w-xl mx-auto px-4 text-center"> <div class="info-card"> <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-gray-800 mb-4" style="text-shadow: 0 2px 10px rgba(0,0,0,0.1);">Doğru Harfi Seç</h1> <p class="text-xl md:text-2xl lg:text-3xl text-gray-600 mt-4 mb-8 md:mb-12">Oyun Modunu Seçin</p> <div class="flex flex-col gap-4 md:gap-6 items-center"> <button id="start-1p-btn" class="group flex items-center justify-center gap-3 w-full max-w-sm px-6 py-4 bg-white/80 backdrop-blur-sm border border-white/50 rounded-xl shadow-lg transition-all duration-300 hover:bg-white hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500/70"> <svg class="w-8 h-8 text-blue-800 transition-transform duration-300 group-hover:scale-110" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4a5 5 0 0 0-5 5a5 5 0 0 0 5 5a5 5 0 0 0 5-5a5 5 0 0 0-5-5M8 16c-1.6 0-3.08.38-4.32.97A7.32 7.32 0 0 0 12 21.5a7.32 7.32 0 0 0 8.32-4.53A13.06 13.06 0 0 0 16 16Z"></path></svg> <span class="text-left"><span class="text-2xl md:text-3xl block font-semibold text-blue-900">1 Kişilik</span><span class="text-base md:text-lg block font-normal text-blue-800/80">Zamana Karşı Yarış</span></span> </button> <button id="start-2p-btn" class="group flex items-center justify-center gap-3 w-full max-w-sm px-6 py-4 bg-blue-700 rounded-xl shadow-lg transition-all duration-300 hover:bg-blue-800 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-400"> <svg class="w-8 h-8 text-white transition-transform duration-300 group-hover:scale-110" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M16 13a3 3 0 0 0-3-3a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3m5.61.16A13.06 13.06 0 0 0 20 16c-1.6 0-3.08.38-4.32.97A7.32 7.32 0 0 0 12 21.5a7.32 7.32 0 0 0 8.32-4.53A13.06 13.06 0 0 0 16 16c.64 0 1.25.07 1.84.16M12 4a5 5 0 0 0-5 5a5 5 0 0 0 5 5a5 5 0 0 0 5-5a5 5 0 0 0-5-5M8 16c-1.6 0-3.08.38-4.32.97A7.32 7.32 0 0 0 12 21.5a7.32 7.32 0 0 0 8.32-4.53A13.06 13.06 0 0 0 16 16c-1.6 0-3.08.38-4.32.97A7.32 7.32 0 0 0 4 16.97A13.06 13.06 0 0 0 2.39 13.16C2.14 13.41 2 13.7 2 14v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4c0-.3-.14-.59-.39-.84Z"></path></svg> <span class="text-left"><span class="text-2xl md:text-3xl block font-semibold text-white">2 Kişilik</span><span class="text-base md:text-lg block font-normal text-blue-100/90">Arkadaşınla Yarış</span></span> </button> </div> </div> </div> </div>
     <div id="difficulty-screen" class="intro-screen hidden"> <div class="w-full max-w-xl mx-auto px-4 text-center"> <div class="info-card"> <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-gray-800 mb-4">Zorluk Seçin</h1> <p class="text-xl md:text-2xl lg:text-3xl text-gray-600 mt-4 mb-8 md:mb-12">20 Kelimeyi Tamamla</p> <div class="flex flex-col gap-4 md:gap-6 items-center"> <button id="easy-btn" class="difficulty-btn easy"><span class="text-2xl md:text-3xl block">Kolay</span></button> <button id="medium-btn" class="difficulty-btn medium"><span class="text-2xl md:text-3xl block">Orta</span></button> <button id="hard-btn" class="difficulty-btn hard"><span class="text-2xl md:text-3xl block">Zor</span></button> </div> </div> </div> </div>
     <div id="countdown-overlay" class="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 hidden"><span id="countdown-number"></span></div>
@@ -238,7 +280,8 @@
     <div id="modal" class="items-center justify-center"> <div class="absolute inset-0 bg-black bg-opacity-60" style="backdrop-filter: blur(4px);"></div> <div class="modal-content relative"> <div id="results-wrapper"> <h2 id="winner-text" class="text-2xl md:text-3xl font-bold mb-4"></h2> <div id="results-container"> <div class="results-grid"> <div id="result-column-1" class="result-column" style="background-color: #e3f2fd;"><h3 class="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-center" lang="tr">Oyuncu 2</h3><div id="player-1-results" class="flex flex-col items-start" lang="ar"></div></div> <div id="result-column-2" class="result-column" style="background-color: #fff3e0;"><h3 class="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-center" lang="tr">Oyuncu 1</h3><div id="player-2-results" class="flex flex-col items-start" lang="ar"></div></div> </div> </div> </div> </div> </div>
 
     <script>
-        const wordsByLetterWithHarakat = { 'ب': ['باب', 'خبز', 'كتاب', 'طبيب', 'بيت', 'مكتب', 'سبورة', 'حقيبة', 'شباك', 'ثلاجة', 'مصباح', 'يكتب', 'يطبخ', 'يلبس', 'واجب', 'مبكرا', 'يحب', 'أب', 'أبناء', 'طيب', 'مبتسم', 'غضوب', 'أحب', 'مباريات', 'جبن', 'بيض', 'بطيخ', 'بصل', 'بيضة', 'أبيض'], 'ت': ['اكتب', 'اكتبي', 'تحت', 'مكتب', 'دفتر', 'مسطرة', 'بيت', 'مطبخ', 'مرحاض', 'ستارة', 'متى', 'أتغدى', 'أكتب', 'أخت', 'احترام', 'طاعة', 'يتحدثون', 'يتعاونون', 'مستقبل', 'متواضع', 'كتابة', 'مكتبة', 'ممتع', 'وقتي', 'استراحة', 'متأخرا', 'تخطيط', 'وقت', 'عادة', 'أسنان', 'متوازن', 'تمساح', 'تفاح', 'بنت', 'تمر', 'مفتاح', 'ثلاثة', 'أثاث', 'تلميذ'], 'ث': ['ثلاجة', 'مثلث', 'ثلاثة', 'أثاث', 'ثوب', 'ثعلب', 'يتحدثون'], 'ج': ['جبل', 'دجاجة', 'شجرة', 'مسجد', 'ثلج', 'حاجة', 'خروج', 'جديد', 'يجلس', 'سجادة', 'ثلاجة', 'يخرج', 'راجع', 'مجتهد', 'جنس', 'نجاح', 'جرح', 'وجه', 'جبن', 'وجبة', 'الغداء', 'العشاء', 'جدي', 'جمل', 'خارج', 'يرجع', 'جيد'], 'ح': ['مرحبا', 'حقيبة', 'مفتاح', 'تمساح', 'ملح', 'لوح', 'حمام', 'مرحاض', 'سطح', 'يحمل', 'صحة', 'جرح', 'يستحم', 'صحي', 'النصيحة', 'حاضر', 'حكمة', 'الحسنة', 'حالك', 'فطور', 'الحب', 'فرح'], 'خ': ['أنا', 'بخير', 'خبز', 'خروف', 'نخلة', 'مطبخ', 'خوخ', 'بطيخ', 'خلف', 'خارج', 'يخرج', 'يدخل', 'أخ', 'خال', 'خالة', 'إخلاص', 'آخرين', 'أخي', 'الخبز', 'الخضراوات', 'متأخرا', 'يخطط', 'تخطيط'], 'د': ['ديك', 'مدرسة', 'يد', 'جديد', 'أسد', 'أعد', 'أعيدي', 'مدرس', 'صديق', 'والدان', 'جد', 'جدة', 'مجتهد', 'هادئ', 'مهندس', 'عدد', 'دائما', 'جدول', 'يدرس', 'نادرا', 'إبداع', 'جد', 'يدان', 'دواء', 'بأدب', 'دولاب', 'دروس'], 'ذ': ['ذرة', 'أذن', 'تلميذ', 'لذيذ', 'ذهب', 'اذهب', 'أخذ', 'اعتذار', 'يؤذي', 'الغذاء', 'يأخذ'], 'ر': ['اقرأ', 'اقرئي', 'مرحبا', 'شكرا', 'كرسي', 'أرنب', 'جزر', 'فرس', 'صورة', 'مريض', 'أرض', 'غرفة', 'سرير', 'مروحة', 'يقرأ', 'فرن', 'يرتب', 'مرآة', 'مرتب', 'يرجع', 'يستريح', 'مبكرا', 'احترام', 'رحمة', 'صبر', 'آخرين', 'الكبار', 'الصغار', 'مر', 'أقارب', 'أسرة', 'تراحم', 'عمر', 'قراءة', 'رسم', 'رياضة', 'سفر', 'يقرأ', 'يرسم', 'يسافر', 'يصور', 'الفراغ', 'استراحة', 'يدرس', 'يستريح', 'نادر', 'شرب', 'يرتب', 'سريري', 'مرض', 'رياضة', 'العصير', 'السريع', 'غازية', 'رأس', 'قمر', 'نهر', 'مدرس'], 'ز': ['زرافة', 'ميزان', 'خبز', 'موز', 'جزر', 'تلفاز', 'اعتذار', 'يعتذر', 'يزور', 'عزف', 'متوازن', 'غازية', 'فطور'], 'س': ['اسمي', 'اسكت', 'مدرس', 'مدرسة', 'كرسي', 'مكتب', 'مسطرة', 'يجلس', 'يغسل', 'مغسلة', 'نفسي', 'كسول', 'مبتسم', 'مستقبل', 'مهندس', 'فنان', 'رسم', 'موسيقى', 'يسافر', 'فسحة', 'يدرس', 'يستريح', 'المساء', 'أسبوع', 'مسابقة', 'ماضي', 'الجسم', 'أسنان', 'يغسل', 'يستحم', 'يمارس', 'السمك', 'العصير', 'الدسم', 'السريع', 'السمنة', 'المسجد', 'لسان', 'سمكة', 'شمس'], 'ش': ['شباك', 'شجرة', 'شمس', 'عش', 'فراشة', 'مشمش', 'شكر', 'يشكر', 'شخصية', 'نشيط', 'مشاهدة', 'يشاهد', 'غازية', 'العشاء', 'تشرفت'], 'ص': ['صديق', 'صورة', 'قميص', 'بصل', 'مقصف', 'صقر', 'يصلي', 'أصلي', 'صبر', 'يصبر', 'الصغار', 'شخصية', 'صبور', 'تصوير', 'يصور', 'الصباح', 'صحة', 'صحي', 'الصحة', 'الصلاة'], 'ض': ['مريض', 'أبيض', 'بيضة', 'أرض', 'غضوب', 'أفضل', 'رياضة', 'مرض', 'أيضا', 'بعض', 'ضابط'], 'ا': ['انا', 'بابا', 'حالك', 'طاولة', 'هاتف', 'ثلاجة', 'دائما', 'نادرا', 'احيانا', 'ماذا', 'اقرا', 'اكتبي', 'اذهب', 'الله', 'اللقاء', 'امان', 'الى', 'أنا'], 'و': ['هو', 'فوق', 'دولاب', 'وقت', 'يوم', 'اسبوع', 'طاولة', 'ضوء', 'وردة', 'ولد', 'واجب', 'واحد', 'وجه', 'وسخ', 'الوقت', 'نوم', 'صورة', 'خوخ', 'موز', 'عفوا', 'الواجب'], 'أ': ['أنا', 'بخير', 'أمان', 'اقرأ', 'اقرئي', 'أعد', 'أعيدي', 'أنت', 'أين', 'أيضا', 'أمام', 'أحيانا', 'أستيقظ', 'أتغدى', 'أقرأ', 'أكتب', 'ألعب', 'أساعد', 'أذهب', 'أرتب', 'أنظف', 'أراجع', 'أنام', 'أمانة', 'أحد', 'أب', 'أم', 'أخ', 'أخت', 'أقارب', 'أبناء', 'أهل', 'أكتشف', 'أحب', 'أكره', 'أفضل', 'أحلامي', 'أهدافي', 'أفلام', 'أسبوع', 'أعمال', 'أجل', 'أسنان', 'أكل', 'أسد', 'أذن', 'أرض', 'أبيض', 'أخي'] };
+        // --- OYUN JS KODU (Değişiklik yok) ---
+        const wordsByLetterWithHarakat = { 'ب': ['باب', 'خبز', 'كتاب', 'طبيب', 'بيت', 'مكتب', 'سبورة', 'حقيبة', 'شباك', 'ثلاجة', 'مصباح', 'يكتب', 'يطبخ', 'يلبس', 'واجب', 'مبكرا', 'يحب', 'أب', 'أبناء', 'طيب', 'مبتسم', 'غضوب', 'أحب', 'مباريات', 'جبن', 'بيض', 'بطيخ', 'بصل', 'بيضة', 'أبيض'], 'ت': ['اكتب', 'اكتبي', 'تحت', 'مكتب', 'دفتر', 'مسطرة', 'بيت', 'مطبخ', 'مرحاض', 'ستارة', 'متى', 'أتغدى', 'أكتب', 'أخت', 'احترام', 'طاعة', 'يتحدثون', 'يتعاونون', 'مستقبل', 'متواضع', 'كتابة', 'مكتبة', 'ممتع', 'وقتي', 'استراحة', 'متأخرا', 'تخطيط', 'وقت', 'عادة', 'أسنان', 'متوازن', 'تمساح', 'تفاح', 'بنت', 'تمر', 'مفتاح', 'ثلاثة', 'أثاث', 'تلميذ'], 'ث': ['ثلاجة', 'مثلث', 'ثلاثة', 'أثاث', 'ثوب', 'ثعلب', 'يتحدثون'], 'ج': ['جبل', 'دجاجة', 'شجرة', 'مسجد', 'ثلج', 'حاجة', 'خروج', 'جديد', 'يجلس', 'سجادة', 'ثلاجة', 'يخرج', 'راجع', 'مجتهد', 'جنس', 'نجاح', 'جرح', 'وجه', 'جبن', 'وجبة', 'الغداء', 'العشاء', 'جدي', 'جمل', 'خارج', 'يرجع', 'جيد'], 'ح': ['مرحبا', 'حقيبة', 'مفتاح', 'تمساح', 'ملح', 'لوح', 'حمام', 'مرحاض', 'سطح', 'يحمل', 'صحة', 'جرح', 'يستحم', 'صحي', 'النصيحة', 'حاضر', 'حكمة', 'الحسنة', 'حالك', 'فطور', 'الحب', 'fرح'], 'خ': ['أنا', 'بخير', 'خبز', 'خروف', 'نخلة', 'مطبخ', 'خوخ', 'بطيخ', 'خلف', 'خارج', 'يخرج', 'يدخل', 'أخ', 'خال', 'خالة', 'إخلاص', 'آخرين', 'أخي', 'الخبز', 'الخضراوات', 'متأخرا', 'يخطط', 'تخطيط'], 'د': ['ديك', 'مدرسة', 'يد', 'جديد', 'أسد', 'أعد', 'أعيدي', 'مدرس', 'صديق', 'والدان', 'جد', 'جدة', 'مجتهد', 'هادئ', 'مهندس', 'عدد', 'دائما', 'جدول', 'يدرس', 'نادرا', 'إبداع', 'جد', 'يدان', 'دواء', 'بأدب', 'دولاب', 'دروس'], 'ذ': ['ذرة', 'أذن', 'تلميذ', 'لذيذ', 'ذهب', 'اذهب', 'أخذ', 'اعتذار', 'يؤذي', 'الغذاء', 'يأخذ'], 'ر': ['اقرأ', 'اقرئي', 'مرحبا', 'شكرا', 'كرسي', 'أرنب', 'جزر', 'فرس', 'صورة', 'مريض', 'أرض', 'غرفة', 'سرير', 'مروحة', 'يقرأ', 'فرن', 'يرتب', 'مرآة', 'مرتب', 'يرجع', 'يستريح', 'مبكرا', 'احترام', 'رحمة', 'صبر', 'آخرين', 'الكبار', 'الصغار', 'مر', 'أقارب', 'أسرة', 'تراحم', 'عمر', 'قراءة', 'رسم', 'رياضة', 'سفر', 'يقرأ', 'يرسم', 'يسافر', 'يصور', 'الفراغ', 'استراحة', 'يدرس', 'يستريح', 'نادر', 'شرب', 'يرتب', 'سريري', 'مرض', 'رياضة', 'العصير', 'السريع', 'غازية', 'رأس', 'قمر', 'نهر', 'مدرس'], 'ز': ['زرافة', 'ميزان', 'خبز', 'موز', 'جزر', 'تلفاز', 'اعتذar', 'يعتذر', 'يزور', 'عزف', 'متوازن', 'غازية', 'فطور'], 'س': ['اسمي', 'اسكت', 'مدرس', 'مدرسة', 'كرسي', 'مكتب', 'مسطرة', 'يجلس', 'يغسل', 'مغسلة', 'نفسي', 'كسول', 'مبتسم', 'مستقبل', 'مهندس', 'فنان', 'رسم', 'موسيقى', 'يسافر', 'فسحة', 'يدرس', 'يستريح', 'المساء', 'أسبوع', 'مسابقة', 'ماضي', 'الجسم', 'أسنان', 'يغسل', 'يستحم', 'يمارس', 'السمك', 'العصير', 'الدسم', 'السريع', 'السمنة', 'المسجد', 'لسان', 'سمكة', 'شمس'], 'ش': ['شباك', 'شجرة', 'شمس', 'عش', 'فراشة', 'مشمش', 'شكر', 'يشكر', 'شخصية', 'نشيط', 'مشاهدة', 'يشاهد', 'غازية', 'العشاء', 'تشرفت'], 'ص': ['صديق', 'صورة', 'قميص', 'بصل', 'مقصف', 'صقر', 'يصلي', 'أصلي', 'صبر', 'يصبر', 'الصغار', 'شخصية', 'صبور', 'تصوير', 'يصور', 'الصباح', 'صحة', 'صحي', 'الصحة', 'الصلاة'], 'ض': ['مريض', 'أبيض', 'بيضة', 'أرض', 'غضوب', 'أفضل', 'رياضة', 'مرض', 'أيضا', 'بعض', 'ضابط'], 'ا': ['انا', 'بابا', 'حالك', 'طاولة', 'هاتف', 'ثلاجة', 'دائما', 'نادرا', 'احيانا', 'ماذا', 'اقرا', 'اكتبي', 'اذهب', 'الله', 'اللقاء', 'امان', 'الى', 'أنا'], 'و': ['هو', 'فوق', 'دولاب', 'وقت', 'يوم', 'اسبوع', 'طاولة', 'ضوء', 'وردة', 'ولد', 'واجب', 'واحد', 'وجه', 'وسخ', 'الوقت', 'نوم', 'صورة', 'خوخ', 'موز', 'عفوا', 'الواجب'], 'أ': ['أنا', 'بخير', 'أمان', 'اقرأ', 'اقرئي', 'أعد', 'أعيدي', 'أنت', 'أين', 'أيضا', 'أمام', 'أحيانا', 'أستيقظ', 'أتغدى', 'أقرأ', 'أكتب', 'ألعب', 'أساعد', 'أذهب', 'أرتب', 'أنظف', 'أراجع', 'أنام', 'أمانة', 'أحد', 'أب', 'أم', 'أخ', 'أخت', 'أقارب', 'أبناء', 'أهل', 'أكتشف', 'أحب', 'أكره', 'أفضل', 'أحلامي', 'أهدافي', 'أفلام', 'أسبوع', 'أعمال', 'أجل', 'أسنان', 'أكل', 'أسد', 'أذن', 'أرض', 'أبيض', 'أخي'] };
         const letterForms = { 'ب': ['بـ', 'ـبـ', 'ـب', 'ب'], 'ت': ['تـ', 'ـتـ', 'ـت', 'ت'], 'ث': ['ثـ', 'ـثـ', 'ـث', 'ث'], 'ج': ['جـ', 'ـجـ', 'ـج', 'ج'], 'ح': ['حـ', 'ـحـ', 'ـح', 'ح'], 'خ': ['خـ', 'ـخـ', 'ـخ', 'خ'], 'د': ['د', 'ـد'], 'ذ': ['ذ', 'ـذ'], 'ر': ['ر', 'ـر'], 'ز': ['ز', 'ـز'], 'س': ['سـ', 'ـسـ', 'ـس', 'س'], 'ش': ['شـ', 'ـشـ', 'ـش', 'ش'], 'ص': ['صـ', 'ـصـ', 'ـص', 'ص'], 'ض': ['ضـ', 'ـضـ', 'ـض', 'ض'], 'ا': ['ا', 'ـا'], 'أ': ['أ', 'ـأ'], 'و': ['و', 'ـو'] };
         const players = { '1': { el: document.getElementById('player-1'), wordEl: document.getElementById('word-1'), optionsEl: document.getElementById('options-1'), scoreEl: document.getElementById('score-1'), progressEl: document.getElementById('progress-1'), resultsEl: document.getElementById('player-1-results') }, '2': { el: document.getElementById('player-2'), wordEl: document.getElementById('word-2'), optionsEl: document.getElementById('options-2'), scoreEl: document.getElementById('score-2'), progressEl: document.getElementById('progress-2'), resultsEl: document.getElementById('player-2-results') } };
         const modal = document.getElementById('modal'); const winnerText = document.getElementById('winner-text'); const gameWrapper = document.getElementById('game-wrapper'); const rulesScreen = document.getElementById('rules-screen'); const start1PBtn = document.getElementById('start-1p-btn'); const start2PBtn = document.getElementById('start-2p-btn'); const countdownOverlay = document.getElementById('countdown-overlay'); const countdownNumber = document.getElementById('countdown-number'); const resultsWrapper = document.getElementById('results-wrapper'); const backBtn = document.getElementById('back-btn'); const difficultyScreen = document.getElementById('difficulty-screen'); const easyBtn = document.getElementById('easy-btn'); const mediumBtn = document.getElementById('medium-btn'); const hardBtn = document.getElementById('hard-btn'); const topProgressBar = document.getElementById('top-progress-bar'); const p1TimerEl = document.getElementById('p1-timer'); const p1TimerValueEl = document.getElementById('p1-timer-value');
@@ -266,7 +309,55 @@
         function returnToDifficultyScreen() { console.log("returnToDifficultyScreen"); stopGameTimer(); state = {}; modal.style.display = 'none'; gameWrapper.classList.add('hidden'); difficultyScreen.classList.remove('hidden'); rulesScreen.classList.add('hidden'); if (players['1'].wordEl) players['1'].wordEl.textContent = "..."; }
         document.addEventListener('DOMContentLoaded', () => { console.log("DOM Loaded"); if(!backBtn || !start1PBtn || !start2PBtn || !easyBtn || !mediumBtn || !hardBtn) console.error("One or more essential buttons are missing!"); if(backBtn) backBtn.onclick = () => { let onRules = !rulesScreen.classList.contains('hidden'); let onDifficulty = !difficultyScreen.classList.contains('hidden'); let onGame = !gameWrapper.classList.contains('hidden'); let onModal = modal.style.display === 'flex'; console.log(`Back btn: rules=${onRules}, diff=${onDifficulty}, game=${onGame}, modal=${onModal}, mode=${gameMode}`); if (onDifficulty) returnToMenu(); else if (onGame) { if (gameMode === '1p') returnToDifficultyScreen(); else returnToMenu(); } else if (onModal) { if (gameMode === '1p') returnToDifficultyScreen(); else returnToMenu(); } else if (!onRules) returnToMenu(); }; if (start1PBtn) start1PBtn.onclick = () => { console.log("1P clicked"); gameMode = '1p'; document.body.classList.remove('mode-2p'); document.body.classList.add('mode-1p'); rulesScreen.classList.add('hidden'); difficultyScreen.classList.remove('hidden'); }; if (start2PBtn) start2PBtn.onclick = () => { console.log("2P clicked"); gameMode = '2p'; gameSettings.difficulty = null; gameSettings.timerDuration = 0; document.body.classList.remove('mode-1p'); document.body.classList.add('mode-2p'); rulesScreen.classList.add('hidden'); gameWrapper.classList.remove('hidden'); startIntroCountdown(setupNewGame); }; if (easyBtn) easyBtn.onclick = () => start1PGame('easy'); if (mediumBtn) mediumBtn.onclick = () => start1PGame('medium'); if (hardBtn) hardBtn.onclick = () => start1PGame('hard'); });
     </script>
-    <script> /* Viewport Height Fix */ (function(){ function setAppHeight(){ document.documentElement.style.setProperty('--appH', window.innerHeight + 'px'); } setAppHeight(); window.addEventListener('resize', setAppHeight, { passive: true }); window.addEventListener('orientationchange', setAppHeight); })(); </script>
-    <script id="mobile-boot-v2"> /* Mobile Boot Optimizations */ (function(){ function setVhUnit(){ const vh = window.visualViewport ? window.visualViewport.height * 0.01 : window.innerHeight * 0.01; document.documentElement.style.setProperty('--vh', `${vh}px`); } setVhUnit(); window.addEventListener('resize', setVhUnit); window.addEventListener('orientationchange', setVhUnit); function primeAudioOnce(){ try{ if (window.AudioContext || window.webkitAudioContext){ if (!window.__audioCtx) { window.__audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } if (window.__audioCtx.state === 'suspended') { window.__audioCtx.resume && window.__audioCtx.resume(); } } }catch(e){} window.removeEventListener('touchstart', primeAudioOnce, {passive:true}); window.removeEventListener('click', primeAudioOnce, {passive:true}); } window.addEventListener('touchstart', primeAudioOnce, {passive:true, once:true}); window.addEventListener('click', primeAudioOnce, {passive:true, once:true}); const modal = document.getElementById('modal'); const rules = document.getElementById('rules-screen'); const difficulty = document.getElementById('difficulty-screen'); [modal, rules, difficulty].forEach(el=>{ if(!el) return; el.style.maxHeight = 'calc(var(--vh, 1vh) * 100)'; el.style.overflowY = 'auto'; }); })(); </script>
+    
+    <script id="mobile-boot-v2"> /* Mobile Boot Optimizations (Geliştirilmiş Viewport Düzeltmesi) */ 
+    (function(){ 
+        function setVhUnit(){ 
+            const vh = window.visualViewport ? window.visualViewport.height * 0.01 : window.innerHeight * 0.01; 
+            document.documentElement.style.setProperty('--vh', `${vh}px`); 
+        } 
+        setVhUnit(); 
+        /* visualViewport API'ı resize olayını destekliyorsa onu kullan, desteklemiyorsa normal resize'ı kullan */
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', setVhUnit);
+        } else {
+            window.addEventListener('resize', setVhUnit);
+        }
+        window.addEventListener('orientationchange', setVhUnit); 
+        
+        function primeAudioOnce(){ 
+            try{ 
+                if (window.AudioContext || window.webkitAudioContext){ 
+                    if (!window.__audioCtx) { 
+                        window.__audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
+                    } 
+                    if (window.__audioCtx.state === 'suspended') { 
+                        window.__audioCtx.resume && window.__audioCtx.resume(); 
+                    } 
+                } 
+            }catch(e){} 
+            window.removeEventListener('touchstart', primeAudioOnce, {passive:true}); 
+            window.removeEventListener('click', primeAudioOnce, {passive:true}); 
+        } 
+        window.addEventListener('touchstart', primeAudioOnce, {passive:true, once:true}); 
+        window.addEventListener('click', primeAudioOnce, {passive:true, once:true}); 
+        
+        /* Bu script, --vh değişkenini ayarlar. CSS zaten bu değişkeni kullanıyor.
+         Ekranların yüksekliğini ayarlayan JS kod bloğu burada da tutulabilir 
+         veya sadece CSS'e güvenilebilir. CSS'e --vh eklediğimiz için 
+         bu JS bloğu (aşağıdaki) aslında yedekli hale geldi, ancak zararı yok.
+         Daha temiz olması için CSS'e (örn: .intro-screen) eklemek daha iyidir.
+         Ancak mevcut çalışan yapıyı bozmamak adına bu kısmı olduğu gibi bırakıyorum.
+        */
+        const modal = document.getElementById('modal'); 
+        const rules = document.getElementById('rules-screen'); 
+        const difficulty = document.getElementById('difficulty-screen'); 
+        [modal, rules, difficulty].forEach(el=>{ 
+            if(!el) return; 
+            el.style.maxHeight = 'calc(var(--vh, 1vh) * 100)'; 
+            el.style.overflowY = 'auto'; 
+        }); 
+    })(); 
+    </script>
 </body>
 </html>
